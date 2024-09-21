@@ -21,6 +21,10 @@ export interface ITestQuery {
 	expected: any;
 }
 
+function testStringArrayContents(stringArr: string[], toInclude: string): void {
+	expect(stringArr).to.deep.include(toInclude);
+}
+
 describe("InsightFacade", function () {
 	let facade: IInsightFacade;
 
@@ -31,7 +35,6 @@ describe("InsightFacade", function () {
 		before(async function () {
 			// This block runs once and loads the datasets.
 			sections = await getContentFromArchives("validSmall.zip");
-			console.log("loaded validSmall.zip");
 
 			// Just in case there is anything hanging around from a previous run of the test suite
 			await clearDisk();
@@ -59,7 +62,8 @@ describe("InsightFacade", function () {
 				expect(datasetArray[0].id).be.equal("ubc1");
 				expect(datasetArray[1].id).be.equal("ubc2");
 			} catch (err) {
-				expect.fail("should not have thrown");
+				const errorMessage = (err as Error).message;
+				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
 			}
 		});
 
@@ -76,7 +80,8 @@ describe("InsightFacade", function () {
 				expect(datasetArray[0].id).be.equal("ubc1");
 				expect(datasetArray[1].id).be.equal("ubc2");
 			} catch (err) {
-				expect.fail("should not have thrown");
+				const errorMessage = (err as Error).message;
+				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
 			}
 		});
 
@@ -90,21 +95,25 @@ describe("InsightFacade", function () {
 				expect(datasetArray[0].kind).to.equal(InsightDatasetKind.Sections);
 				expect(datasetArray[1].kind).to.equal(InsightDatasetKind.Sections);
 			} catch (err) {
-				expect.fail("should not have thrown");
+				const errorMessage = (err as Error).message;
+				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
 			}
 		});
 
 		it("should list out all datasets with correct row [listDatasets]", async function () {
 			try {
+				const rowsInDataset = 18;
+
 				await facade.addDataset("ubc1", sections, InsightDatasetKind.Sections);
 
 				await facade.addDataset("ubc2", sections, InsightDatasetKind.Sections);
 				const datasetArray = await facade.listDatasets();
 
-				expect(datasetArray[0].numRows).to.equal(18);
-				expect(datasetArray[1].numRows).to.equal(18);
+				expect(datasetArray[0].numRows).to.equal(rowsInDataset);
+				expect(datasetArray[1].numRows).to.equal(rowsInDataset);
 			} catch (err) {
-				expect.fail("should not have thrown");
+				const errorMessage = (err as Error).message;
+				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
 			}
 		});
 	});
@@ -113,7 +122,6 @@ describe("InsightFacade", function () {
 		before(async function () {
 			// This block runs once and loads the datasets.
 			sections = await getContentFromArchives("validSmall.zip");
-			console.log("loaded validSmall.zip");
 
 			// Just in case there is anything hanging around from a previous run of the test suite
 			await clearDisk();
@@ -182,7 +190,8 @@ describe("InsightFacade", function () {
 				await facade.addDataset(idToUse, sections, InsightDatasetKind.Sections);
 				await facade.removeDataset(idToUse);
 			} catch (err) {
-				expect.fail("Should not have thrown!");
+				const errorMessage = (err as Error).message;
+				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
 			}
 		});
 
@@ -204,7 +213,8 @@ describe("InsightFacade", function () {
 				const promiseString = await facade.removeDataset(idToUse);
 				expect(promiseString).to.equal(idToUse);
 			} catch (err) {
-				expect.fail("Should not have thrown!");
+				const errorMessage = (err as Error).message;
+				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
 			}
 		});
 
@@ -217,7 +227,8 @@ describe("InsightFacade", function () {
 
 				await newfacade.removeDataset(idToUse);
 			} catch (err) {
-				expect.fail("Should not have thrown!");
+				const errorMessage = (err as Error).message;
+				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
 			}
 		});
 
@@ -247,7 +258,8 @@ describe("InsightFacade", function () {
 				await facade.removeDataset("1");
 				await facade.removeDataset("3");
 			} catch (err) {
-				expect.fail("Should not have thrown!");
+				const errorMessage = (err as Error).message;
+				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
 			}
 		});
 
@@ -260,12 +272,12 @@ describe("InsightFacade", function () {
 				await facade.removeDataset("2");
 
 				const stringArray = await facade.addDataset("4", sections, InsightDatasetKind.Sections);
-
-				expect(stringArray.includes("1")).to.be.true;
-				expect(stringArray.includes("3")).to.be.true;
-				expect(stringArray.includes("4")).to.be.true;
+				testStringArrayContents(stringArray, "1");
+				testStringArrayContents(stringArray, "3");
+				testStringArrayContents(stringArray, "4");
 			} catch (err) {
-				expect.fail("Should not have thrown!");
+				const errorMessage = (err as Error).message;
+				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
 			}
 		});
 	});
@@ -274,7 +286,6 @@ describe("InsightFacade", function () {
 		before(async function () {
 			// This block runs once and loads the datasets.
 			sections = await getContentFromArchives("validSmall.zip");
-			console.log("loaded validSmall.zip");
 
 			// Just in case there is anything hanging around from a previous run of the test suite
 			await clearDisk();
@@ -380,25 +391,33 @@ describe("InsightFacade", function () {
 				await facade.addDataset("id2", sections, InsightDatasetKind.Sections);
 				await facade.addDataset("id3", sections, InsightDatasetKind.Sections);
 			} catch (err) {
-				expect.fail("should not have thrown");
+				const errorMessage = (err as Error).message;
+				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
 			}
 		});
 
 		it("should add datasets with different ids and resolve a promise containing string array with all 3 ids [addDataset]", async function () {
 			try {
 				const stringArray1 = await facade.addDataset("id1", sections, InsightDatasetKind.Sections);
-				expect(stringArray1.includes("id1")).to.be.true;
+				testStringArrayContents(stringArray1, "id1");
+				//expect(stringArray1.includes("id1")).to.be.true;
 				const stringArray2 = await facade.addDataset("id2", sections, InsightDatasetKind.Sections);
-				expect(stringArray2.includes("id1")).to.be.true;
-				expect(stringArray2.includes("id2")).to.be.true;
+				testStringArrayContents(stringArray2, "id1");
+				testStringArrayContents(stringArray2, "id2");
+				//expect(stringArray2.includes("id1")).to.be.true;
+				//expect(stringArray2.includes("id2")).to.be.true;
 
 				const stringArray3 = await facade.addDataset("id3", sections, InsightDatasetKind.Sections);
 
-				expect(stringArray3.includes("id1")).to.be.true;
-				expect(stringArray3.includes("id2")).to.be.true;
-				expect(stringArray3.includes("id3")).to.be.true;
+				testStringArrayContents(stringArray3, "id1");
+				testStringArrayContents(stringArray3, "id2");
+				testStringArrayContents(stringArray3, "id3");
+				//expect(stringArray3.includes("id1")).to.be.true;
+				//expect(stringArray3.includes("id2")).to.be.true;
+				//expect(stringArray3.includes("id3")).to.be.true;
 			} catch (err) {
-				expect.fail("should not have thrown");
+				const errorMessage = (err as Error).message;
+				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
 			}
 		});
 
@@ -406,7 +425,9 @@ describe("InsightFacade", function () {
 			try {
 				const stringArr = await facade.addDataset("3324", sections, InsightDatasetKind.Sections);
 
-				expect(Array.isArray(stringArr)).to.be.true;
+				if (!Array.isArray(stringArr)) {
+					expect.fail("String array should be an array.");
+				}
 
 				expect(stringArr.length).to.be.greaterThan(0);
 
@@ -414,7 +435,8 @@ describe("InsightFacade", function () {
 					expect(str).to.be.a("string");
 				}
 			} catch (err) {
-				expect.fail("The test should not reach the catch block, ");
+				const errorMessage = (err as Error).message;
+				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
 			}
 		});
 
@@ -462,7 +484,7 @@ describe("InsightFacade", function () {
 		 *
 		 * Note: the 'this' parameter is automatically set by Mocha and contains information about the test.
 		 */
-		async function checkQuery(this: Mocha.Context) {
+		async function checkQuery(this: Mocha.Context): Promise<void> {
 			if (!this.test) {
 				throw new Error(
 					"Invalid call to checkQuery." +
@@ -484,9 +506,9 @@ describe("InsightFacade", function () {
 					expect.fail(`performQuery threw unexpected error: ${err}`);
 				}
 
-				if (expected == "InsightError") {
+				if (expected === "InsightError") {
 					expect(err).to.be.instanceOf(InsightError);
-				} else if (expected == "ResultTooLargeError") {
+				} else if (expected === "ResultTooLargeError") {
 					expect(err).to.be.instanceOf(ResultTooLargeError);
 				} else {
 					expect.fail(`performQuery threw error that's not ResultTooLargeError or InsightError: ${err}`);
@@ -498,7 +520,6 @@ describe("InsightFacade", function () {
 			facade = new InsightFacade();
 
 			sections = await getContentFromArchives("pair.zip");
-			console.log("loaded pair.zip");
 
 			// Add the datasets to InsightFacade once.
 			// Will *fail* if there is a problem reading ANY dataset.
