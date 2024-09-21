@@ -1,0 +1,303 @@
+{
+	"title": "No Title Specified",
+	"input": {
+		"WHERE": {
+			"OR": [
+				{
+					"EQ": {
+						"sections_avg": 100
+					}
+				},
+				{
+					"EQ": {
+						"sections_avg": 99
+					}
+				},
+				{
+					"EQ": {
+						"sections_avg": 98
+					}
+				},
+				{
+					"EQ": {
+						"sections_avg": 97
+					}
+				},
+				{
+					"EQ": {
+						"sections_avg": 96
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_uuid",
+				"sections_id",
+				"sections_title",
+				"sections_instructor",
+				"sections_dept",
+				"sections_year",
+				"sections_avg",
+				"sections_pass",
+				"sections_fail",
+				"sections_audit"
+			]
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"sections_uuid": "19858",
+			"sections_id": "279",
+			"sections_title": "eng mtls lab",
+			"sections_instructor": "wassink, berend",
+			"sections_dept": "apsc",
+			"sections_year": 2010,
+			"sections_avg": 96,
+			"sections_pass": 19,
+			"sections_fail": 0,
+			"sections_audit": 0
+		},
+		{
+			"sections_uuid": "33374",
+			"sections_id": "584",
+			"sections_title": "prgm devl cnsl",
+			"sections_instructor": "carter, john",
+			"sections_dept": "cnps",
+			"sections_year": 2013,
+			"sections_avg": 96,
+			"sections_pass": 19,
+			"sections_fail": 0,
+			"sections_audit": 0
+		},
+		{
+			"sections_uuid": "26254",
+			"sections_id": "599",
+			"sections_title": "thesis",
+			"sections_instructor": "medved, maureen",
+			"sections_dept": "crwr",
+			"sections_year": 2014,
+			"sections_avg": 96,
+			"sections_pass": 1,
+			"sections_fail": 0,
+			"sections_audit": 0
+		},
+		{
+			"sections_uuid": "26255",
+			"sections_id": "599",
+			"sections_title": "thesis",
+			"sections_instructor": "campbell, deborah",
+			"sections_dept": "crwr",
+			"sections_year": 2014,
+			"sections_avg": 97,
+			"sections_pass": 1,
+			"sections_fail": 0,
+			"sections_audit": 0
+		},
+		{
+			"sections_uuid": "26258",
+			"sections_id": "599",
+			"sections_title": "thesis",
+			"sections_instructor": "taylor, timothy",
+			"sections_dept": "crwr",
+			"sections_year": 2014,
+			"sections_avg": 96,
+			"sections_pass": 1,
+			"sections_fail": 0,
+			"sections_audit": 0
+		},
+		{
+			"sections_uuid": "46405",
+			"sections_id": "599",
+			"sections_title": "thesis",
+			"sections_instructor": "maillard, keith",
+			"sections_dept": "crwr",
+			"sections_year": 2013,
+			"sections_avg": 98,
+			"sections_pass": 1,
+			"sections_fail": 0,
+			"sections_audit": 0
+		},
+		{
+			"sections_uuid": "46409",
+			"sections_id": "599",
+			"sections_title": "thesis",
+			"sections_instructor": "galloway, steve",
+			"sections_dept": "crwr",
+			"sections_year": 2013,
+			"sections_avg": 96,
+			"sections_pass": 1,
+			"sections_fail": 0,
+			"sections_audit": 0
+		},
+		{
+			"sections_uuid": "46412",
+			"sections_id": "599",
+			"sections_title": "thesis",
+			"sections_instructor": "grady, albert wayne",
+			"sections_dept": "crwr",
+			"sections_year": 2013,
+			"sections_avg": 98,
+			"sections_pass": 1,
+			"sections_fail": 0,
+			"sections_audit": 0
+		},
+		{
+			"sections_uuid": "71164",
+			"sections_id": "599",
+			"sections_title": "thesis",
+			"sections_instructor": "maillard, keith",
+			"sections_dept": "crwr",
+			"sections_year": 2012,
+			"sections_avg": 96,
+			"sections_pass": 2,
+			"sections_fail": 0,
+			"sections_audit": 0
+		},
+		{
+			"sections_uuid": "92879",
+			"sections_id": "599",
+			"sections_title": "thesis",
+			"sections_instructor": "maillard, keith",
+			"sections_dept": "crwr",
+			"sections_year": 2014,
+			"sections_avg": 96,
+			"sections_pass": 1,
+			"sections_fail": 0,
+			"sections_audit": 0
+		},
+		{
+			"sections_uuid": "33760",
+			"sections_id": "303",
+			"sections_title": "tch'g hghly able",
+			"sections_instructor": "porath, marion",
+			"sections_dept": "epse",
+			"sections_year": 2009,
+			"sections_avg": 96,
+			"sections_pass": 14,
+			"sections_fail": 0,
+			"sections_audit": 0
+		},
+		{
+			"sections_uuid": "33761",
+			"sections_id": "303",
+			"sections_title": "tch'g hghly able",
+			"sections_instructor": "",
+			"sections_dept": "epse",
+			"sections_year": 1900,
+			"sections_avg": 96,
+			"sections_pass": 14,
+			"sections_fail": 0,
+			"sections_audit": 0
+		},
+		{
+			"sections_uuid": "29285",
+			"sections_id": "528",
+			"sections_title": "basic princ meas",
+			"sections_instructor": "kishor, nand",
+			"sections_dept": "epse",
+			"sections_year": 2012,
+			"sections_avg": 96,
+			"sections_pass": 6,
+			"sections_fail": 0,
+			"sections_audit": 0
+		},
+		{
+			"sections_uuid": "76310",
+			"sections_id": "534",
+			"sections_title": "acad assess schl",
+			"sections_instructor": "amaral, deborah;ford, laurie",
+			"sections_dept": "epse",
+			"sections_year": 2009,
+			"sections_avg": 97,
+			"sections_pass": 8,
+			"sections_fail": 0,
+			"sections_audit": 0
+		},
+		{
+			"sections_uuid": "59528",
+			"sections_id": "499",
+			"sections_title": "kin project",
+			"sections_instructor": "",
+			"sections_dept": "kin",
+			"sections_year": 2013,
+			"sections_avg": 96,
+			"sections_pass": 4,
+			"sections_fail": 0,
+			"sections_audit": 0
+		},
+		{
+			"sections_uuid": "70959",
+			"sections_id": "549",
+			"sections_title": "ms thesis",
+			"sections_instructor": "",
+			"sections_dept": "pcth",
+			"sections_year": 1900,
+			"sections_avg": 96,
+			"sections_pass": 1,
+			"sections_fail": 0,
+			"sections_audit": 0
+		},
+		{
+			"sections_uuid": "20190",
+			"sections_id": "120",
+			"sections_title": "log & crit think",
+			"sections_instructor": "jackson, howard",
+			"sections_dept": "phil",
+			"sections_year": 2010,
+			"sections_avg": 96,
+			"sections_pass": 1,
+			"sections_fail": 0,
+			"sections_audit": 0
+		},
+		{
+			"sections_uuid": "78244",
+			"sections_id": "501",
+			"sections_title": "health psych",
+			"sections_instructor": "de longis, anita",
+			"sections_dept": "psyc",
+			"sections_year": 2015,
+			"sections_avg": 96,
+			"sections_pass": 4,
+			"sections_fail": 0,
+			"sections_audit": 0
+		},
+		{
+			"sections_uuid": "78245",
+			"sections_id": "501",
+			"sections_title": "health psych",
+			"sections_instructor": "",
+			"sections_dept": "psyc",
+			"sections_year": 1900,
+			"sections_avg": 96,
+			"sections_pass": 4,
+			"sections_fail": 0,
+			"sections_audit": 0
+		},
+		{
+			"sections_uuid": "54846",
+			"sections_id": "549",
+			"sections_title": "masters thesis",
+			"sections_instructor": "",
+			"sections_dept": "psyc",
+			"sections_year": 2012,
+			"sections_avg": 97,
+			"sections_pass": 1,
+			"sections_fail": 0,
+			"sections_audit": 0
+		},
+		{
+			"sections_uuid": "78270",
+			"sections_id": "549",
+			"sections_title": "masters thesis",
+			"sections_instructor": "",
+			"sections_dept": "psyc",
+			"sections_year": 1900,
+			"sections_avg": 96,
+			"sections_pass": 1,
+			"sections_fail": 0,
+			"sections_audit": 0
+		}
+	]
+}

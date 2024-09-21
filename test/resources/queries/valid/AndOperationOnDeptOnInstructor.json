@@ -1,0 +1,1548 @@
+{
+	"title": "No Title Specified",
+	"input": {
+		"WHERE": {
+			"AND": [
+				{
+					"IS": {
+						"sections_dept": "*"
+					}
+				},
+				{
+					"IS": {
+						"sections_instructor": "*mary*"
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_dept",
+				"sections_instructor"
+			]
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"sections_dept": "adhe",
+			"sections_instructor": "wilson, mary"
+		},
+		{
+			"sections_dept": "adhe",
+			"sections_instructor": "wilson, mary"
+		},
+		{
+			"sections_dept": "atsc",
+			"sections_instructor": "howard, rosemary;wong, may"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "mcginnis, rosemary"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "moussavi, maryam"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "mcginnis, rosemary"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "redfield, rosemary"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "redfield, rosemary"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "moussavi, maryam"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "couch, brett;germano, bernardita;kalas, pamela;kopp, christopher;moussavi, maryam;nomme, kathy margaret;norman, lynn;sun, chin"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "fung, charissa;moussavi, maryam;norman, lynn"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "berbee, mary;de wreede, robert;ellis, shona margaret"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "berbee, mary;couch, brett;hawkes, michael"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "berbee, mary;couch, brett;de wreede, robert"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "berbee, mary;couch, brett;de wreede, robert"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "berbee, mary;de wreede, robert;ellis, shona margaret"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "berbee, mary;couch, brett;de wreede, robert"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "berbee, mary;hawkes, michael"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "berbee, mary;ellis, shona margaret;martone, patrick"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "redfield, rosemary"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "moerman, donald;redfield, rosemary"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "moerman, donald;redfield, rosemary"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "berezowsky, craig m s;redfield, rosemary"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "berezowsky, craig m s;redfield, rosemary"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "bradfield, gary;goodey, wayne;o'connor, mary"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "bradfield, gary;goodey, wayne;o'connor, mary"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "angert, amy;bradfield, gary;goodey, wayne;o'connor, mary"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "bradfield, gary;goodey, wayne;o'connor, mary"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "bradfield, gary;goodey, wayne;o'connor, mary"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "bradfield, gary;goodey, wayne;o'connor, mary"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "bradfield, gary;goodey, wayne;o'connor, mary"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "berbee, mary"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "berbee, mary"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "berbee, mary"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "berbee, mary"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "berbee, mary"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "berbee, mary"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "berbee, mary"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "berbee, mary"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "redfield, rosemary"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "redfield, rosemary"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "redfield, rosemary"
+		},
+		{
+			"sections_dept": "biol",
+			"sections_instructor": "redfield, rosemary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "busi",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "swaffield, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "swaffield, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "swaffield, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "swaffield, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "swaffield, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "chong, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "swaffield, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "swaffield, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "swaffield, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "swaffield, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "swaffield, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "swaffield, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "swaffield, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "swaffield, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "swaffield, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "swaffield, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "swaffield, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "swaffield, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "swaffield, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "swaffield, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "swaffield, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "swaffield, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "swaffield, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "swaffield, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "swaffield, mary"
+		},
+		{
+			"sections_dept": "comm",
+			"sections_instructor": "swaffield, mary"
+		},
+		{
+			"sections_dept": "crwr",
+			"sections_instructor": "schendlinger, mary"
+		},
+		{
+			"sections_dept": "dent",
+			"sections_instructor": "aidelbaum, martin;aleksejuniene, jolanta;bryant, s;chanpong, brian;diewert, virginia;fogelman, mark;garcia fulle de owen, maria is;gardner, karen mary;harrison, rosamund louise;macdonald, david;mccullagh, anthony;richardson, james;ruse, n dorin;whitney, eli"
+		},
+		{
+			"sections_dept": "dent",
+			"sections_instructor": "aidelbaum, martin;garcia fulle de owen, maria is;gardner, karen mary;lowe, alan arthur;macdonald, david;mathu-muju, kavita;mccullagh, anthony;richardson, james;whitney, eli;zhang, lewei"
+		},
+		{
+			"sections_dept": "eced",
+			"sections_instructor": "stewart, mary"
+		},
+		{
+			"sections_dept": "eced",
+			"sections_instructor": "stewart, mary"
+		},
+		{
+			"sections_dept": "eced",
+			"sections_instructor": "stewart, mary"
+		},
+		{
+			"sections_dept": "eced",
+			"sections_instructor": "chapman, marilyn;stewart, mary"
+		},
+		{
+			"sections_dept": "eced",
+			"sections_instructor": "stewart, mary"
+		},
+		{
+			"sections_dept": "eced",
+			"sections_instructor": "stewart, mary"
+		},
+		{
+			"sections_dept": "eced",
+			"sections_instructor": "ford, laurie;stewart, mary"
+		},
+		{
+			"sections_dept": "eced",
+			"sections_instructor": "stewart, mary"
+		},
+		{
+			"sections_dept": "eced",
+			"sections_instructor": "stewart, mary"
+		},
+		{
+			"sections_dept": "eced",
+			"sections_instructor": "stewart, mary"
+		},
+		{
+			"sections_dept": "eced",
+			"sections_instructor": "stewart, mary"
+		},
+		{
+			"sections_dept": "edcp",
+			"sections_instructor": "dezwart, mary-leah"
+		},
+		{
+			"sections_dept": "edcp",
+			"sections_instructor": "dezwart, mary-leah"
+		},
+		{
+			"sections_dept": "edcp",
+			"sections_instructor": "dezwart, mary-leah"
+		},
+		{
+			"sections_dept": "edcp",
+			"sections_instructor": "dezwart, mary-leah"
+		},
+		{
+			"sections_dept": "edcp",
+			"sections_instructor": "dezwart, mary-leah"
+		},
+		{
+			"sections_dept": "edcp",
+			"sections_instructor": "smith, mary"
+		},
+		{
+			"sections_dept": "edcp",
+			"sections_instructor": "smith, mary gale"
+		},
+		{
+			"sections_dept": "edcp",
+			"sections_instructor": "dezwart, mary-leah"
+		},
+		{
+			"sections_dept": "edcp",
+			"sections_instructor": "dezwart, mary-leah"
+		},
+		{
+			"sections_dept": "edcp",
+			"sections_instructor": "dezwart, mary-leah"
+		},
+		{
+			"sections_dept": "educ",
+			"sections_instructor": "smith, mary gale"
+		},
+		{
+			"sections_dept": "educ",
+			"sections_instructor": "smith, mary"
+		},
+		{
+			"sections_dept": "educ",
+			"sections_instructor": "smith, mary gale"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "saunders, mary ann"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "saunders, mary ann"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "chapman, mary megan"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "weir, mary lorraine"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "weir, mary lorraine"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "chapman, mary megan"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "weir, mary lorraine"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "saunders, mary ann"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "weir, mary lorraine"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "weir, mary lorraine"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "chapman, mary megan"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "weir, mary lorraine"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "saunders, mary ann"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "saunders, mary ann"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "saunders, mary ann"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "saunders, mary ann"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "saunders, mary ann"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "saunders, mary ann"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "saunders, mary ann"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "saunders, mary ann"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "saunders, mary ann"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "saunders, mary ann"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "saunders, mary ann"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "saunders, mary ann"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "saunders, mary ann"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "saunders, mary ann"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "saunders, mary ann"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "weir, mary lorraine"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "weir, mary lorraine"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "chapman, mary megan"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "chapman, mary megan"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "chapman, mary megan"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "saunders, mary ann"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "saunders, mary ann"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "weir, mary lorraine"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "weir, mary lorraine"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "chapman, mary megan"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "chapman, mary megan"
+		},
+		{
+			"sections_dept": "engl",
+			"sections_instructor": "chapman, mary megan"
+		},
+		{
+			"sections_dept": "envr",
+			"sections_instructor": "bevier, mary lou"
+		},
+		{
+			"sections_dept": "eosc",
+			"sections_instructor": "bevier, mary lou;hearn, elizabeth"
+		},
+		{
+			"sections_dept": "eosc",
+			"sections_instructor": "bevier, mary lou;radic, valentina"
+		},
+		{
+			"sections_dept": "eosc",
+			"sections_instructor": "bevier, mary lou;eberhardt, erik;frappe-seneclauze, tom-pierre;harris, sara;stull, roland"
+		},
+		{
+			"sections_dept": "eosc",
+			"sections_instructor": "bevier, mary lou;eberhardt, erik;frappe-seneclauze, tom-pierre;harris, sara;stull, roland"
+		},
+		{
+			"sections_dept": "eosc",
+			"sections_instructor": "bevier, mary lou;scoates, james stewart"
+		},
+		{
+			"sections_dept": "eosc",
+			"sections_instructor": "bevier, mary lou;van straaten, bram ivo"
+		},
+		{
+			"sections_dept": "eosc",
+			"sections_instructor": "bevier, mary lou;scoates, james stewart"
+		},
+		{
+			"sections_dept": "eosc",
+			"sections_instructor": "bevier, mary lou;mindell, randal;scoates, james stewart"
+		},
+		{
+			"sections_dept": "eosc",
+			"sections_instructor": "bevier, mary lou;smit, matthijs"
+		},
+		{
+			"sections_dept": "eosc",
+			"sections_instructor": "bevier, mary lou;dohaney, jacqueline anne"
+		},
+		{
+			"sections_dept": "eosc",
+			"sections_instructor": "bevier, mary lou"
+		},
+		{
+			"sections_dept": "eosc",
+			"sections_instructor": "bevier, mary lou;mindell, randal;mortensen, james;smith, paul laurence"
+		},
+		{
+			"sections_dept": "eosc",
+			"sections_instructor": "bevier, mary lou;harris, sara;phillips, steve;smith, paul laurence"
+		},
+		{
+			"sections_dept": "eosc",
+			"sections_instructor": "bevier, mary lou;bustin, robert marc;golding, martyn;mortensen, james;smith, paul laurence"
+		},
+		{
+			"sections_dept": "eosc",
+			"sections_instructor": "bevier, mary lou;mindell, randal;mortensen, james;tba"
+		},
+		{
+			"sections_dept": "eosc",
+			"sections_instructor": "bevier, mary lou;bustin, robert marc;mortensen, james;simpson, kirsten anne;smith, paul laurence"
+		},
+		{
+			"sections_dept": "eosc",
+			"sections_instructor": "bevier, mary lou"
+		},
+		{
+			"sections_dept": "eosc",
+			"sections_instructor": "bevier, mary lou;harris, sara;phillips, steve;rasmussen, kirsten louise"
+		},
+		{
+			"sections_dept": "eosc",
+			"sections_instructor": "bevier, mary lou"
+		},
+		{
+			"sections_dept": "eosc",
+			"sections_instructor": "bevier, mary lou"
+		},
+		{
+			"sections_dept": "eosc",
+			"sections_instructor": "bevier, mary lou"
+		},
+		{
+			"sections_dept": "eosc",
+			"sections_instructor": "bevier, mary lou"
+		},
+		{
+			"sections_dept": "eosc",
+			"sections_instructor": "bevier, mary lou"
+		},
+		{
+			"sections_dept": "epse",
+			"sections_instructor": "heikkila, mary"
+		},
+		{
+			"sections_dept": "epse",
+			"sections_instructor": "heikkila, mary"
+		},
+		{
+			"sections_dept": "epse",
+			"sections_instructor": "heikkila, mary"
+		},
+		{
+			"sections_dept": "epse",
+			"sections_instructor": "heikkila, mary"
+		},
+		{
+			"sections_dept": "epse",
+			"sections_instructor": "heikkila, mary"
+		},
+		{
+			"sections_dept": "epse",
+			"sections_instructor": "heikkila, mary"
+		},
+		{
+			"sections_dept": "epse",
+			"sections_instructor": "heikkila, mary"
+		},
+		{
+			"sections_dept": "epse",
+			"sections_instructor": "heikkila, mary"
+		},
+		{
+			"sections_dept": "epse",
+			"sections_instructor": "heikkila, mary"
+		},
+		{
+			"sections_dept": "epse",
+			"sections_instructor": "dowler, judith rosemary"
+		},
+		{
+			"sections_dept": "epse",
+			"sections_instructor": "dowler, judith rosemary"
+		},
+		{
+			"sections_dept": "epse",
+			"sections_instructor": "heikkila, mary"
+		},
+		{
+			"sections_dept": "epse",
+			"sections_instructor": "heikkila, mary"
+		},
+		{
+			"sections_dept": "epse",
+			"sections_instructor": "heikkila, mary"
+		},
+		{
+			"sections_dept": "epse",
+			"sections_instructor": "heikkila, mary"
+		},
+		{
+			"sections_dept": "epse",
+			"sections_instructor": "heikkila, mary"
+		},
+		{
+			"sections_dept": "etec",
+			"sections_instructor": "bryson, mary"
+		},
+		{
+			"sections_dept": "etec",
+			"sections_instructor": "bryson, mary"
+		},
+		{
+			"sections_dept": "etec",
+			"sections_instructor": "bryson, mary"
+		},
+		{
+			"sections_dept": "etec",
+			"sections_instructor": "bryson, mary"
+		},
+		{
+			"sections_dept": "etec",
+			"sections_instructor": "bryson, mary"
+		},
+		{
+			"sections_dept": "etec",
+			"sections_instructor": "bryson, mary"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse;pouliot, rebecca"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse;onate, susa"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse;lushchenko, marina"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse;fall, moustapha"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse;fotsing fondjo, luc"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse;rowswell, kathryn"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse;leplat, farah"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse;glenn, brittany"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse;romengo, margherita"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse;linan, kathyrn"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse;fotsing fondjo, luc"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse;edinger, monika"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "bonilla, antonia;duggan, maryse"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse;pouliot, rebecca"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "aylward, travis;duggan, maryse"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse;pouliot, rebecca"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse;lushchenko, marina"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse;leplat, farah"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse;shilliday, molleen"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse;fotsing fondjo, luc"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse;linan, kathyrn"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse;onate, susa"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "bonilla, antonia;duggan, maryse"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "bonilla, antonia;duggan, maryse"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "curat, herve;duggan, maryse;rouget, christine;scott, anne"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse;rouget, christine;scott, anne"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "curat, herve;duggan, maryse;rouget, christine;scott, anne"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse;rouget, christine;scott, anne"
+		},
+		{
+			"sections_dept": "fren",
+			"sections_instructor": "duggan, maryse"
+		},
+		{
+			"sections_dept": "geog",
+			"sections_instructor": "collard, rosemary-claire;dempsey, jessica"
+		},
+		{
+			"sections_dept": "libr",
+			"sections_instructor": "kempthorne, maryann"
+		},
+		{
+			"sections_dept": "libr",
+			"sections_instructor": "chan, may;kempthorne, maryann"
+		},
+		{
+			"sections_dept": "libr",
+			"sections_instructor": "kempthorne, maryann"
+		},
+		{
+			"sections_dept": "libr",
+			"sections_instructor": "stephenson, mary"
+		},
+		{
+			"sections_dept": "libr",
+			"sections_instructor": "stephenson, mary"
+		},
+		{
+			"sections_dept": "libr",
+			"sections_instructor": "stephenson, mary"
+		},
+		{
+			"sections_dept": "libr",
+			"sections_instructor": "stephenson, mary"
+		},
+		{
+			"sections_dept": "libr",
+			"sections_instructor": "stephenson, mary"
+		},
+		{
+			"sections_dept": "libr",
+			"sections_instructor": "stephenson, mary"
+		},
+		{
+			"sections_dept": "libr",
+			"sections_instructor": "stephenson, mary"
+		},
+		{
+			"sections_dept": "libr",
+			"sections_instructor": "stephenson, mary"
+		},
+		{
+			"sections_dept": "libr",
+			"sections_instructor": "stephenson, mary"
+		},
+		{
+			"sections_dept": "libr",
+			"sections_instructor": "stephenson, mary"
+		},
+		{
+			"sections_dept": "libr",
+			"sections_instructor": "stephenson, mary"
+		},
+		{
+			"sections_dept": "libr",
+			"sections_instructor": "stephenson, mary"
+		},
+		{
+			"sections_dept": "libr",
+			"sections_instructor": "stephenson, mary"
+		},
+		{
+			"sections_dept": "libr",
+			"sections_instructor": "stephenson, mary"
+		},
+		{
+			"sections_dept": "mech",
+			"sections_instructor": "croft, elizabeth;ostafichuk, peter;schajer, gary;wells, mary a.;yan, joseph"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "mcburney, sheila mary;o'flynn-magee, katherine"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "mcburney, sheila mary;o'flynn-magee, katherine"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "affleck, frances;boschma, geertje;brown, helen jean;foster, paula;jackson, cathryn;mcburney, sheila mary;rea, gail;thorne, sally"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "boschma, geertje;brown, helen jean;camacho, sarah;jackson, cathryn;jetha, farah;mcburney, sheila mary;mislang, jonathan;phinney, alison;rea, gail;valkenier, beverley"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "mcburney, sheila mary;o'flynn-magee, katherine"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "affleck, frances;foster, paula;jackson, cathryn;jetha, farah;mcburney, sheila mary;rea, gail;segaric, cheryl"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "ebbehoj, catherine;jackson, cathryn;mcburney, sheila mary;mislang, jonathan;valkenier, beverley"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "ebbehoj, catherine;jackson, cathryn;mcburney, sheila mary;mislang, jonathan;valkenier, beverley"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "jackson, cathryn;mcburney, sheila mary;mislang, jonathan;tan, elsie;valkenier, beverley"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "jackson, cathryn;mcburney, sheila mary;mislang, jonathan;tan, elsie;valkenier, beverley"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "groening, marlee;jackson, cathryn;mcburney, sheila mary;mislang, jonathan;valkenier, beverley"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "groening, marlee;jackson, cathryn;mcburney, sheila mary;mislang, jonathan;valkenier, beverley"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "jackson, cathryn;mcburney, sheila mary;mislang, jonathan;ricci, joanne;valkenier, beverley"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "dhari, ranjit kaur;jackson, cathryn;mcburney, sheila mary;mislang, jonathan;valkenier, beverley"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "esson, lynne;jackson, cathryn;mcburney, sheila mary;mislang, jonathan;taverner, tarnia;valkenier, beverley"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "lynam, mary judith"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "mcburney, sheila mary"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "mcburney, sheila mary"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "mcburney, sheila mary"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "mcburney, sheila mary"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "mcburney, sheila mary"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "baumbusch, jennifer;lynam, mary judith"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "lynam, mary judith"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "lynam, mary judith"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "balneaves, lynda;lynam, mary judith"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "jennings,  mary lou;mccuaig, fairleth"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "lynam, mary judith"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "lynam, mary judith"
+		},
+		{
+			"sections_dept": "nurs",
+			"sections_instructor": "jennings,  mary lou"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "ensom, mary;riggs, kenneth wayne"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "collier, abby;ensom, mary;wong, harvey"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "ensom, mary;riggs, kenneth wayne"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "burt, helen mary"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "burt, helen mary"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "ensom, mary"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "ensom, mary"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "ensom, mary"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "ensom, mary"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "ensom, mary"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "ensom, mary"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "ensom, mary"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "de vera, mary;harrison, mark;lynd, larry"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "ensom, mary;riggs, kenneth wayne"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "ensom, mary;riggs, kenneth wayne"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "ensom, mary;riggs, kenneth wayne"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "ensom, mary;riggs, kenneth wayne"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "ensom, mary;riggs, kenneth wayne"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "collier, abby;ensom, mary;wong, harvey"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "collier, abby;ensom, mary;wong, harvey"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "ensom, mary;riggs, kenneth wayne"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "de vera, mary;harrison, mark;lynd, larry"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "ensom, mary"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "ensom, mary"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "ensom, mary"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "ensom, mary"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "ensom, mary"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "ensom, mary"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "ensom, mary"
+		},
+		{
+			"sections_dept": "phar",
+			"sections_instructor": "burt, helen mary"
+		},
+		{
+			"sections_dept": "phrm",
+			"sections_instructor": "albon, simon;cairns, brian;chen, tim;collier, abby;de vera, mary;ensom, mary;frankel, adam;hafeli, urs;li, shyh-dar;lynd, larry;rodrigues, brian;seet, tony;seto, katherine;wong, judy"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_instructor": "king, mary ann"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_instructor": "king, mary ann"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_instructor": "king, mary ann"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_instructor": "king, mary ann"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_instructor": "king, mary ann"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_instructor": "king, mary ann"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_instructor": "king, mary ann"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_instructor": "king, mary ann"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_instructor": "king, mary ann"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_instructor": "king, mary ann"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_instructor": "king, mary ann"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_instructor": "king, mary ann"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_instructor": "king, mary ann"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_instructor": "king, mary ann"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_instructor": "king, mary ann"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_instructor": "king, mary ann"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_instructor": "king, mary ann"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_instructor": "king, mary ann"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_instructor": "king, mary ann"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_instructor": "king, mary ann"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_instructor": "king, mary ann"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_instructor": "king, mary ann"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_instructor": "king, mary ann"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_instructor": "king, mary ann"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_instructor": "king, mary ann"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_instructor": "king, mary ann"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_instructor": "king, mary ann"
+		},
+		{
+			"sections_dept": "psyc",
+			"sections_instructor": "king, mary ann"
+		},
+		{
+			"sections_dept": "spph",
+			"sections_instructor": "doyle-waters, mary;mintzes, barbara"
+		},
+		{
+			"sections_dept": "spph",
+			"sections_instructor": "doyle-waters, mary;mintzes, barbara"
+		},
+		{
+			"sections_dept": "spph",
+			"sections_instructor": "doyle-waters, mary;taylor, darlene"
+		},
+		{
+			"sections_dept": "spph",
+			"sections_instructor": "doyle-waters, mary;mintzes, barbara"
+		},
+		{
+			"sections_dept": "thtr",
+			"sections_instructor": "vingoe, mary"
+		},
+		{
+			"sections_dept": "wrds",
+			"sections_instructor": "saunders, mary ann"
+		},
+		{
+			"sections_dept": "wrds",
+			"sections_instructor": "saunders, mary ann"
+		},
+		{
+			"sections_dept": "wrds",
+			"sections_instructor": "saunders, mary ann"
+		},
+		{
+			"sections_dept": "wrds",
+			"sections_instructor": "saunders, mary ann"
+		},
+		{
+			"sections_dept": "wrds",
+			"sections_instructor": "saunders, mary ann"
+		},
+		{
+			"sections_dept": "wrds",
+			"sections_instructor": "saunders, mary ann"
+		},
+		{
+			"sections_dept": "wrds",
+			"sections_instructor": "saunders, mary ann"
+		},
+		{
+			"sections_dept": "wrds",
+			"sections_instructor": "saunders, mary ann"
+		},
+		{
+			"sections_dept": "wrds",
+			"sections_instructor": "saunders, mary ann"
+		}
+	]
+}

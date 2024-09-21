@@ -1,0 +1,12 @@
+{
+	"title": "No Title Specified",
+	"input": {
+		"WHERE": {
+			"EQ": {
+				"sections_avg": 97
+			}
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}
