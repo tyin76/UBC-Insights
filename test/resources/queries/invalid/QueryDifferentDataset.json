@@ -1,0 +1,27 @@
+{
+	"title": "No Title Specified",
+	"input": {
+		"WHERE": {
+			"AND": [
+				{
+					"IS": {
+						"courses_dept": "*"
+					}
+				},
+				{
+					"IS": {
+						"sections_instructor": "*mary*"
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_dept",
+				"sections_instructor"
+			]
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}
