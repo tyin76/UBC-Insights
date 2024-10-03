@@ -1,7 +1,14 @@
 import datasetCollectionSinglton from "../objects/DataCollection";
 import Dataset from "../objects/Dataset";
 import Section from "../objects/Section";
-import { IInsightFacade, InsightDataset, InsightDatasetKind, InsightError, InsightResult } from "./IInsightFacade";
+import {
+	IInsightFacade,
+	InsightDataset,
+	InsightDatasetKind,
+	InsightError,
+	InsightResult,
+	NotFoundError,
+} from "./IInsightFacade";
 const JSZip = require("jszip");
 
 /**
@@ -107,7 +114,19 @@ export default class InsightFacade implements IInsightFacade {
 
 	public async removeDataset(id: string): Promise<string> {
 		// TODO: Remove this once you implement the methods!
-		throw new Error(`InsightFacadeImpl::removeDataset() is unimplemented! - id=${id};`);
+		const regex = /^[^_]+$/;
+
+		// checks if id is valid, otherwise throws error
+		if (!regex.test(id) || id === null || id.trim() === "" || typeof id !== "string" || id.includes("_")) {
+			throw new InsightError("Invalid id (removeDataset)");
+		}
+
+		if (!datasetCollectionSinglton.getIds().includes(id)) {
+			throw new NotFoundError("ID submitted is not found (removeDataset)");
+		}
+
+		datasetCollectionSinglton.removeDataset(id);
+		return id;
 	}
 
 	public async performQuery(query: unknown): Promise<InsightResult[]> {
