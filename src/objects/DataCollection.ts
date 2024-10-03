@@ -28,6 +28,4 @@ class DataCollection {
 	}
 }
 
-const datasetCollectionSinglton = new DataCollection();
-
-export default datasetCollectionSinglton;
+export default DataCollection;

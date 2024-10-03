@@ -1,4 +1,4 @@
-import datasetCollectionSinglton from "../objects/DataCollection";
+import DataCollection from "../objects/DataCollection";
 import Dataset from "../objects/Dataset";
 import Section from "../objects/Section";
 import {
@@ -17,6 +17,8 @@ const JSZip = require("jszip");
  *
  */
 export default class InsightFacade implements IInsightFacade {
+	private datasetCollection = new DataCollection();
+
 	private async getResultsJsonArray(content: string): Promise<any[]> {
 		var zip = new JSZip();
 
@@ -92,8 +94,7 @@ export default class InsightFacade implements IInsightFacade {
 			throw new InsightError("Invalid id");
 		}
 
-		console.log(datasetCollectionSinglton.getIds());
-		if (datasetCollectionSinglton.getDataset(id) !== undefined) {
+		if (this.datasetCollection.getDataset(id) !== undefined) {
 			throw new InsightError("id already exists");
 		}
 
@@ -107,9 +108,9 @@ export default class InsightFacade implements IInsightFacade {
 			throw new InsightError("Invalid dataset, no sections");
 		}
 
-		datasetCollectionSinglton.addDataset(id, newDataset);
+		this.datasetCollection.addDataset(id, newDataset);
 
-		return datasetCollectionSinglton.getIds();
+		return this.datasetCollection.getIds();
 	}
 
 	public async removeDataset(id: string): Promise<string> {
@@ -121,11 +122,11 @@ export default class InsightFacade implements IInsightFacade {
 			throw new InsightError("Invalid id (removeDataset)");
 		}
 
-		if (!datasetCollectionSinglton.getIds().includes(id)) {
+		if (!this.datasetCollection.getIds().includes(id)) {
 			throw new NotFoundError("ID submitted is not found (removeDataset)");
 		}
 
-		datasetCollectionSinglton.removeDataset(id);
+		this.datasetCollection.removeDataset(id);
 		return id;
 	}
 
