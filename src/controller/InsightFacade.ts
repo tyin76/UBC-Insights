@@ -17,7 +17,6 @@ const JSZip = require("jszip");
  *
  */
 export default class InsightFacade implements IInsightFacade {
-
 	private datasetCollection = new DataCollection();
 
 	private async getResultsJsonArray(content: string): Promise<any[]> {
