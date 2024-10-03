@@ -85,6 +85,11 @@ export default class InsightFacade implements IInsightFacade {
 			throw new InsightError("Invalid id");
 		}
 
+		console.log(datasetCollectionSinglton.getIds());
+		if (datasetCollectionSinglton.getDataset(id) !== undefined) {
+			throw new InsightError("id already exists");
+		}
+
 		const resultJsonArray: any[] = await this.getResultsJsonArray(content);
 
 		const sectionArray = this.turnResultJsonArrayToSectionArray(resultJsonArray);
