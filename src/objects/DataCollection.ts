@@ -15,7 +15,11 @@ class DataCollection {
 		return this.datasets;
 	}
 
-	public deleteDataset(id: string): void {
+	public getDataset(id: string): Dataset {
+		return this.datasets[id];
+	}
+
+	public removeDataset(id: string): void {
 		delete this.datasets[id];
 	}
 
