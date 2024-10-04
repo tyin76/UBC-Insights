@@ -73,6 +73,21 @@ class Section {
 	public getAudit(): number {
 		return this.audit;
 	}
+
+	public toJSON() {
+		return {
+			uuid: this.uuid,
+			id: this.id,
+			title: this.title,
+			instructor: this.instructor,
+			dept: this.dept,
+			year: this.year,
+			avg: this.avg,
+			pass: this.pass,
+			fail: this.fail,
+			audit: this.audit,
+		};
+	}
 }
 
 export default Section;
