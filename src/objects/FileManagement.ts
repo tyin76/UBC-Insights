@@ -27,8 +27,9 @@ export async function createDataFolder(): Promise<void> {
 }
 
 export async function saveDatasetToDataCache(id: string, dataset: Dataset, kind: InsightDatasetKind): Promise<void> {
-	var filePath = path.join(directoryPath, `${id}.json`);
-	const jsonContent = JSON.stringify(dataset.toJSON(), null, 2); // Convert to JSON into a string so we can save to file
+	const indentation = 2;
+	let filePath = path.join(directoryPath, `${id}.json`);
+	const jsonContent = JSON.stringify(dataset.toJSON(), null, indentation); // Convert to JSON into a string so we can save to file
 	await fs.promises.writeFile(filePath, jsonContent); // writing the json file
 
 	// Now we are storing the kind of the dataset it is storing it in a file
@@ -41,7 +42,7 @@ export async function saveDatasetToDataCache(id: string, dataset: Dataset, kind:
 }
 
 export async function removeDatasetFromDataCache(id: string): Promise<void> {
-	var filePath = path.join(directoryPath, `${id}.json`);
+	let filePath = path.join(directoryPath, `${id}.json`);
 
 	try {
 		await fs.promises.unlink(filePath); // remove the file from the cache
@@ -61,6 +62,7 @@ export async function removeDatasetFromDataCache(id: string): Promise<void> {
 
 export async function getAllCachedDatasetIds(): Promise<string[]> {
 	const idArray: string[] = [];
+	const splitArrLength = 2;
 
 	await createDataFolder(); // create data folder just in case
 
@@ -71,7 +73,7 @@ export async function getAllCachedDatasetIds(): Promise<string[]> {
 		for (const datasetName of datasetFileNames) {
 			const splitNameArr = datasetName.split("."); // Here we split on the period so "dataset.json" turns into [dataset, json], then we just keep the name which is at index 0
 
-			if (splitNameArr.length === 2 && splitNameArr[1] === "json") {
+			if (splitNameArr.length === splitArrLength && splitNameArr[1] === "json") {
 				// make sure we only add the id names gotten from jsons (because we have other files that store the number of rows and also the kind of dataset)
 				idArray.push(splitNameArr[0]); // Here we split on the period so "dataset.json" turns into [dataset, json], then we just keep the name which is at index 0
 			}
