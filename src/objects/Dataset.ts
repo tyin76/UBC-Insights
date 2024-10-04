@@ -11,7 +11,7 @@ class Dataset {
 		return this.sections;
 	}
 
-	public toJSON() {
+	public toJSON(): object {
 		return {
 			sections: this.sections.map((section) => section.toJSON()), // Converts each Section to JSON
 		};

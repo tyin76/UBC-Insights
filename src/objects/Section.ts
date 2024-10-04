@@ -74,7 +74,7 @@ class Section {
 		return this.audit;
 	}
 
-	public toJSON() {
+	public toJSON(): object {
 		return {
 			uuid: this.uuid,
 			id: this.id,

@@ -37,22 +37,24 @@ export default class InsightFacade implements IInsightFacade {
 
 		const resultsJson: any[] = []; // To store the results from each file as a Json
 
-		for (const path in zipData.files) {
+		const promises = Object.keys(zipData.files).map(async (path) => {
 			if (path !== "courses/") {
 				const fileData = await zipData.file(path)?.async("string"); // Read the file
-
 				if (fileData) {
 					try {
-						const resultJson = JSON.parse(fileData); // Parse the JSON string into resultsJsonObject
+						const resultJson = JSON.parse(fileData); // Parse the JSON string into resultsJson Object
 						resultsJson.push(resultJson); // Store the object in the resultsJson
-					} catch (error) {
+					} catch (_error) {
 						throw new InsightError("Invalid json");
 					}
 				} else {
 					throw new InsightError("Invalid json, path not found for some reason");
 				}
 			}
-		}
+		});
+
+		// wait for all promises to finish
+		await Promise.all(promises);
 		return resultsJson;
 	}
 
@@ -157,19 +159,23 @@ export default class InsightFacade implements IInsightFacade {
 	public async listDatasets(): Promise<InsightDataset[]> {
 		// TODO: Remove this once you implement the methods!
 
-		const insightDatasetArray = [];
-
 		const ids = await getAllCachedDatasetIds();
 
-		for (const id of ids) {
-			const insightDataset = {
-				id: id,
-				kind: await getKindFromId(id),
-				numRows: await getRowsFromId(id),
-			};
-			insightDatasetArray.push(insightDataset);
-		}
+		// Create an array of promises for each dataset
+		const promises = ids.map(async (id) => {
+			const kind = await getKindFromId(id); // Get the kind of dataset
+			const numRows = await getRowsFromId(id); // Get the number of rows in the dataset
 
-		return insightDatasetArray;
+			// Construct the object
+			return {
+				id: id,
+				kind: kind,
+				numRows: numRows,
+			} as InsightDataset; // Type assertion
+		});
+
+		// Wait for all promises to resolve and return the array
+		const datasets = await Promise.all(promises);
+		return datasets; // Return the resolved datasets
 	}
 }
