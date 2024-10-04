@@ -1,4 +1,3 @@
-import DataCollection from "../objects/DataCollection";
 import Dataset from "../objects/Dataset";
 import Section from "../objects/Section";
 import {
@@ -9,6 +8,14 @@ import {
 	InsightResult,
 	NotFoundError,
 } from "./IInsightFacade";
+import {
+	createDataFolder,
+	getAllCachedDatasetIds,
+	getKindFromId,
+	getRowsFromId,
+	removeDatasetFromDataCache,
+	saveDatasetToDataCache,
+} from "../objects/FileManagement";
 const JSZip = require("jszip");
 
 /**
@@ -17,10 +24,8 @@ const JSZip = require("jszip");
  *
  */
 export default class InsightFacade implements IInsightFacade {
-	private datasetCollection = new DataCollection();
-
 	private async getResultsJsonArray(content: string): Promise<any[]> {
-		var zip = new JSZip();
+		const zip = new JSZip();
 
 		const zipData = await zip.loadAsync(content, { base64: true });
 
@@ -94,9 +99,21 @@ export default class InsightFacade implements IInsightFacade {
 			throw new InsightError("Invalid id");
 		}
 
-		if (this.datasetCollection.getDataset(id) !== undefined) {
+		if (kind === null || kind === undefined) {
+			throw new InsightError("Invalid InsightDatasetKind, its either null or undefined");
+		}
+
+		if (content === null || content === undefined) {
+			throw new InsightError("Invalid content, its either null or undefined");
+		}
+
+		const idsThatExistInCacheSoFar = await getAllCachedDatasetIds();
+
+		if (idsThatExistInCacheSoFar.includes(id)) {
 			throw new InsightError("id already exists");
 		}
+
+		await createDataFolder();
 
 		const resultJsonArray: any[] = await this.getResultsJsonArray(content);
 
@@ -108,9 +125,9 @@ export default class InsightFacade implements IInsightFacade {
 			throw new InsightError("Invalid dataset, no sections");
 		}
 
-		this.datasetCollection.addDataset(id, newDataset);
+		await saveDatasetToDataCache(id, newDataset, kind);
 
-		return this.datasetCollection.getIds();
+		return await getAllCachedDatasetIds();
 	}
 
 	public async removeDataset(id: string): Promise<string> {
@@ -122,11 +139,13 @@ export default class InsightFacade implements IInsightFacade {
 			throw new InsightError("Invalid id (removeDataset)");
 		}
 
-		if (!this.datasetCollection.getIds().includes(id)) {
+		const idsThatExistInCacheSoFar = await getAllCachedDatasetIds();
+
+		if (!idsThatExistInCacheSoFar.includes(id)) {
 			throw new NotFoundError("ID submitted is not found (removeDataset)");
 		}
 
-		this.datasetCollection.removeDataset(id);
+		await removeDatasetFromDataCache(id);
 		return id;
 	}
 
@@ -137,6 +156,20 @@ export default class InsightFacade implements IInsightFacade {
 
 	public async listDatasets(): Promise<InsightDataset[]> {
 		// TODO: Remove this once you implement the methods!
-		throw new Error(`InsightFacadeImpl::listDatasets is unimplemented!`);
+
+		const insightDatasetArray = [];
+
+		const ids = await getAllCachedDatasetIds();
+
+		for (const id of ids) {
+			const insightDataset = {
+				id: id,
+				kind: await getKindFromId(id),
+				numRows: await getRowsFromId(id),
+			};
+			insightDatasetArray.push(insightDataset);
+		}
+
+		return insightDatasetArray;
 	}
 }
