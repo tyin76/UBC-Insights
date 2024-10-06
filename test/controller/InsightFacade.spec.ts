@@ -500,7 +500,7 @@ describe("InsightFacade", function () {
 				if (errorExpected) {
 					expect.fail(`performQuery resolved when it should have rejected with ${expected}`);
 				}
-				expect(expected).to.deep.equal(result); // TODO: replace with your assertions
+				expect(expected).to.have.deep.members(result);
 			} catch (err) {
 				if (!errorExpected) {
 					expect.fail(`performQuery threw unexpected error: ${err}`);
@@ -615,6 +615,21 @@ describe("InsightFacade", function () {
 		);
 		it(
 			"[valid/ComplexNestedAndOrsNotArrays.json] should return all sections with avg greater than 70 that is not cpsc whose instructor is named johnson or whose section year is not before 2018 AND whose pass count is exactly 100 whose department is not math and whose instructor is not named smith AND sections whose department is stat whose average is greater than 85 whose number of failures is not less than 10. Ordered by sections_avg",
+			checkQuery
+		);
+		it("[invalid/invalidKeyInOptions.json] should fail as there is invalid key in OPTIONS", checkQuery);
+		it("[invalid/invalidTypeInOrder.json] should fail as there is an invalid type for ORDER", checkQuery);
+		it(
+			"[invalid/invalidDatasetReferencedInOrder.json] should fail as we reference an invalid dataset in ORDER",
+			checkQuery
+		);
+		it(
+			"[invalid/invalidDatasetReferencedInColumns.json] should fail as we reference an invalid dataset in COLUMNS",
+			checkQuery
+		);
+		it("[invalid/invalidKeyInColumns.json] should fail as we have sections_invalid as a key in COLUMNS", checkQuery);
+		it(
+			"[invalid/invalidKeyInWhereOperator.json] should fail as we have sections_invalid as a key in the EQ operator of WHERE",
 			checkQuery
 		);
 	});

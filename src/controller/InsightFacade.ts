@@ -16,6 +16,7 @@ import {
 	removeDatasetFromDataCache,
 	saveDatasetToDataCache,
 } from "../objects/FileManagement";
+import { getAllValidSections, parseSectionsData } from "../helperFunctions/QueryHandler";
 const JSZip = require("jszip");
 
 /**
@@ -72,7 +73,8 @@ export default class InsightFacade implements IInsightFacade {
 				section.Avg,
 				section.Pass,
 				section.Fail,
-				section.Audit
+				section.Audit,
+				section.Section
 			);
 
 			sectionArray.push(newSection);
@@ -93,8 +95,6 @@ export default class InsightFacade implements IInsightFacade {
 	}
 
 	public async addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
-		// TODO: Remove this once you implement the methods!
-
 		// jsonContents now contains all the parsed JSON objects from the files
 
 		if (id === null || id.trim() === "" || typeof id !== "string" || id.includes("_")) {
@@ -133,7 +133,6 @@ export default class InsightFacade implements IInsightFacade {
 	}
 
 	public async removeDataset(id: string): Promise<string> {
-		// TODO: Remove this once you implement the methods!
 		const regex = /^[^_]+$/;
 
 		// checks if id is valid, otherwise throws error
@@ -151,14 +150,15 @@ export default class InsightFacade implements IInsightFacade {
 		return id;
 	}
 
+	// Reminder that query will use keys from the dataset
 	public async performQuery(query: unknown): Promise<InsightResult[]> {
-		// TODO: Remove this once you implement the methods!
-		throw new Error(`InsightFacadeImpl::performQuery() is unimplemented! - query=${query};`);
+		// gets all sections
+		const sections: Section[] = await getAllValidSections(query);
+		const insightResults: InsightResult[] = parseSectionsData(sections, query);
+		return insightResults;
 	}
 
 	public async listDatasets(): Promise<InsightDataset[]> {
-		// TODO: Remove this once you implement the methods!
-
 		const ids = await getAllCachedDatasetIds();
 
 		// Create an array of promises for each dataset
