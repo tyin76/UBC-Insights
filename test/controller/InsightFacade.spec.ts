@@ -699,7 +699,7 @@ describe("InsightFacade", function () {
 		);
 		it("[invalid/noUnderscoreOnKey.json] should fail as we have a key without an underscore", checkQuery);
 		it("[invalid/invalidKeyInQuery.json] should fail as we have an invalid key in the Query", checkQuery);
-		it("[invalid/keyInIsisNull.json] should fail as we have an invalid key in IS", checkQuery);
+		it("[invalid/keyInISisNull.json] should fail as we have an invalid key in IS", checkQuery);
 		it(
 			"[invalid/eqKeyValueIsNumber.json] should fail as we have a string representation of a number in IS",
 			checkQuery
