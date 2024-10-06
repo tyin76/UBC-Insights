@@ -97,7 +97,7 @@ export default class InsightFacade implements IInsightFacade {
 	public async addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
 		// jsonContents now contains all the parsed JSON objects from the files
 
-		if (id === null || id.trim() === "" || typeof id !== "string" || id.includes("_")) {
+		if (id === null ||id === undefined || id.trim() === "" || typeof id !== "string" || id.includes("_")) {
 			throw new InsightError("Invalid id");
 		}
 

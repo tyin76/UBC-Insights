@@ -345,6 +345,16 @@ describe("InsightFacade", function () {
 			}
 		});
 
+		it("should reject with an undefined id [addDataset]", async function () {
+			try {
+				await facade.addDataset(undefined as any, sections, InsightDatasetKind.Sections);
+
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
 		it("should reject with null sections [addDataset]", async function () {
 			try {
 				await facade.addDataset("validid", null as any, InsightDatasetKind.Sections);
@@ -355,9 +365,29 @@ describe("InsightFacade", function () {
 			}
 		});
 
+		it("should reject with undefined sections [addDataset]", async function () {
+			try {
+				await facade.addDataset("validid", undefined as any, InsightDatasetKind.Sections);
+
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
 		it("should reject with null InsightDataKind [addDataset]", async function () {
 			try {
 				await facade.addDataset("validid", sections, null as any);
+
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
+		it("should reject with undefined InsightDataKind [addDataset]", async function () {
+			try {
+				await facade.addDataset("validid", sections, undefined as any);
 
 				expect.fail("Should have thrown!");
 			} catch (err) {
