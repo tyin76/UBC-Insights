@@ -155,6 +155,7 @@ export default class InsightFacade implements IInsightFacade {
 		// gets all sections
 		const sections: Section[] = await getAllValidSections(query);
 		const insightResults: InsightResult[] = parseSectionsData(sections, query);
+
 		return insightResults;
 	}
 

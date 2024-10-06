@@ -1,0 +1,87 @@
+{
+	"title": "No Title Specified",
+	"input": {
+		"WHERE": {
+			"EQ": {
+				"sections_avg": 96
+			}
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_avg",
+				"sections_avg",
+				"sections_avg",
+				"sections_avg",
+				"sections_instructor"
+			],
+			"ORDER": "sections_avg"
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"sections_avg": 96,
+			"sections_instructor": ""
+		},
+		{
+			"sections_avg": 96,
+			"sections_instructor": ""
+		},
+		{
+			"sections_avg": 96,
+			"sections_instructor": "de longis, anita"
+		},
+		{
+			"sections_avg": 96,
+			"sections_instructor": "jackson, howard"
+		},
+		{
+			"sections_avg": 96,
+			"sections_instructor": ""
+		},
+		{
+			"sections_avg": 96,
+			"sections_instructor": ""
+		},
+		{
+			"sections_avg": 96,
+			"sections_instructor": "kishor, nand"
+		},
+		{
+			"sections_avg": 96,
+			"sections_instructor": ""
+		},
+		{
+			"sections_avg": 96,
+			"sections_instructor": "porath, marion"
+		},
+		{
+			"sections_avg": 96,
+			"sections_instructor": "maillard, keith"
+		},
+		{
+			"sections_avg": 96,
+			"sections_instructor": "maillard, keith"
+		},
+		{
+			"sections_avg": 96,
+			"sections_instructor": "galloway, steve"
+		},
+		{
+			"sections_avg": 96,
+			"sections_instructor": "taylor, timothy"
+		},
+		{
+			"sections_avg": 96,
+			"sections_instructor": "medved, maureen"
+		},
+		{
+			"sections_avg": 96,
+			"sections_instructor": "carter, john"
+		},
+		{
+			"sections_avg": 96,
+			"sections_instructor": "wassink, berend"
+		}
+	]
+}

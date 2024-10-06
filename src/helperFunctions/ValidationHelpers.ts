@@ -24,6 +24,10 @@ function isValidOptionsKey(key: string): boolean {
 	return ["COLUMNS", "ORDER"].includes(key);
 }
 
+function isValidQueryKey(key: string): boolean {
+	return ["WHERE", "OPTIONS"].includes(key);
+}
+
 export function getAndValidateConditionKeyandValue(object: any, isStringOnlyValue: boolean): any[] {
 	const operators = Object.keys(object);
 
@@ -151,6 +155,29 @@ export function getAndValidateOperatorandParameter(object: any): string[] {
 	return [operator, operatorParameter];
 }
 
+export function checkAstericksPlacement(toCheck: string): void {
+	if (toCheck.includes("*")) {
+		const numberOfAstericks = toCheck.split("*").length - 1;
+
+		const numberOfAstericksAllowed = 2;
+
+		if (numberOfAstericks > numberOfAstericksAllowed) {
+			throw new InsightError("Asterisks cannot be in the middle");
+		}
+
+		if (numberOfAstericks === 1 && toCheck.charAt(0) !== "*" && toCheck.charAt(toCheck.length - 1) !== "*") {
+			throw new InsightError("Asterisks cannot be in the middle");
+		}
+
+		if (
+			numberOfAstericks === numberOfAstericksAllowed &&
+			(toCheck.charAt(0) !== "*" || toCheck.charAt(toCheck.length - 1) !== "*")
+		) {
+			throw new InsightError("Astericks cannot be in the middle");
+		}
+	}
+}
+
 function validateQuery1(query: any): void {
 	if (!Array.isArray(query.OPTIONS.COLUMNS)) {
 		throw new InsightError("Columns must be an array");
@@ -177,27 +204,10 @@ function validateQuery1(query: any): void {
 			throw new InsightError("OPTIONS has as invalid key");
 		}
 	}
-}
 
-export function checkAstericksPlacement(toCheck: string): void {
-	if (toCheck.includes("*")) {
-		const numberOfAstericks = toCheck.split("*").length - 1;
-
-		const numberOfAstericksAllowed = 2;
-
-		if (numberOfAstericks > numberOfAstericksAllowed) {
-			throw new InsightError("Asterisks cannot be in the middle");
-		}
-
-		if (numberOfAstericks === 1 && toCheck.charAt(0) !== "*" && toCheck.charAt(toCheck.length - 1) !== "*") {
-			throw new InsightError("Asterisks cannot be in the middle");
-		}
-
-		if (
-			numberOfAstericks === numberOfAstericksAllowed &&
-			(toCheck.charAt(0) !== "*" || toCheck.charAt(toCheck.length - 1) !== "*")
-		) {
-			throw new InsightError("Astericks cannot be in the middle");
+	for (const key of Object.keys(query)) {
+		if (!isValidQueryKey(key)) {
+			throw new InsightError(`QUERY has an invalid key ${key}`);
 		}
 	}
 }

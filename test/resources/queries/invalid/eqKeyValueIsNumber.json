@@ -1,0 +1,19 @@
+{
+	"title": "No Title Specified",
+	"input": {
+		"WHERE": {
+			"EQ": {
+				"sections_avg": "96"
+			}
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_avg",
+				"sections_instructor"
+			],
+			"ORDER": "sections_avg"
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}

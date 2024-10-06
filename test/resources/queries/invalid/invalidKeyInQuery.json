@@ -1,0 +1,20 @@
+{
+	"title": "No Title Specified",
+	"input": {
+		"WHERE": {
+			"IS": {
+				"sections_instructor": "*Mary"
+			}
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_avg",
+				"sections_instructor"
+			],
+			"ORDER": "sections_avg"
+		},
+		"INVALID": {}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}
