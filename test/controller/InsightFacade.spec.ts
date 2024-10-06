@@ -345,6 +345,16 @@ describe("InsightFacade", function () {
 			}
 		});
 
+		it("should reject with an undefined id [addDataset]", async function () {
+			try {
+				await facade.addDataset(undefined as any, sections, InsightDatasetKind.Sections);
+
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
 		it("should reject with null sections [addDataset]", async function () {
 			try {
 				await facade.addDataset("validid", null as any, InsightDatasetKind.Sections);
@@ -355,9 +365,29 @@ describe("InsightFacade", function () {
 			}
 		});
 
+		it("should reject with undefined sections [addDataset]", async function () {
+			try {
+				await facade.addDataset("validid", undefined as any, InsightDatasetKind.Sections);
+
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
 		it("should reject with null InsightDataKind [addDataset]", async function () {
 			try {
 				await facade.addDataset("validid", sections, null as any);
+
+				expect.fail("Should have thrown!");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
+		it("should reject with undefined InsightDataKind [addDataset]", async function () {
+			try {
+				await facade.addDataset("validid", sections, undefined as any);
 
 				expect.fail("Should have thrown!");
 			} catch (err) {
@@ -479,12 +509,44 @@ describe("InsightFacade", function () {
 	});
 
 	describe("PerformQuery", function () {
+		function getInsightResultValue(input: string, insightResult: InsightResult): string | number {
+			const keys = Object.keys(insightResult);
+
+			// Here we get the correct key whose text beyond the _ matches the input
+			const matchingKey = keys.find((key) => key.split("_")[1] === input);
+
+			// If no matching key is found, throw an error
+			if (!matchingKey) {
+				throw new Error("Invalid input: No matching key found.");
+			}
+
+			const value = insightResult[matchingKey];
+
+			if (value === undefined) {
+				throw new Error("Invalid input");
+			}
+
+			// If numeber return number, else return string
+			return typeof value === "number" ? Number(value) : String(value);
+		}
+
+		function checkSortedQuery(expected: InsightResult[], result: InsightResult[], keySortedAgainst: string): void {
+			for (let i = 0; i < result.length - 1; i++) {
+				const currentValue = getInsightResultValue(keySortedAgainst, result[i]);
+
+				const expectedCurrentValue = getInsightResultValue(keySortedAgainst, expected[i]);
+				if (currentValue !== expectedCurrentValue) {
+					expect.fail("Sorted incorrectly!"); // The result is not sorted correctly
+				}
+			}
+		}
+
 		/**
 		 * Loads the TestQuery specified in the test name and asserts the behaviour of performQuery.
 		 *
 		 * Note: the 'this' parameter is automatically set by Mocha and contains information about the test.
 		 */
-		async function checkQuery(this: Mocha.Context): Promise<void> {
+		async function checkQuery(this: Mocha.Context, keySortedAgainst: null | string = null): Promise<void> {
 			if (!this.test) {
 				throw new Error(
 					"Invalid call to checkQuery." +
@@ -500,7 +562,10 @@ describe("InsightFacade", function () {
 				if (errorExpected) {
 					expect.fail(`performQuery resolved when it should have rejected with ${expected}`);
 				}
-				expect(expected).to.deep.equal(result); // TODO: replace with your assertions
+				expect(expected).to.have.deep.members(result);
+				if (keySortedAgainst !== null) {
+					checkSortedQuery(expected, result, keySortedAgainst);
+				}
 			} catch (err) {
 				if (!errorExpected) {
 					expect.fail(`performQuery threw unexpected error: ${err}`);
@@ -613,9 +678,70 @@ describe("InsightFacade", function () {
 			"[valid/ORAvgIs100Or99Or98or97or96.json] should return all sections with average of exactly 100, 99, 98, 97, 97",
 			checkQuery
 		);
+		it("[valid/duplicateKeysInColumns.json] should still return values.", checkQuery);
+		it("[valid/ComplexNestedAndOrsNotArrays.json] should return all sections with avg greater than 70 that is not cpsc whose instructor is named johnson or whose section year is not before 2018 AND whose pass count is exactly 100 whose department is not math and whose instructor is not named smith AND sections whose department is stat whose average is greater than 85 whose number of failures is not less than 10. Ordered by sections_avg", async function () {
+			await checkQuery.call(this, "avg");
+		});
+		it("[invalid/invalidKeyInOptions.json] should fail as there is invalid key in OPTIONS", checkQuery);
+		it("[invalid/invalidTypeInOrder.json] should fail as there is an invalid type for ORDER", checkQuery);
 		it(
-			"[valid/ComplexNestedAndOrsNotArrays.json] should return all sections with avg greater than 70 that is not cpsc whose instructor is named johnson or whose section year is not before 2018 AND whose pass count is exactly 100 whose department is not math and whose instructor is not named smith AND sections whose department is stat whose average is greater than 85 whose number of failures is not less than 10. Ordered by sections_avg",
+			"[invalid/invalidDatasetReferencedInOrder.json] should fail as we reference an invalid dataset in ORDER",
 			checkQuery
 		);
+		it(
+			"[invalid/invalidDatasetReferencedInColumns.json] should fail as we reference an invalid dataset in COLUMNS",
+			checkQuery
+		);
+		it("[invalid/invalidKeyInColumns.json] should fail as we have sections_invalid as a key in COLUMNS", checkQuery);
+		it(
+			"[invalid/invalidKeyInWhereOperator.json] should fail as we have sections_invalid as a key in the EQ operator of WHERE",
+			checkQuery
+		);
+		it("[invalid/noUnderscoreOnKey.json] should fail as we have a key without an underscore", checkQuery);
+		it("[invalid/invalidKeyInQuery.json] should fail as we have an invalid key in the Query", checkQuery);
+		it("[invalid/keyInIsisNull.json] should fail as we have an invalid key in IS", checkQuery);
+		it(
+			"[invalid/eqKeyValueIsNumber.json] should fail as we have a string representation of a number in IS",
+			checkQuery
+		);
+		it("[valid/sortedWithAudit.json] should pass when we sort with audit", async function () {
+			await checkQuery.call(this, "audit");
+		});
+
+		it("[valid/sortedWithUuid.json] should pass when we sort with uuid", async function () {
+			await checkQuery.call(this, "uuid");
+		});
+
+		it("[valid/sortedWithTitle.json] should pass when we sort with title", async function () {
+			await checkQuery.call(this, "title");
+		});
+
+		it("[valid/sortedWithInstructor.json] should pass when we sort with instructor", async function () {
+			await checkQuery.call(this, "instructor");
+		});
+
+		it("[valid/sortedWithDept.json] should pass when we sort with dept", async function () {
+			await checkQuery.call(this, "dept");
+		});
+
+		it("[valid/sortedWithYear.json] should pass when we sort with year", async function () {
+			await checkQuery.call(this, "year");
+		});
+
+		it("[valid/sortedWithAvg.json] should pass when we sort with avg", async function () {
+			await checkQuery.call(this, "avg");
+		});
+
+		it("[valid/sortedWithPass.json] should pass when we sort with pass", async function () {
+			await checkQuery.call(this, "pass");
+		});
+
+		it("[valid/sortedWithFail.json] should pass when we sort with fail", async function () {
+			await checkQuery.call(this, "fail");
+		});
+
+		it("[valid/sortedWithId.json] should pass when we sort with id", async function () {
+			await checkQuery.call(this, "id");
+		});
 	});
 });

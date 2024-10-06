@@ -1,0 +1,85 @@
+{
+	"title": "sortedWithUuid",
+	"input": {
+		"WHERE": {
+			"AND": [
+				{
+					"IS": {
+						"sections_dept": "apsc"
+					}
+				},
+				{
+					"IS": {
+						"sections_instructor": "*john*"
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_uuid",
+				"sections_id",
+				"sections_title",
+				"sections_instructor",
+				"sections_dept",
+				"sections_year",
+				"sections_avg",
+				"sections_pass",
+				"sections_fail",
+				"sections_audit"
+			],
+			"ORDER": "sections_uuid"
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"sections_uuid": "19876",
+			"sections_id": "450",
+			"sections_title": "prof eng practce",
+			"sections_instructor": "grace, john ross",
+			"sections_dept": "apsc",
+			"sections_year": 2010,
+			"sections_avg": 75.68,
+			"sections_pass": 184,
+			"sections_fail": 1,
+			"sections_audit": 0
+		},
+		{
+			"sections_uuid": "22455",
+			"sections_id": "450",
+			"sections_title": "prof eng practce",
+			"sections_instructor": "grace, john ross",
+			"sections_dept": "apsc",
+			"sections_year": 2009,
+			"sections_avg": 79.69,
+			"sections_pass": 135,
+			"sections_fail": 0,
+			"sections_audit": 0
+		},
+		{
+			"sections_uuid": "8307",
+			"sections_id": "450",
+			"sections_title": "prof eng practce",
+			"sections_instructor": "grace, john ross",
+			"sections_dept": "apsc",
+			"sections_year": 2011,
+			"sections_avg": 73.79,
+			"sections_pass": 196,
+			"sections_fail": 2,
+			"sections_audit": 0
+		},
+		{
+			"sections_uuid": "8831",
+			"sections_id": "450",
+			"sections_title": "prof eng practce",
+			"sections_instructor": "grace, john ross",
+			"sections_dept": "apsc",
+			"sections_year": 2012,
+			"sections_avg": 74.74,
+			"sections_pass": 244,
+			"sections_fail": 1,
+			"sections_audit": 1
+		}
+	]
+}

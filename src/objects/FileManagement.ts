@@ -2,6 +2,7 @@ import path from "path";
 import * as fs from "fs";
 import { InsightDatasetKind, InsightError } from "../controller/IInsightFacade";
 import Dataset from "./Dataset";
+import Section from "./Section";
 
 const directoryPath = path.join(__dirname, "..", "..", "data"); // Moves up two level to project file root
 const kindKeyword = "kind";
@@ -93,6 +94,60 @@ export async function getKindFromId(id: string): Promise<InsightDatasetKind> {
 		const content = await fs.promises.readFile(filePath, "utf-8");
 
 		return content as unknown as InsightDatasetKind;
+	} catch (err) {
+		const errorMessage = (err as Error).message;
+		throw new InsightError("Error: " + errorMessage);
+	}
+}
+
+interface SectionData {
+	uuid: string;
+	id: string;
+	title: string;
+	instructor: string;
+	dept: string;
+	year: number;
+	avg: number;
+	pass: number;
+	fail: number;
+	audit: number;
+	section: string;
+}
+
+export async function getDatasetFromId(id: string): Promise<Dataset> {
+	try {
+		const filePath = path.join(directoryPath, `${id}` + ".json");
+
+		// Read the contents of the file
+		const content = await fs.promises.readFile(filePath, "utf-8");
+
+		const { sections } = JSON.parse(content);
+
+		const sectionArray: Section[] = [];
+
+		for (const section of sections) {
+			const sectionDataObj: SectionData = section;
+
+			sectionArray.push(
+				new Section(
+					String(sectionDataObj.uuid),
+					String(sectionDataObj.id),
+					String(sectionDataObj.title),
+					String(sectionDataObj.instructor),
+					String(sectionDataObj.dept),
+					Number(sectionDataObj.year),
+					Number(sectionDataObj.avg),
+					Number(sectionDataObj.pass),
+					Number(sectionDataObj.fail),
+					Number(sectionDataObj.audit),
+					String(sectionDataObj.section)
+				)
+			);
+		}
+
+		const datasetToReturn = new Dataset(sectionArray);
+
+		return datasetToReturn;
 	} catch (err) {
 		const errorMessage = (err as Error).message;
 		throw new InsightError("Error: " + errorMessage);

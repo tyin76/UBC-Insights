@@ -1,0 +1,19 @@
+{
+	"title": "No Title Specified",
+	"input": {
+		"WHERE": {
+			"EQ": {
+				"sections_pass": 100
+			}
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"invalid_dept",
+				"sections_pass"
+			],
+			"ORDER": "sections_pass"
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}
