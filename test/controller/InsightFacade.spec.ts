@@ -187,8 +187,7 @@ describe("InsightFacade", function () {
 		// adding a valid room dataset but putting SECTIONS as the KIND
 		it("adding a valid room dataset but putting SECTIONS as the KIND [addDatasetRooms]", async function () {
 			try {
-				const validRooms = await getContentFromArchives("campus.zip");
-				await facade.addDataset("validID", validRooms, InsightDatasetKind.Sections);
+				await facade.addDataset("validID", rooms, InsightDatasetKind.Sections);
 				expect.fail("Should have thrown error");
 			} catch (err) {
 				expect(err).to.be.instanceOf(InsightError);
