@@ -193,6 +193,39 @@ describe("InsightFacade", function () {
 				expect(err).to.be.instanceOf(InsightError);
 			}
 		});
+
+		// adding a valid sections dataset but putting ROOMS as the KIND
+		it("adding a valid sections dataset but putting ROOMS as the KIND [addDatasetRooms]", async function () {
+			try {
+				await facade.addDataset("validID", sections, InsightDatasetKind.Rooms);
+				expect.fail("Should have thrown error");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
+		// invalid NULL id with valid room data
+		it("invalid NULL id with valid room data [addDatasetRooms]"),
+			async function () {
+				try {
+					await facade.addDataset(null as any, rooms, InsightDatasetKind.Rooms);
+					expect.fail("Should have thrown error");
+				} catch (err) {
+					expect(err).to.be.instanceOf(InsightError);
+				}
+			};
+
+		// adding invalid data set that has NO VALID ROOMS
+		it("adding invalid data set that has NO VALID ROOMS [addDatasetRooms]"),
+			async function () {
+				try {
+					const noValidRooms = await getContentFromArchives("noValidRoom.zip");
+					await facade.addDataset("validID", noValidRooms, InsightDatasetKind.Rooms);
+					expect.fail("Should have thrown error");
+				} catch (err) {
+					expect(err).to.be.instanceOf(InsightError);
+				}
+			};
 	});
 
 	describe("removeDataset", function () {
