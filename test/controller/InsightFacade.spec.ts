@@ -1,3 +1,4 @@
+import { execPath } from "process";
 import {
 	IInsightFacade,
 	InsightDatasetKind,
@@ -138,6 +139,40 @@ describe("InsightFacade", function () {
 			// This section resets the data directory (removing any cached data)
 			// This runs after each test, which should make each test independent of the previous one
 			await clearDisk();
+		});
+
+		// adding VALID building/room dataset
+		it("adding a VALID dataset rooms/building [addDatasetRooms]", async function () {
+			try {
+				await facade.addDataset("ValidDataSet", rooms, InsightDatasetKind.Rooms);
+			} catch (err) {
+				const errorMessage = (err as Error).message;
+				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
+			}
+		});
+
+		// adding invalid data (missing index.htm file)
+		it("adding invalid data, missing index.htm [addDatasetRooms]", async function () {
+			try {
+				let invalidMissingHtm: string;
+				invalidMissingHtm = await getContentFromArchives("invalidCampusMissingHtm.zip");
+				await facade.addDataset("invalid dataset missing index.htm", invalidMissingHtm, InsightDatasetKind.Rooms);
+				expect.fail("Should have thrown error");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
+		// adding invalid data with no Tables
+		it("adding invalid data with no Tables [addDatasetRooms", async function () {
+			try {
+				let invalidNoTables: string;
+				invalidNoTables = await getContentFromArchives("invalidCampusNoTables.zip");
+				await facade.addDataset("invalid dataset with no Tables", invalidNoTables, InsightDatasetKind.Rooms);
+				expect.fail("Should have thrown error");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
 		});
 	});
 
