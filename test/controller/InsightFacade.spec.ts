@@ -122,7 +122,7 @@ describe("InsightFacade", function () {
 	describe("addDatasetRooms", function () {
 		before(async function () {
 			// This block runs once and loads the datasets.
-			rooms = await getContentFromArchives("oneRoom.zip");
+			rooms = await getContentFromArchives("campus.zip");
 
 			// Just in case there is anything hanging around from a previous run of the test suite
 			await clearDisk();
@@ -143,7 +143,8 @@ describe("InsightFacade", function () {
 		// adding VALID building/room dataset
 		it("adding a VALID dataset rooms/building [addDatasetRooms]", async function () {
 			try {
-				await facade.addDataset("ValidDataSet", rooms, InsightDatasetKind.Rooms);
+				const validRooms = await getContentFromArchives("campus.zip");
+				await facade.addDataset("ValidDataSet", validRooms, InsightDatasetKind.Rooms);
 			} catch (err) {
 				const errorMessage = (err as Error).message;
 				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
@@ -162,10 +163,32 @@ describe("InsightFacade", function () {
 		});
 
 		// adding invalid data with no Tables
-		it("adding invalid data with no Tables [addDatasetRooms", async function () {
+		it("adding invalid data with no Tables [addDatasetRooms]", async function () {
 			try {
 				const invalidNoTables = await getContentFromArchives("invalidCampusNoTables.zip");
 				await facade.addDataset("invalid dataset with no Tables", invalidNoTables, InsightDatasetKind.Rooms);
+				expect.fail("Should have thrown error");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
+		// adding valid building/room data with INVALID id
+		it("adding a VALID dataset rooms/building with INVALID whitespace id [addDatasetRooms]", async function () {
+			try {
+				const validRooms = await getContentFromArchives("campus.zip");
+				await facade.addDataset("    ", validRooms, InsightDatasetKind.Rooms);
+				expect.fail("Should have thrown error");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
+		// adding a valid room dataset but putting SECTIONS as the KIND
+		it("adding a valid room dataset but putting SECTIONS as the KIND [addDatasetRooms]", async function () {
+			try {
+				const validRooms = await getContentFromArchives("campus.zip");
+				await facade.addDataset("validID", validRooms, InsightDatasetKind.Sections);
 				expect.fail("Should have thrown error");
 			} catch (err) {
 				expect(err).to.be.instanceOf(InsightError);
