@@ -1,4 +1,3 @@
-import { execPath } from "process";
 import {
 	IInsightFacade,
 	InsightDatasetKind,
@@ -154,8 +153,7 @@ describe("InsightFacade", function () {
 		// adding invalid data (missing index.htm file)
 		it("adding invalid data, missing index.htm [addDatasetRooms]", async function () {
 			try {
-				let invalidMissingHtm: string;
-				invalidMissingHtm = await getContentFromArchives("invalidCampusMissingHtm.zip");
+				const invalidMissingHtm = await getContentFromArchives("invalidCampusMissingHtm.zip");
 				await facade.addDataset("invalid dataset missing index.htm", invalidMissingHtm, InsightDatasetKind.Rooms);
 				expect.fail("Should have thrown error");
 			} catch (err) {
@@ -166,8 +164,7 @@ describe("InsightFacade", function () {
 		// adding invalid data with no Tables
 		it("adding invalid data with no Tables [addDatasetRooms", async function () {
 			try {
-				let invalidNoTables: string;
-				invalidNoTables = await getContentFromArchives("invalidCampusNoTables.zip");
+				const invalidNoTables = await getContentFromArchives("invalidCampusNoTables.zip");
 				await facade.addDataset("invalid dataset with no Tables", invalidNoTables, InsightDatasetKind.Rooms);
 				expect.fail("Should have thrown error");
 			} catch (err) {
