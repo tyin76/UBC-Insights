@@ -224,6 +224,49 @@ describe("InsightFacade", function () {
 				expect(err).to.be.instanceOf(InsightError);
 			}
 		});
+
+		// adding invalid id with invalid room data
+		it("adding invalid id with invalid room data [addDatasetRooms]", async function () {
+			try {
+				const noValidRooms = await getContentFromArchives("noValidRoom.zip");
+				await facade.addDataset("_", noValidRooms, InsightDatasetKind.Rooms);
+				expect.fail("Should have thrown error");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
+		// adding invalid data, invalid, id, and incorrect kind
+		it("adding invalid data, invalid, id, and incorrect kind [addDatasetRooms]", async function () {
+			try {
+				const noValidRooms = await getContentFromArchives("noValidRoom.zip");
+				await facade.addDataset("_", noValidRooms, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown error");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
+		// adding valid room data with invalid id and incorrect kind
+		it("adding valid room data with invalid id and incorrect kind [addDatasetRooms]", async function () {
+			try {
+				await facade.addDataset("_", rooms, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown error");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
+		// adding valid id, with invalid room data
+		it("adding valid id, with invalid room data [addDatasetRooms]", async function () {
+			try {
+				const invalidRooms = await getContentFromArchives("invalidCampusNoTables.zip");
+				await facade.addDataset("validID", invalidRooms, InsightDatasetKind.Rooms);
+				expect.fail("Should have thrown error");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
 	});
 
 	describe("removeDataset", function () {
