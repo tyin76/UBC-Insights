@@ -30,6 +30,7 @@ describe("InsightFacade", function () {
 
 	// Declare datasets used in tests. You should add more datasets like this!
 	let sections: string;
+	let rooms: string;
 
 	describe("listDatasets", function () {
 		before(async function () {
@@ -115,6 +116,28 @@ describe("InsightFacade", function () {
 				const errorMessage = (err as Error).message;
 				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
 			}
+		});
+	});
+
+	describe("addDatasetRooms", function () {
+		before(async function () {
+			// This block runs once and loads the datasets.
+			rooms = await getContentFromArchives("validCampus.zip");
+
+			// Just in case there is anything hanging around from a previous run of the test suite
+			await clearDisk();
+		});
+
+		beforeEach(function () {
+			// This section resets the insightFacade instance
+			// This runs before each test
+			facade = new InsightFacade();
+		});
+
+		afterEach(async function () {
+			// This section resets the data directory (removing any cached data)
+			// This runs after each test, which should make each test independent of the previous one
+			await clearDisk();
 		});
 	});
 
@@ -282,7 +305,7 @@ describe("InsightFacade", function () {
 		});
 	});
 
-	describe("addDataset", function () {
+	describe("addDatasetSections", function () {
 		before(async function () {
 			// This block runs once and loads the datasets.
 			sections = await getContentFromArchives("validSmall.zip");
