@@ -122,7 +122,7 @@ describe("InsightFacade", function () {
 	describe("addDatasetRooms", function () {
 		before(async function () {
 			// This block runs once and loads the datasets.
-			rooms = await getContentFromArchives("validCampus.zip");
+			rooms = await getContentFromArchives("oneRoom.zip");
 
 			// Just in case there is anything hanging around from a previous run of the test suite
 			await clearDisk();
