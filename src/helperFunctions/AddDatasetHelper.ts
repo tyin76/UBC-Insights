@@ -3,9 +3,10 @@ import { InsightDatasetKind, InsightError } from "../controller/IInsightFacade";
 import { getAllCachedDatasetIds } from "../objects/FileManagement";
 import Section from "../objects/Section";
 import Dataset from "../objects/Dataset";
+import Room from "../objects/Room";
 
 const parse5 = require("parse5");
-const fs = require("fs");
+//const fs = require("fs");
 
 export function validateDatasetParameters(id: string, content: string, kind: InsightDatasetKind): void {
 	if (id === null || id === undefined || id.trim() === "" || typeof id !== "string" || id.includes("_")) {
@@ -112,15 +113,90 @@ export async function createSectionsDatasetFromContent(content: string, kind: In
 	return newDataset;
 }
 
+function findBuildingLinks(node: any): string[] {
+	const links: string[] = [];
+
+	// Helper function to check if node is a td with views-field class
+	function isViewsFieldTd(node: any): boolean {
+		return (
+			node.nodeName === "td" &&
+			node.attrs?.some((attr: any) => attr.name === "class" && attr.value.includes("views-field"))
+		);
+	}
+
+	// Helper function to find href in anchor tags
+	function findHrefInNode(node: any): string | null {
+		if (node.nodeName === "a" && node.attrs) {
+			const hrefAttr = node.attrs.find((attr: any) => attr.name === "href");
+			return hrefAttr?.value || null;
+		}
+		return null;
+	}
+
+	// Recursive function to traverse the node tree
+	function traverse(node: any) {
+		if (!node) return;
+
+		if (isViewsFieldTd(node)) {
+			// If found a td with views-field class, look for anchor tags within it
+			if (node.childNodes) {
+				node.childNodes.forEach((child: any) => {
+					const href = findHrefInNode(child);
+					if (href && href.includes(".htm")) {
+						links.push(href);
+					}
+					// Continue traversing in case there are nested elements
+					traverse(child);
+				});
+			}
+		} else if (node.childNodes) {
+			// Continue traversing the tree
+			node.childNodes.forEach((child: any) => traverse(child));
+		}
+	}
+
+	traverse(node);
+	return links;
+}
+
 async function createRoomsDataSetFromContent(content: string): Promise<Dataset> {
-	// Decode the base64 string provided by content
-	const zipDecode = Buffer.from(content, "base64");
+	const zip = new JSZip();
+	const rooms: Room[] = [];
 
-	// Load zip with JSZip
-	const zip = await JSZip.loadAsync(zipDecode);
+	const zipData = await zip.loadAsync(content, { base64: true });
 
-	// Find and read the index.htm file within the campus folder
-	return null as any;
+	const campusFolderPath = "campus/";
+	const hasCampusFolder = Object.keys(zipData.files).some((fileName) => fileName === campusFolderPath);
+	if (!hasCampusFolder) {
+		throw new InsightError("No folder 'campus' in zip file");
+	}
+
+	const indexFilePath = "index.htm";
+	const hasIndexHTM = Object.keys(zipData.files).some((fileName) => fileName === indexFilePath);
+	if (!hasIndexHTM) {
+		throw new InsightError("No index.htm in zip file");
+	}
+
+	const fileData = await zipData.file("index.htm")?.async("string");
+	const parsedFileData = parse5.parse(fileData);
+
+	// Find all the building links
+	const buildingLinks = findBuildingLinks(parsedFileData);
+
+	// Process links
+	for (const link of buildingLinks) {
+		// Remove the './' from the beginning of the path if it exists
+		const cleanPath = link.startsWith("./") ? link.slice(2) : link;
+
+		// Get the building details file from the zip
+		const buildingFile = zipData.file(cleanPath);
+		if (buildingFile) {
+			const buildingData = await buildingFile.async("string");
+			// Process room data
+		}
+	}
+
+	return new Dataset(rooms, InsightDatasetKind.Rooms);
 }
 
 export async function createDatasetFromContent(content: string, kind: InsightDatasetKind): Promise<Dataset> {
