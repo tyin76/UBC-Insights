@@ -6,7 +6,7 @@ export function checkAstericksPlacement(toCheck: string): void {
 	}
 	const numberOfAstericks = getNumberOfAstericksInString(toCheck);
 	const numberOfAstericksAllowed = 2;
-	validateTheresOnlyOneAsterisk(numberOfAstericks, numberOfAstericksAllowed);
+	validateTheresAMaxOfTwoAsterisks(numberOfAstericks, numberOfAstericksAllowed);
 	validateNoAstericksInMiddle(numberOfAstericks, toCheck);
 	validateAstericksAtBoundaries(numberOfAstericks, numberOfAstericksAllowed, toCheck);
 }
@@ -30,7 +30,7 @@ function validateNoAstericksInMiddle(numberOfAsterisks: number, toCheck: string)
 	}
 }
 
-function validateTheresOnlyOneAsterisk(numberOfAsterisks: number, numberOfAsterisksAllowed: number): void {
+function validateTheresAMaxOfTwoAsterisks(numberOfAsterisks: number, numberOfAsterisksAllowed: number): void {
 	if (numberOfAsterisks > numberOfAsterisksAllowed) {
 		throw new InsightError("You cannot have more than 2 asterisks");
 	}
