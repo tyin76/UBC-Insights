@@ -330,6 +330,28 @@ describe("InsightFacade", function () {
 				expect(err).to.be.instanceOf(InsightError);
 			}
 		});
+
+		it("should reject adding a VALID room dataset when a section dataset with the same ID already exists", async function () {
+			try {
+				const validRooms = await getContentFromArchives("campus.zip");
+				await facade.addDataset("duplicate", sections, InsightDatasetKind.Sections);
+				await facade.addDataset("duplicate", validRooms, InsightDatasetKind.Rooms);
+				expect.fail("Should have thrown error");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
+		it("should reject adding a VALID sections dataset when a room dataset with the same ID already exists", async function () {
+			try {
+				const validRooms = await getContentFromArchives("campus.zip");
+				await facade.addDataset("duplicate", validRooms, InsightDatasetKind.Rooms);
+				await facade.addDataset("duplicate", sections, InsightDatasetKind.Sections);
+				expect.fail("Should have thrown error");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
 	});
 
 	describe("removeDataset", function () {
