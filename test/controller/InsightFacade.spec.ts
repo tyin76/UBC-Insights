@@ -25,6 +25,10 @@ function testStringArrayContents(stringArr: string[], toInclude: string): void {
 	expect(stringArr).to.deep.include(toInclude);
 }
 
+function testStringNotInArrayContents(stringArr: string[], toNotInclude: string): void {
+	expect(stringArr).to.not.deep.include(toNotInclude);
+}
+
 describe("InsightFacade", function () {
 	let facade: IInsightFacade;
 
@@ -267,6 +271,28 @@ describe("InsightFacade", function () {
 				expect(err).to.be.instanceOf(InsightError);
 			}
 		});
+
+		// adding an invalid room dataset
+		it("adding valid id, with invalid room data [addDatasetRooms]", async function () {
+			try {
+				const invalidRooms = await getContentFromArchives("invalidCampusNoTables.zip");
+				await facade.addDataset("validID", invalidRooms, InsightDatasetKind.Rooms);
+				expect.fail("Should have thrown error");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
+		// adding a room dataset with no valid rooms -> room file is deleted
+		it("adding a room dataset with no valid rooms -> room file is deleted [addDatasetRooms]", async function () {
+			try {
+				const deletedRoom = await getContentFromArchives("validRoomDeleted.zip");
+				await facade.addDataset("validID", deletedRoom, InsightDatasetKind.Rooms);
+				expect.fail("Should have thrown error");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
 	});
 
 	describe("removeDataset", function () {
@@ -426,6 +452,88 @@ describe("InsightFacade", function () {
 				testStringArrayContents(stringArray, "1");
 				testStringArrayContents(stringArray, "3");
 				testStringArrayContents(stringArray, "4");
+			} catch (err) {
+				const errorMessage = (err as Error).message;
+				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
+			}
+		});
+
+		it("should successfully delete room dataset and section data when adding both room and section data", async function () {
+			try {
+				await facade.addDataset("section1", sections, InsightDatasetKind.Sections);
+				await facade.addDataset("rooms", rooms, InsightDatasetKind.Rooms);
+				await facade.addDataset("section2", sections, InsightDatasetKind.Sections);
+
+				await facade.removeDataset("rooms");
+				await facade.removeDataset("section1");
+
+				const stringArray = await facade.addDataset("4", sections, InsightDatasetKind.Sections);
+				testStringArrayContents(stringArray, "section2");
+				testStringArrayContents(stringArray, "4");
+			} catch (err) {
+				const errorMessage = (err as Error).message;
+				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
+			}
+		});
+
+		it("should successfully delete room dataset and section data when adding both room and section data with new facade", async function () {
+			try {
+				await facade.addDataset("section1", sections, InsightDatasetKind.Sections);
+				await facade.addDataset("rooms", rooms, InsightDatasetKind.Rooms);
+				await facade.addDataset("section2", sections, InsightDatasetKind.Sections);
+
+				const newFacade = new InsightFacade();
+
+				await newFacade.removeDataset("rooms");
+				await newFacade.removeDataset("section1");
+
+				const stringArray = await newFacade.addDataset("4", sections, InsightDatasetKind.Sections);
+				testStringArrayContents(stringArray, "section2");
+				testStringArrayContents(stringArray, "4");
+			} catch (err) {
+				const errorMessage = (err as Error).message;
+				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
+			}
+		});
+
+		it("should successfully delete everything (mix of rooms and sections data)", async function () {
+			try {
+				await facade.addDataset("section1", sections, InsightDatasetKind.Sections);
+				await facade.addDataset("rooms", rooms, InsightDatasetKind.Rooms);
+				await facade.addDataset("section2", sections, InsightDatasetKind.Sections);
+
+				await facade.removeDataset("rooms");
+				await facade.removeDataset("section1");
+				await facade.removeDataset("section2");
+
+				const stringArray = await facade.addDataset("4", sections, InsightDatasetKind.Sections);
+				testStringArrayContents(stringArray, "4");
+				testStringNotInArrayContents(stringArray, "rooms");
+				testStringNotInArrayContents(stringArray, "section1");
+				testStringNotInArrayContents(stringArray, "section2");
+			} catch (err) {
+				const errorMessage = (err as Error).message;
+				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
+			}
+		});
+
+		it("should successfully delete everything (mix of rooms and sections data) with new facade", async function () {
+			try {
+				await facade.addDataset("section1", sections, InsightDatasetKind.Sections);
+				await facade.addDataset("rooms", rooms, InsightDatasetKind.Rooms);
+				await facade.addDataset("section2", sections, InsightDatasetKind.Sections);
+
+				const newFacade = new InsightFacade();
+
+				await newFacade.removeDataset("rooms");
+				await newFacade.removeDataset("section1");
+				await newFacade.removeDataset("section2");
+
+				const stringArray = await newFacade.addDataset("4", sections, InsightDatasetKind.Sections);
+				testStringArrayContents(stringArray, "4");
+				testStringNotInArrayContents(stringArray, "rooms");
+				testStringNotInArrayContents(stringArray, "section1");
+				testStringNotInArrayContents(stringArray, "section2");
 			} catch (err) {
 				const errorMessage = (err as Error).message;
 				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
