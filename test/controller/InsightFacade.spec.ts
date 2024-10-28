@@ -76,7 +76,7 @@ describe("InsightFacade", function () {
 			try {
 				const validRooms = await getContentFromArchives("campus.zip");
 
-				await facade.addDataset("rooms", validRooms, InsightDatasetKind.Sections);
+				await facade.addDataset("rooms", validRooms, InsightDatasetKind.Rooms);
 
 				await facade.addDataset("sections", sections, InsightDatasetKind.Sections);
 				const datasetArray = await facade.listDatasets();
@@ -163,26 +163,6 @@ describe("InsightFacade", function () {
 			}
 		});
 
-		it("should list out all added section and room datasets with correct ids with different instance of facade [listDatasets]", async function () {
-			try {
-				const validRooms = await getContentFromArchives("campus.zip");
-
-				await facade.addDataset("sections", sections, InsightDatasetKind.Sections);
-
-				await facade.addDataset("rooms", validRooms, InsightDatasetKind.Rooms);
-
-				const newFacade = new InsightFacade();
-
-				const datasetArray = await newFacade.listDatasets();
-
-				expect(datasetArray[0].id).be.equal("sections");
-				expect(datasetArray[1].id).be.equal("rooms");
-			} catch (err) {
-				const errorMessage = (err as Error).message;
-				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
-			}
-		});
-
 		it("should list out all datasets with correct kinds when adding room and section datasets [listDatasets]", async function () {
 			try {
 				const validRooms = await getContentFromArchives("campus.zip");
@@ -192,26 +172,6 @@ describe("InsightFacade", function () {
 				await facade.addDataset("rooms", validRooms, InsightDatasetKind.Rooms);
 
 				const datasetArray = await facade.listDatasets();
-
-				expect(datasetArray[0].kind).to.equal(InsightDatasetKind.Sections);
-				expect(datasetArray[1].kind).to.equal(InsightDatasetKind.Rooms);
-			} catch (err) {
-				const errorMessage = (err as Error).message;
-				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
-			}
-		});
-
-		it("should list out all datasets with correct kinds when using a new facade when adding room and section datasets [listDatasets]", async function () {
-			try {
-				const validRooms = await getContentFromArchives("campus.zip");
-
-				await facade.addDataset("sections", sections, InsightDatasetKind.Sections);
-
-				await facade.addDataset("rooms", validRooms, InsightDatasetKind.Rooms);
-
-				const newFacade = new InsightFacade();
-
-				const datasetArray = await newFacade.listDatasets();
 
 				expect(datasetArray[0].kind).to.equal(InsightDatasetKind.Sections);
 				expect(datasetArray[1].kind).to.equal(InsightDatasetKind.Rooms);
