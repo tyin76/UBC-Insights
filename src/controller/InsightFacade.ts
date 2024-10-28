@@ -18,8 +18,8 @@ import {
 import { getAllValidSections, parseSectionsData } from "../helperFunctions/QueryHandler";
 import {
 	checkThatIdDoesNotAlreadyExistInCache,
-	createSectionsDatasetFromContent,
 	validateDatasetParameters,
+	createDatasetFromContent,
 } from "../helperFunctions/AddDatasetHelper";
 
 /**
@@ -35,7 +35,7 @@ export default class InsightFacade implements IInsightFacade {
 
 		await createDataFolder();
 
-		const newDataset = await createSectionsDatasetFromContent(content);
+		const newDataset = await createDatasetFromContent(content, kind);
 
 		await saveDatasetToDataCache(id, newDataset, kind);
 
