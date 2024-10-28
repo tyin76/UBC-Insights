@@ -1,20 +1,43 @@
+import { InsightDatasetKind } from "../controller/IInsightFacade";
+import Room from "./Room";
 import Section from "./Section";
 
 class Dataset {
-	private sections: Section[];
+	private sections: Section[] | undefined;
+	private rooms: Room[] | undefined;
+	private kind: InsightDatasetKind;
 
-	constructor(sections: Section[]) {
-		this.sections = sections;
+	constructor(sectionsOrRooms: Section[] | Room[], kind: InsightDatasetKind) {
+		if (kind === InsightDatasetKind.Rooms) {
+			this.rooms = sectionsOrRooms as Room[];
+		} else {
+			this.sections = sectionsOrRooms as Section[];
+		}
+		this.kind = kind;
 	}
 
-	public getSections(): Section[] {
-		return this.sections;
+	public getEntities(): Section[] | Room[] {
+		if (this.kind === InsightDatasetKind.Rooms) {
+			return this.rooms as Room[];
+		} else {
+			return this.sections as Section[];
+		}
 	}
 
 	public toJSON(): object {
-		return {
-			sections: this.sections.map((section) => section.toJSON()), // Converts each Section to JSON
-		};
+		if (this.kind === InsightDatasetKind.Sections) {
+			const sections = this.sections as Section[];
+			return {
+				kind: this.kind,
+				sections: sections.map((section) => section.toJSON()), // Converts each Section to JSON
+			};
+		} else {
+			const rooms = this.rooms as Room[];
+			return {
+				kind: this.kind,
+				sections: rooms.map((room) => room.toJSON()), // Converts each Room to JSON
+			};
+		}
 	}
 }
 

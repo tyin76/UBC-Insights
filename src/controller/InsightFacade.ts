@@ -35,7 +35,7 @@ export default class InsightFacade implements IInsightFacade {
 
 		await createDataFolder();
 
-		const newDataset = await createSectionsDatasetFromContent(content);
+		const newDataset = await createSectionsDatasetFromContent(content, kind);
 
 		await saveDatasetToDataCache(id, newDataset, kind);
 
