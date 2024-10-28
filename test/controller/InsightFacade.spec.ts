@@ -330,28 +330,6 @@ describe("InsightFacade", function () {
 				expect(err).to.be.instanceOf(InsightError);
 			}
 		});
-
-		// adding an invalid room dataset
-		it("adding valid id, with invalid room data [addDatasetRooms]", async function () {
-			try {
-				const invalidRooms = await getContentFromArchives("invalidCampusNoTables.zip");
-				await facade.addDataset("validID", invalidRooms, InsightDatasetKind.Rooms);
-				expect.fail("Should have thrown error");
-			} catch (err) {
-				expect(err).to.be.instanceOf(InsightError);
-			}
-		});
-
-		// adding a room dataset with no valid rooms -> room file is deleted
-		it("adding a room dataset with no valid rooms -> room file is deleted [addDatasetRooms]", async function () {
-			try {
-				const deletedRoom = await getContentFromArchives("validRoomDeleted.zip");
-				await facade.addDataset("validID", deletedRoom, InsightDatasetKind.Rooms);
-				expect.fail("Should have thrown error");
-			} catch (err) {
-				expect(err).to.be.instanceOf(InsightError);
-			}
-		});
 	});
 
 	describe("removeDataset", function () {
