@@ -4,6 +4,9 @@ import { getAllCachedDatasetIds } from "../objects/FileManagement";
 import Section from "../objects/Section";
 import Dataset from "../objects/Dataset";
 
+const parse5 = require("parse5");
+const fs = require("fs");
+
 export function validateDatasetParameters(id: string, content: string, kind: InsightDatasetKind): void {
 	if (id === null || id === undefined || id.trim() === "" || typeof id !== "string" || id.includes("_")) {
 		throw new InsightError("Invalid id");
@@ -107,4 +110,25 @@ export async function createSectionsDatasetFromContent(content: string, kind: In
 	}
 
 	return newDataset;
+}
+
+async function createRoomsDataSetFromContent(content: string): Promise<Dataset> {
+	// Decode the base64 string provided by content
+	const zipDecode = Buffer.from(content, "base64");
+
+	// Load zip with JSZip
+	const zip = await JSZip.loadAsync(zipDecode);
+
+	// Find and read the index.htm file within the campus folder
+	return null as any;
+}
+
+export async function createDatasetFromContent(content: string, kind: InsightDatasetKind): Promise<Dataset> {
+	if (kind === InsightDatasetKind.Rooms) {
+		return createRoomsDataSetFromContent(content);
+	} else if (kind === InsightDatasetKind.Sections) {
+		return createSectionsDatasetFromContent(content, kind);
+	} else {
+		throw new InsightError();
+	}
 }
