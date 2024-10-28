@@ -37,47 +37,47 @@ class Room {
 		this.href = href;
 	}
 
-	public getFullName() {
+	public getFullName(): string {
 		return this.fullname;
 	}
 
-	public getShortName() {
+	public getShortName(): string {
 		return this.shortname;
 	}
 
-	public getNumber() {
+	public getNumber(): string {
 		return this.number;
 	}
 
-	public getName() {
+	public getName(): string {
 		return this.name;
 	}
 
-	public getAddress() {
+	public getAddress(): string {
 		return this.address;
 	}
 
-	public getLat() {
+	public getLat(): number {
 		return this.lat;
 	}
 
-	public getLon() {
+	public getLon(): number {
 		return this.lon;
 	}
 
-	public getSeats() {
+	public getSeats(): number {
 		return this.seats;
 	}
 
-	public getType() {
+	public getType(): string {
 		return this.type;
 	}
 
-	public getFurniture() {
+	public getFurniture(): string {
 		return this.furniture;
 	}
 
-	public getHref() {
+	public getHref(): string {
 		return this.href;
 	}
 

@@ -30,7 +30,9 @@ import {
 export default class InsightFacade implements IInsightFacade {
 	public async addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
 		validateDatasetParameters(id, content, kind);
+
 		await checkThatIdDoesNotAlreadyExistInCache(id);
+
 		await createDataFolder();
 
 		const newDataset = await createSectionsDatasetFromContent(content);
