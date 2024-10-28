@@ -3,6 +3,7 @@ import * as fs from "fs";
 import { InsightDatasetKind, InsightError } from "../controller/IInsightFacade";
 import Dataset from "./Dataset";
 import Section from "./Section";
+import Room from "./Room";
 
 const directoryPath = path.join(__dirname, "..", "..", "data"); // Moves up two level to project file root
 const kindKeyword = "kind";
@@ -38,12 +39,17 @@ export async function saveDatasetToDataCache(id: string, dataset: Dataset, kind:
 	await fs.promises.writeFile(filePath, kind); // writing the json file
 
 	// Now we are storing the sections/rows of the dataset in a file
-	filePath = path.join(directoryPath, `${id}` + rowsKeyword);
-	await fs.promises.writeFile(filePath, dataset.getEntities().length + ""); // writing the json file
+	// We only need to do this for sections datasets
+	if (kind === InsightDatasetKind.Sections) {
+		filePath = path.join(directoryPath, `${id}` + rowsKeyword);
+		await fs.promises.writeFile(filePath, dataset.getEntities().length + ""); // writing the json file
+	}
 }
 
 export async function removeDatasetFromDataCache(id: string): Promise<void> {
 	let filePath = path.join(directoryPath, `${id}.json`);
+
+	const datasetKind = await getKindFromId(id);
 
 	try {
 		await fs.promises.unlink(filePath); // remove the file from the cache
@@ -53,8 +59,10 @@ export async function removeDatasetFromDataCache(id: string): Promise<void> {
 		await fs.promises.unlink(filePath); // writing the json file
 
 		// delete idRows
-		filePath = path.join(directoryPath, `${id}` + rowsKeyword);
-		await fs.promises.unlink(filePath); // writing the json file
+		if (datasetKind === InsightDatasetKind.Sections) {
+			filePath = path.join(directoryPath, `${id}` + rowsKeyword);
+			await fs.promises.unlink(filePath); // writing the json file
+		}
 	} catch (err) {
 		const errorMessage = (err as Error).message;
 		throw new InsightError("Error: " + errorMessage);
@@ -114,8 +122,24 @@ interface SectionData {
 	section: string;
 }
 
-function createSectionArrayFromJson(sections: any): Section[] {
+interface RoomData {
+	fullname: string;
+	shortname: string;
+	number: string;
+	name: string;
+	address: string;
+	lat: number;
+	lon: number;
+	seats: number;
+	type: string;
+	furniture: string;
+	href: string;
+}
+
+function createSectionDatasetFromJson(content: string): Dataset {
 	const sectionArray: Section[] = [];
+
+	const { sections } = JSON.parse(content);
 
 	for (const section of sections) {
 		const sectionDataObj: SectionData = section;
@@ -137,7 +161,35 @@ function createSectionArrayFromJson(sections: any): Section[] {
 		);
 	}
 
-	return sectionArray;
+	return new Dataset(sectionArray, InsightDatasetKind.Sections);
+}
+
+function createRoomDatasetFromJson(content: string): Dataset {
+	const roomArray: Room[] = [];
+
+	const { rooms } = JSON.parse(content);
+
+	for (const room of rooms) {
+		const roomDataObj: RoomData = room;
+
+		roomArray.push(
+			new Room(
+				String(roomDataObj.fullname),
+				String(roomDataObj.shortname),
+				String(roomDataObj.number),
+				String(roomDataObj.name),
+				String(roomDataObj.address),
+				Number(roomDataObj.lat),
+				Number(roomDataObj.number),
+				Number(roomDataObj.seats),
+				String(roomDataObj.type),
+				String(roomDataObj.furniture),
+				String(roomDataObj.href)
+			)
+		);
+	}
+
+	return new Dataset(roomArray, InsightDatasetKind.Sections);
 }
 
 async function loadJsonFileById(id: string): Promise<string> {
@@ -152,21 +204,13 @@ export async function getDatasetFromId(id: string): Promise<Dataset> {
 	try {
 		const content = await loadJsonFileById(id);
 
-		const { sections, kind } = JSON.parse(content);
+		const { kind } = JSON.parse(content);
 
-		const sectionArray: Section[] = createSectionArrayFromJson(sections);
-
-		let kindOfDataset: InsightDatasetKind;
-
-		if (kind === InsightDatasetKind.Rooms) {
-			kindOfDataset = InsightDatasetKind.Rooms;
-		} else {
-			kindOfDataset = InsightDatasetKind.Sections;
+		if (kind === InsightDatasetKind.Sections) {
+			return createSectionDatasetFromJson(content);
 		}
 
-		const datasetToReturn = new Dataset(sectionArray, kindOfDataset);
-
-		return datasetToReturn;
+		return createRoomDatasetFromJson(content);
 	} catch (err) {
 		const errorMessage = (err as Error).message;
 		throw new InsightError("Error: " + errorMessage);
