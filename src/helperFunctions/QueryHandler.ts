@@ -320,7 +320,7 @@ export async function getAllValidSections(query: any): Promise<Section[]> {
 	// This will store all the sections that we should return to be processed
 	const sectionsToReturn: Section[] = [];
 
-	for (const section of datasetToQuery.getSections()) {
+	for (const section of datasetToQuery.getEntities() as Section[]) {
 		if (sectionMatchesQueryRequirements(operator, operatorParameter, section)) {
 			sectionsToReturn.push(section);
 

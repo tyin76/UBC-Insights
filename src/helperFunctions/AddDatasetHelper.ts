@@ -98,12 +98,12 @@ function mapResultsToSectionArray(resultJsonArray: any[]): Section[] {
 	return sectionArray;
 }
 
-async function createSectionsDatasetFromContent(content: string): Promise<Dataset> {
+export async function createSectionsDatasetFromContent(content: string, kind: InsightDatasetKind): Promise<Dataset> {
 	const resultJsonArray: any[] = await extractCourseResultsFromZip(content);
 
 	const sectionArray = mapResultsToSectionArray(resultJsonArray);
 
-	const newDataset = new Dataset(sectionArray);
+	const newDataset = new Dataset(sectionArray, kind);
 
 	if (sectionArray.length === 0) {
 		throw new InsightError("Invalid dataset, no sections");
@@ -127,7 +127,7 @@ export async function createDatasetFromContent(content: string, kind: InsightDat
 	if (kind === InsightDatasetKind.Rooms) {
 		return createRoomsDataSetFromContent(content);
 	} else if (kind === InsightDatasetKind.Sections) {
-		return createSectionsDatasetFromContent(content);
+		return createSectionsDatasetFromContent(content, kind);
 	} else {
 		throw new InsightError();
 	}
