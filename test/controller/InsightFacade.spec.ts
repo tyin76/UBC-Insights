@@ -992,10 +992,7 @@ describe("InsightFacade", function () {
 			"[invalid/eqKeyValueIsNumber.json] should fail as we have a string representation of a number in IS",
 			checkQuery
 		);
-		it(
-			"[invalid/invalidWhereIsEmptyRetunsTooBig.json] should fail as we return more than 5000 sections",
-			checkQuery
-		);
+		it("[invalid/invalidWhereIsEmptyRetunsTooBig.json] should fail as we return more than 5000 sections", checkQuery);
 		it("[valid/sortedWithAudit.json] should pass when we sort with audit", async function () {
 			await checkQuery.call(this, "audit");
 		});
