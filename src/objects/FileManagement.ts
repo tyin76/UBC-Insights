@@ -39,7 +39,7 @@ export async function saveDatasetToDataCache(id: string, dataset: Dataset, kind:
 
 	// Now we are storing the sections/rows of the dataset in a file
 	filePath = path.join(directoryPath, `${id}` + rowsKeyword);
-	await fs.promises.writeFile(filePath, dataset.getSections().length + ""); // writing the json file
+	await fs.promises.writeFile(filePath, dataset.getEntities().length + ""); // writing the json file
 }
 
 export async function removeDatasetFromDataCache(id: string): Promise<void> {
@@ -114,38 +114,57 @@ interface SectionData {
 	section: string;
 }
 
+function createSectionArrayFromJson(sections: any): Section[] {
+	const sectionArray: Section[] = [];
+
+	for (const section of sections) {
+		const sectionDataObj: SectionData = section;
+
+		sectionArray.push(
+			new Section(
+				String(sectionDataObj.uuid),
+				String(sectionDataObj.id),
+				String(sectionDataObj.title),
+				String(sectionDataObj.instructor),
+				String(sectionDataObj.dept),
+				Number(sectionDataObj.year),
+				Number(sectionDataObj.avg),
+				Number(sectionDataObj.pass),
+				Number(sectionDataObj.fail),
+				Number(sectionDataObj.audit),
+				String(sectionDataObj.section)
+			)
+		);
+	}
+
+	return sectionArray;
+}
+
+async function loadJsonFileById(id: string): Promise<string> {
+	const filePath = path.join(directoryPath, `${id}` + ".json");
+
+	const content = await fs.promises.readFile(filePath, "utf-8");
+
+	return content;
+}
+
 export async function getDatasetFromId(id: string): Promise<Dataset> {
 	try {
-		const filePath = path.join(directoryPath, `${id}` + ".json");
+		const content = await loadJsonFileById(id);
 
-		// Read the contents of the file
-		const content = await fs.promises.readFile(filePath, "utf-8");
+		const { sections, kind } = JSON.parse(content);
 
-		const { sections } = JSON.parse(content);
+		const sectionArray: Section[] = createSectionArrayFromJson(sections);
 
-		const sectionArray: Section[] = [];
+		let kindOfDataset: InsightDatasetKind;
 
-		for (const section of sections) {
-			const sectionDataObj: SectionData = section;
-
-			sectionArray.push(
-				new Section(
-					String(sectionDataObj.uuid),
-					String(sectionDataObj.id),
-					String(sectionDataObj.title),
-					String(sectionDataObj.instructor),
-					String(sectionDataObj.dept),
-					Number(sectionDataObj.year),
-					Number(sectionDataObj.avg),
-					Number(sectionDataObj.pass),
-					Number(sectionDataObj.fail),
-					Number(sectionDataObj.audit),
-					String(sectionDataObj.section)
-				)
-			);
+		if (kind === InsightDatasetKind.Rooms) {
+			kindOfDataset = InsightDatasetKind.Rooms;
+		} else {
+			kindOfDataset = InsightDatasetKind.Sections;
 		}
 
-		const datasetToReturn = new Dataset(sectionArray);
+		const datasetToReturn = new Dataset(sectionArray, kindOfDataset);
 
 		return datasetToReturn;
 	} catch (err) {

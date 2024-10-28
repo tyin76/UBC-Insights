@@ -95,12 +95,12 @@ function mapResultsToSectionArray(resultJsonArray: any[]): Section[] {
 	return sectionArray;
 }
 
-export async function createSectionsDatasetFromContent(content: string): Promise<Dataset> {
+export async function createSectionsDatasetFromContent(content: string, kind: InsightDatasetKind): Promise<Dataset> {
 	const resultJsonArray: any[] = await extractCourseResultsFromZip(content);
 
 	const sectionArray = mapResultsToSectionArray(resultJsonArray);
 
-	const newDataset = new Dataset(sectionArray);
+	const newDataset = new Dataset(sectionArray, kind);
 
 	if (sectionArray.length === 0) {
 		throw new InsightError("Invalid dataset, no sections");
