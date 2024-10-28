@@ -159,19 +159,66 @@ function findBuildingLinks(node: any): string[] {
 	return links;
 }
 
-//function findRoomsData(parsedData: any, roomsArray: Room[]): Room {
-// find room number
-//findRoomNumber(parsedData);
-// find room capacity
+function createAllRoomObjects(validTable: any, rooms: Room[]): Room[] {
+	const allRows = findAllRows(validTable);
+	// find room number
 
-// find furniture
+	for (const row of allRows) {
+		const roomNumber = findRoomNumber(row);
+	}
 
-// find room type
+	// find room capacity
+	// find furniture
+	// find room type
+	// find more room info
 
-// find more room info
-//}
+	return rooms;
+}
 
-//function findRoomNumber(parsedData: any): string {}
+function findAllRows(table: any): any[] {
+	function findTableBodyRows(table: any): any[] {
+		const rows: any[] = [];
+
+		function traverse(table: any) {
+			if (!table) {
+				return;
+			}
+
+			if ((table.nodeName = "tbody")) {
+				if (table.childNodes) {
+					table.childNodes.forEach((child: any) => {
+						if (child.nodeName === "tr") {
+							rows.push(child);
+						}
+					});
+				}
+				return;
+			}
+			if (table.childNodes) {
+				table.childNodes.forEach((child: any) => {
+					traverse(child);
+				});
+			}
+		}
+		traverse(table);
+		return rows;
+	}
+	const allRows = findTableBodyRows(table);
+	return allRows;
+}
+
+function findRoomNumber(row: any): string {
+	const classToFind = "views-field-field-room-number";
+	const roomNumber = "";
+
+	if (row.nodeName === "tr") {
+		if (row.childNodes) {
+			row.childNodes.filter((node: any) => node.nodeName === "td" && node.attr.value === classToFind);
+		}
+	}
+	// TODO: delete this stub
+	return "";
+}
 
 function findAllTables(parsedData: any): any {
 	const allTables: any[] = [];
@@ -185,11 +232,50 @@ function findAllTables(parsedData: any): any {
 			node.childNodes.forEach((child: any) => traverse(child));
 		}
 	}
-	console.log(allTables[0]);
+	//console.log(allTables[0]);
 	return allTables;
 }
 
-function findValidTable(allTables: any): any {}
+function findValidTable(allTables: any): any {
+	// Helper function to check if td has views-field-field-number class
+	function hasNumberFieldClass(node: any): boolean {
+		if (node.nodeName !== "td") return false;
+
+		return node.attrs?.some(
+			(attr: any) => attr.name === "class" && attr.value.includes("views-field-field-room-number")
+		);
+	}
+
+	function searchTableForNumberFieldClass(node: any): boolean {
+		let foundValidTd = false;
+
+		function traverse(node: any) {
+			if (!node) {
+				return false;
+			}
+			if (hasNumberFieldClass(node)) {
+				foundValidTd = true;
+				return true;
+			}
+
+			if (node.childNodes) {
+				node.childNodes.forEach((child: any) => {
+					// kinda redundant but just checking to be safe
+					if (!foundValidTd) {
+						traverse(child);
+					}
+				});
+			}
+		}
+		traverse(node);
+		return foundValidTd;
+	}
+	for (const table of allTables) {
+		if (searchTableForNumberFieldClass(table)) {
+			return table;
+		}
+	}
+}
 
 async function createRoomsDataSetFromContent(content: string): Promise<Dataset> {
 	const zip = new JSZip();
@@ -225,7 +311,9 @@ async function createRoomsDataSetFromContent(content: string): Promise<Dataset> 
 			const parsedRoomData = parse5.parse(unparsedRoomData);
 			const findTables = findAllTables(parsedRoomData);
 			const validTable = findValidTable(findTables);
-			//const newRoomObject = findRoomsData(parsedRoomData, rooms);
+			console.log(JSON.stringify(validTable));
+
+			//const roomObjects = createAllRoomObjects(validTable, rooms);
 		}
 	}
 	return new Dataset(rooms, InsightDatasetKind.Rooms);
