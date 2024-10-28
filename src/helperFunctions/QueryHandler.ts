@@ -1,14 +1,14 @@
 import { InsightError, InsightResult, ResultTooLargeError } from "../controller/IInsightFacade";
 import { getDatasetFromId } from "../objects/FileManagement";
 import Section from "../objects/Section";
+import { extractAndValidateLogicalOperatorAndParameter } from "./LogicalOperatorExtractionAndValidation";
+import { validateQuery } from "./QueryValidation";
 import {
-	checkAstericksPlacement,
-	getAndValidateConditionKeyandValue,
-	getAndValidateOperatorandParameter,
+	validateAndExtractSectionFieldAndComparisonValue,
 	validateOptionsAndGetSingleDataset,
-	validateQuery,
-	validateWhereAndGetSingleDataset,
 } from "./ValidationHelpers";
+import { validateDatasetRefsInWhereAndGetSingleDataset } from "./WhereDatasetExtractorAndRefsValidation";
+import { checkAstericksPlacement } from "./WildcardValidation";
 
 const maxSections = 5000;
 
@@ -75,7 +75,7 @@ function getSectionValueFromConditionKey(conditionKey: string, sectionToUse: Sec
 
 // operatorParameter is in the format "datasetName_value"
 function greaterThan(section: Section, operatorParameter: any): boolean {
-	const conditionKeyAndValue: any[] = getAndValidateConditionKeyandValue(operatorParameter, false);
+	const conditionKeyAndValue: any[] = validateAndExtractSectionFieldAndComparisonValue(operatorParameter, false);
 
 	const conditionKey = conditionKeyAndValue[0];
 	const conditionValue = conditionKeyAndValue[1];
@@ -91,7 +91,7 @@ function greaterThan(section: Section, operatorParameter: any): boolean {
 
 // operatorParameter is in the format "datasetName_value"
 function lessThan(section: Section, operatorParameter: any): boolean {
-	const conditionKeyAndValue: any[] = getAndValidateConditionKeyandValue(operatorParameter, false);
+	const conditionKeyAndValue: any[] = validateAndExtractSectionFieldAndComparisonValue(operatorParameter, false);
 
 	const conditionKey = conditionKeyAndValue[0];
 	const conditionValue = conditionKeyAndValue[1];
@@ -106,7 +106,7 @@ function lessThan(section: Section, operatorParameter: any): boolean {
 }
 
 function equalTo(section: Section, operatorParameter: any): boolean {
-	const conditionKeyAndValue: any[] = getAndValidateConditionKeyandValue(operatorParameter, false);
+	const conditionKeyAndValue: any[] = validateAndExtractSectionFieldAndComparisonValue(operatorParameter, false);
 
 	const conditionKey = conditionKeyAndValue[0];
 	const conditionValue = conditionKeyAndValue[1];
@@ -123,7 +123,7 @@ function equalTo(section: Section, operatorParameter: any): boolean {
 // this is what is going to handle wildcards
 function is(section: Section, operatorParameter: any): boolean {
 	// Index 0 will have the conditionKey, index 1 will have the index Value
-	const conditionKeyAndValue: any[] = getAndValidateConditionKeyandValue(operatorParameter, true);
+	const conditionKeyAndValue: any[] = validateAndExtractSectionFieldAndComparisonValue(operatorParameter, true);
 
 	// Stores the conditionKey ie: id, uuid, avg, etc
 	const conditionKey = conditionKeyAndValue[0];
@@ -156,7 +156,7 @@ function is(section: Section, operatorParameter: any): boolean {
 }
 
 function not(section: Section, operatorParameter: any): boolean {
-	const operatorAndParam: any[] = getAndValidateOperatorandParameter(operatorParameter);
+	const operatorAndParam: any[] = extractAndValidateLogicalOperatorAndParameter(operatorParameter);
 
 	const operator = operatorAndParam[0];
 	const operatorParam = operatorAndParam[1];
@@ -173,7 +173,7 @@ function and(section: Section, operatorParameter: any): boolean {
 	}
 
 	for (const operation of operatorParameter) {
-		const operatorAndParam: string[] = getAndValidateOperatorandParameter(operation);
+		const operatorAndParam: string[] = extractAndValidateLogicalOperatorAndParameter(operation);
 
 		const operator = operatorAndParam[0];
 		const operatorParam = operatorAndParam[1];
@@ -196,7 +196,7 @@ function or(section: Section, operatorParameter: string): boolean {
 	}
 
 	for (const operation of operatorParameter) {
-		const operatorAndParam: string[] = getAndValidateOperatorandParameter(operation);
+		const operatorAndParam: string[] = extractAndValidateLogicalOperatorAndParameter(operation);
 
 		const operator = operatorAndParam[0];
 		const operatorParam = operatorAndParam[1];
@@ -294,14 +294,14 @@ export async function getAllValidSections(query: any): Promise<Section[]> {
 	const { WHERE } = query as any;
 
 	// This will get the operator and operater parameter and store it in an array, where index 0 is the operator, and index 1 is the parameter
-	const operatorAndParam: any[] = getAndValidateOperatorandParameter(WHERE);
+	const operatorAndParam: any[] = extractAndValidateLogicalOperatorAndParameter(WHERE);
 
 	const operator = operatorAndParam[0];
 	const operatorParameter = operatorAndParam[1];
 
 	// This looks at the entire query and gets the id/name of the dataset that we need to access, this also validates the WHERE object
 	// To ensure that it is formatted correctly
-	const datasetNameToQueryFromWhere = validateWhereAndGetSingleDataset(WHERE);
+	const datasetNameToQueryFromWhere = validateDatasetRefsInWhereAndGetSingleDataset(WHERE);
 
 	// This looks at the entire query and gets the id/name of the dataset that we need to access, this also validates the OPTIONS object
 	// To ensure that it is formatted correctly

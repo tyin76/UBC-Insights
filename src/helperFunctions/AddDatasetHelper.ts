@@ -159,10 +159,41 @@ function findBuildingLinks(node: any): string[] {
 	return links;
 }
 
+//function findRoomsData(parsedData: any, roomsArray: Room[]): Room {
+// find room number
+//findRoomNumber(parsedData);
+// find room capacity
+
+// find furniture
+
+// find room type
+
+// find more room info
+//}
+
+//function findRoomNumber(parsedData: any): string {}
+
+function findAllTables(parsedData: any): any {
+	const allTables: any[] = [];
+	traverse(parsedData);
+
+	function traverse(node: any) {
+		if (node.tagName === "table") {
+			allTables.push(node);
+		}
+		if (node.childNodes) {
+			node.childNodes.forEach((child: any) => traverse(child));
+		}
+	}
+	console.log(allTables[0]);
+	return allTables;
+}
+
+function findValidTable(allTables: any): any {}
+
 async function createRoomsDataSetFromContent(content: string): Promise<Dataset> {
 	const zip = new JSZip();
 	const rooms: Room[] = [];
-
 	const zipData = await zip.loadAsync(content, { base64: true });
 
 	const campusFolderPath = "campus/";
@@ -170,16 +201,14 @@ async function createRoomsDataSetFromContent(content: string): Promise<Dataset> 
 	if (!hasCampusFolder) {
 		throw new InsightError("No folder 'campus' in zip file");
 	}
-
 	const indexFilePath = "index.htm";
 	const hasIndexHTM = Object.keys(zipData.files).some((fileName) => fileName === indexFilePath);
 	if (!hasIndexHTM) {
 		throw new InsightError("No index.htm in zip file");
 	}
-
 	const fileData = await zipData.file("index.htm")?.async("string");
 	const parsedFileData = parse5.parse(fileData);
-
+	//console.log(parsedFileData);
 	// Find all the building links
 	const buildingLinks = findBuildingLinks(parsedFileData);
 
@@ -189,13 +218,16 @@ async function createRoomsDataSetFromContent(content: string): Promise<Dataset> 
 		const cleanPath = link.startsWith("./") ? link.slice(2) : link;
 
 		// Get the building details file from the zip
-		const buildingFile = zipData.file(cleanPath);
-		if (buildingFile) {
-			const buildingData = await buildingFile.async("string");
+		const roomFromBuildingFile = zipData.file(cleanPath);
+		if (roomFromBuildingFile) {
+			const unparsedRoomData = await roomFromBuildingFile.async("string");
 			// Process room data
+			const parsedRoomData = parse5.parse(unparsedRoomData);
+			const findTables = findAllTables(parsedRoomData);
+			const validTable = findValidTable(findTables);
+			//const newRoomObject = findRoomsData(parsedRoomData, rooms);
 		}
 	}
-
 	return new Dataset(rooms, InsightDatasetKind.Rooms);
 }
 
