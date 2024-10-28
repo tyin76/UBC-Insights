@@ -1,0 +1,13 @@
+{
+	"title": "InvalidWhereIsEmptyRetunsTooBig",
+	"input": {
+		"WHERE": {},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_title"
+			]
+		}
+	},
+	"errorExpected": true,
+	"expected": "ResultTooLargeError"
+}
