@@ -310,6 +310,35 @@ function findMoreInfo(row: any) {
 	return href;
 }
 
+function findNameAndAddressDiv(parsedRoomData: any): any {
+	if (!parsedRoomData) {
+		return null;
+	}
+
+	// find div with id = building-info
+	if (parsedRoomData.nodeName === "div" && parsedRoomData.attrs) {
+		const doesDivExist = parsedRoomData.attrs.find((node: any) => node.name === "id" && node.value === "building-info");
+		if (doesDivExist) {
+			return parsedRoomData;
+		}
+	}
+
+	// continue traversing
+	if (parsedRoomData.childNodes) {
+		for (const child of parsedRoomData.childNodes) {
+			const result = findNameAndAddressDiv(child);
+			if (result) {
+				return result;
+			}
+		}
+	}
+	return null;
+}
+
+function extractBuildingInfo(parsedData: any) {
+	const foundCorrectDiv = findNameAndAddressDiv(parsedData);
+}
+
 function findAllTables(parsedData: any): any {
 	const allTables: any[] = [];
 	traverse(parsedData);
@@ -387,6 +416,7 @@ async function createRoomsDataSetFromContent(content: string): Promise<Dataset> 
 	//console.log(parsedFileData);
 	// Find all the building links
 	const buildingLinks = findBuildingLinks(parsedFileData);
+	console.log(buildingLinks);
 
 	// Process links
 	for (const link of buildingLinks) {
@@ -403,10 +433,11 @@ async function createRoomsDataSetFromContent(content: string): Promise<Dataset> 
 			const validTable = findValidTable(findTables);
 
 			if (validTable) {
+				const fullNameAndAddress = findNameAndAddressDiv(parsedRoomData);
 				const roomObjects = createAllRoomObjects(validTable);
 				// Concatenate new rooms instead of overwriting
 				rooms = rooms.concat(roomObjects);
-				console.log(roomObjects);
+				//console.log(roomObjects);
 			}
 		}
 	}
