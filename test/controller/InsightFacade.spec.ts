@@ -64,8 +64,10 @@ describe("InsightFacade", function () {
 				await facade.addDataset("ubc2", sections, InsightDatasetKind.Sections);
 				const datasetArray = await facade.listDatasets();
 
-				expect(datasetArray[0].id).be.equal("ubc1");
-				expect(datasetArray[1].id).be.equal("ubc2");
+				const datasetIds = datasetArray.map((dataset) => dataset.id);
+
+				testStringArrayContents(datasetIds, "ubc1");
+				testStringArrayContents(datasetIds, "ubc2");
 			} catch (err) {
 				const errorMessage = (err as Error).message;
 				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
@@ -81,8 +83,44 @@ describe("InsightFacade", function () {
 				await facade.addDataset("sections", sections, InsightDatasetKind.Sections);
 				const datasetArray = await facade.listDatasets();
 
-				expect(datasetArray[0].id).be.equal("rooms");
-				expect(datasetArray[1].id).be.equal("sections");
+				const datasetIds = datasetArray.map((dataset) => dataset.id);
+
+				testStringArrayContents(datasetIds, "rooms");
+				testStringArrayContents(datasetIds, "sections");
+			} catch (err) {
+				const errorMessage = (err as Error).message;
+				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
+			}
+		});
+
+		it("should list out all datasets with correct ids when adding both sections and rooms with different instance of facade [listDatasets]", async function () {
+			try {
+				const validRooms = await getContentFromArchives("campus.zip");
+
+				await facade.addDataset("rooms", validRooms, InsightDatasetKind.Rooms);
+
+				await facade.addDataset("sections", sections, InsightDatasetKind.Sections);
+
+				const newFacade = new InsightFacade();
+
+				let datasetArray = await newFacade.listDatasets();
+
+				let datasetIds = datasetArray.map((dataset) => dataset.id);
+
+				testStringArrayContents(datasetIds, "rooms");
+				testStringArrayContents(datasetIds, "sections");
+
+				await facade.addDataset("rooms2", validRooms, InsightDatasetKind.Rooms);
+				await facade.addDataset("sections2", sections, InsightDatasetKind.Sections);
+
+				datasetArray = await newFacade.listDatasets();
+
+				datasetIds = datasetArray.map((dataset) => dataset.id);
+
+				testStringArrayContents(datasetIds, "rooms");
+				testStringArrayContents(datasetIds, "sections");
+				testStringArrayContents(datasetIds, "rooms2");
+				testStringArrayContents(datasetIds, "sections2");
 			} catch (err) {
 				const errorMessage = (err as Error).message;
 				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
@@ -99,8 +137,10 @@ describe("InsightFacade", function () {
 
 				const datasetArray = await newFacade.listDatasets();
 
-				expect(datasetArray[0].id).be.equal("ubc1");
-				expect(datasetArray[1].id).be.equal("ubc2");
+				const datasetIds = datasetArray.map((dataset) => dataset.id);
+
+				testStringArrayContents(datasetIds, "ubc1");
+				testStringArrayContents(datasetIds, "ubc2");
 			} catch (err) {
 				const errorMessage = (err as Error).message;
 				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
@@ -143,7 +183,8 @@ describe("InsightFacade", function () {
 			try {
 				const validRooms = await getContentFromArchives("campus.zip");
 
-				const rowsInDataset = 18;
+				const rowsInSectionDataset = 18;
+				const rowsInRoomsDataset = 364;
 
 				await facade.addDataset("sections", sections, InsightDatasetKind.Sections);
 
@@ -153,10 +194,12 @@ describe("InsightFacade", function () {
 
 				const datasetArray = await facade.listDatasets();
 
+				const datasetRows = datasetArray.map((dataset) => dataset.numRows);
+
 				const positionOfSections2 = 2;
 
-				expect(datasetArray[0].numRows).to.equal(rowsInDataset);
-				expect(datasetArray[positionOfSections2].numRows).to.equal(rowsInDataset);
+				expect(datasetRows).to.deep.include(rowsInSectionDataset);
+				expect(datasetRows).to.deep.include(rowsInRoomsDataset);
 			} catch (err) {
 				const errorMessage = (err as Error).message;
 				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
@@ -173,8 +216,10 @@ describe("InsightFacade", function () {
 
 				const datasetArray = await facade.listDatasets();
 
-				expect(datasetArray[0].kind).to.equal(InsightDatasetKind.Sections);
-				expect(datasetArray[1].kind).to.equal(InsightDatasetKind.Rooms);
+				const datasetKindArray = datasetArray.map((dataset) => dataset.kind);
+
+				expect(datasetKindArray).to.deep.include(InsightDatasetKind.Sections);
+				expect(datasetKindArray).to.deep.include(InsightDatasetKind.Rooms);
 			} catch (err) {
 				const errorMessage = (err as Error).message;
 				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);

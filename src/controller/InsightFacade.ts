@@ -75,6 +75,7 @@ export default class InsightFacade implements IInsightFacade {
 		// Create an array of promises for each dataset
 		const promises = ids.map(async (id) => {
 			const kind = await getKindFromId(id); // Get the kind of dataset
+
 			const numRows = await getRowsFromId(id); // Get the number of rows in the dataset
 
 			// Construct the object
