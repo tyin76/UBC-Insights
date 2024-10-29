@@ -4,7 +4,6 @@ import { getAllCachedDatasetIds } from "../objects/FileManagement";
 import Section from "../objects/Section";
 import Dataset from "../objects/Dataset";
 import Room from "../objects/Room";
-import { text } from "stream/consumers";
 
 const parse5 = require("parse5");
 //const fs = require("fs");
@@ -160,10 +159,18 @@ function findBuildingLinks(node: any): string[] {
 	return links;
 }
 
-function createAllRoomObjects(validTable: any): Room[] {
+function extractRoomNumber(url: string): any {
+	const regex = /room\/([A-Z0-9\-]+)/; // Regular expression to match the room number
+	const match = url.match(regex);
+	return match ? match[1].replace(/-/g, "_") : null; // Replace hyphen with underscore
+}
+
+function createAllRoomObjects(validTable: any, roomAndAddress: any): Room[] {
 	// get all tr rows
 	const allRows = findAllRows(validTable);
 	const tempRooms: Room[] = [];
+	const address = roomAndAddress.address;
+	const fullName = roomAndAddress.name;
 
 	// find room number
 
@@ -173,7 +180,20 @@ function createAllRoomObjects(validTable: any): Room[] {
 		const furniture = findFurniture(row);
 		const roomType = findRoomType(row);
 		const href = findMoreInfo(row);
-		const newRoom = new Room("", "", roomNumber, "", "", 0, 0, roomCapacity, roomType, furniture, href);
+		const roomID_Name = extractRoomNumber(href);
+		const newRoom = new Room(
+			fullName,
+			"",
+			roomNumber,
+			roomID_Name,
+			address,
+			0,
+			0,
+			roomCapacity,
+			roomType,
+			furniture,
+			href
+		);
 		tempRooms.push(newRoom);
 	}
 	return tempRooms;
@@ -335,8 +355,51 @@ function findNameAndAddressDiv(parsedRoomData: any): any {
 	return null;
 }
 
-function extractBuildingInfo(parsedData: any) {
-	const foundCorrectDiv = findNameAndAddressDiv(parsedData);
+function extractBuildingInfo(node: any) {
+	const buildingInfoDiv = findNameAndAddressDiv(node);
+	if (!buildingInfoDiv) {
+		return null; // If the div is not found, return null
+	}
+
+	let buildingName = "";
+	let buildingAddress = "";
+
+	// Extract building name from the h2 element
+	const h2Node = buildingInfoDiv.childNodes.find((child: any) => child.nodeName === "h2");
+	if (h2Node) {
+		const span = h2Node.childNodes.find((spanNode: any) => spanNode.nodeName === "span");
+		if (span && span.childNodes) {
+			const textNode = span.childNodes.find((textNode: any) => textNode.nodeName === "#text");
+			if (textNode) {
+				buildingName = textNode.value.trim(); // Extract the building name
+			}
+		}
+	}
+
+	// Extract building address from the first "building-field" div
+	const buildingFieldDivs = buildingInfoDiv.childNodes.filter(
+		(child: any) =>
+			child.nodeName === "div" &&
+			child.attrs?.some((attr: any) => attr.name === "class" && attr.value === "building-field")
+	);
+
+	if (buildingFieldDivs.length > 0) {
+		const firstFieldContentDiv = buildingFieldDivs[0].childNodes.find(
+			(fieldChild: any) =>
+				fieldChild.nodeName === "div" &&
+				fieldChild.attrs?.some((attr: any) => attr.name === "class" && attr.value === "field-content")
+		);
+
+		if (firstFieldContentDiv && firstFieldContentDiv.childNodes) {
+			const textNode = firstFieldContentDiv.childNodes.find((textNode: any) => textNode.nodeName === "#text");
+			if (textNode) {
+				buildingAddress = textNode.value.trim(); // Extract the building address
+			}
+		}
+	}
+	//console.log("name: " + buildingName);
+	//console.log("address: " + buildingAddress);
+	return { name: buildingName, address: buildingAddress }; // Return the extracted details
 }
 
 function findAllTables(parsedData: any): any {
@@ -416,7 +479,7 @@ async function createRoomsDataSetFromContent(content: string): Promise<Dataset> 
 	//console.log(parsedFileData);
 	// Find all the building links
 	const buildingLinks = findBuildingLinks(parsedFileData);
-	console.log(buildingLinks);
+	//console.log(buildingLinks);
 
 	// Process links
 	for (const link of buildingLinks) {
@@ -433,11 +496,11 @@ async function createRoomsDataSetFromContent(content: string): Promise<Dataset> 
 			const validTable = findValidTable(findTables);
 
 			if (validTable) {
-				const fullNameAndAddress = findNameAndAddressDiv(parsedRoomData);
-				const roomObjects = createAllRoomObjects(validTable);
+				const fullNameAndAddress = extractBuildingInfo(parsedRoomData);
+				const roomObjects = createAllRoomObjects(validTable, fullNameAndAddress);
 				// Concatenate new rooms instead of overwriting
 				rooms = rooms.concat(roomObjects);
-				//console.log(roomObjects);
+				console.log(rooms);
 			}
 		}
 	}
