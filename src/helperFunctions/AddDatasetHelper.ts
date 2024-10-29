@@ -170,7 +170,10 @@ function createAllRoomObjects(validTable: any): Room[] {
 	for (const row of allRows) {
 		const roomNumber = findRoomNumber(row);
 		const roomCapacity = findRoomCapacity(row);
-		const newRoom = new Room("", "", roomNumber, "", "", 0, 0, roomCapacity, "", "", "");
+		const furniture = findFurniture(row);
+		const roomType = findRoomType(row);
+		const href = findMoreInfo(row);
+		const newRoom = new Room("", "", roomNumber, "", "", 0, 0, roomCapacity, roomType, furniture, href);
 		tempRooms.push(newRoom);
 	}
 	return tempRooms;
@@ -250,6 +253,61 @@ function findRoomCapacity(row: any): number {
 		}
 	});
 	return roomCapacity;
+}
+
+function findFurniture(row: any) {
+	const classToFind = "views-field-field-room-furniture";
+	let furniture = "";
+	const cells = row.childNodes.filter((node: any) => node.nodeName === "td");
+
+	cells.forEach((cell: any) => {
+		if (hasClass(cell, classToFind)) {
+			if (cell.childNodes) {
+				const textNode = cell.childNodes?.find((node: any) => node.nodeName === "#text");
+				if (textNode) {
+					furniture = textNode.value.trim();
+				}
+			}
+		}
+	});
+	return furniture;
+}
+
+function findRoomType(row: any) {
+	const classToFind = "views-field-field-room-type";
+	let roomType = "";
+	const cells = row.childNodes.filter((node: any) => node.nodeName === "td");
+
+	cells.forEach((cell: any) => {
+		if (hasClass(cell, classToFind)) {
+			if (cell.childNodes) {
+				const textNode = cell.childNodes?.find((node: any) => node.nodeName === "#text");
+				if (textNode) {
+					roomType = textNode.value.trim();
+				}
+			}
+		}
+	});
+	return roomType;
+}
+
+function findMoreInfo(row: any) {
+	const classToFind = "views-field-nothing";
+	let href = "";
+	const cells = row.childNodes.filter((node: any) => node.nodeName === "td");
+
+	cells.forEach((cell: any) => {
+		if (hasClass(cell, classToFind)) {
+			const anchor = cell.childNodes?.find((node: any) => node.nodeName === "a");
+			if (anchor && anchor.attrs) {
+				const hrefAttribute = anchor.attrs?.find((node: any) => node.name === "href");
+				if (hrefAttribute) {
+					href = hrefAttribute.value.trim();
+				}
+			}
+		}
+	});
+	return href;
 }
 
 function findAllTables(parsedData: any): any {
