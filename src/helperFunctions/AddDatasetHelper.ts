@@ -4,9 +4,9 @@ import { getAllCachedDatasetIds } from "../objects/FileManagement";
 import Section from "../objects/Section";
 import Dataset from "../objects/Dataset";
 import Room from "../objects/Room";
-import { text } from "stream/consumers";
 
 const parse5 = require("parse5");
+const http = require("http");
 //const fs = require("fs");
 
 export function validateDatasetParameters(id: string, content: string, kind: InsightDatasetKind): void {
@@ -160,23 +160,100 @@ function findBuildingLinks(node: any): string[] {
 	return links;
 }
 
-function createAllRoomObjects(validTable: any): Room[] {
+function extractRoomNumber(url: string): any {
+	const regex = /room\/([A-Z0-9\-]+)/; // Regular expression to match the room number
+	const match = url.match(regex);
+	return match ? match[1].replace(/-/g, "_") : null; // Replace hyphen with underscore
+}
+
+async function geoLocationRequest(address: string): Promise<{ latitude: number; longitude: number }> {
+	const encodedAddress = encodeURIComponent(address);
+
+	const options = {
+		hostname: "cs310.students.cs.ubc.ca",
+		port: 11316,
+		path: `/api/v1/project_team209/${encodedAddress}`,
+		method: "GET",
+	};
+
+	return new Promise((resolve, reject) => {
+		const req = http.request(options, (res: any) => {
+			let data = "";
+
+			// A chunk of data has been received.
+			res.on("data", (chunk: any) => {
+				data += chunk;
+			});
+
+			// The whole response has been received.
+			res.on("end", () => {
+				try {
+					const response = JSON.parse(data);
+					const { latitude, longitude } = response;
+					resolve({ latitude, longitude });
+				} catch (error) {
+					reject(error);
+				}
+			});
+		});
+
+		req.on("error", (error: any) => {
+			reject(error);
+		});
+
+		// End the request
+		req.end();
+	});
+}
+
+function extractShortName(href: string) {
+	let result = "";
+	const match = href.match(/room\/([A-Z]+)-\w+/);
+	if (match) {
+		result = match[1];
+	}
+
+	return result;
+}
+async function createAllRoomObjects(validTable: any, roomAndAddress: any): Promise<Room[]> {
 	// get all tr rows
 	const allRows = findAllRows(validTable);
 	const tempRooms: Room[] = [];
+	const address = roomAndAddress.address;
+	const fullName = roomAndAddress.name;
 
-	// find room number
+	try {
+		const { latitude, longitude } = await geoLocationRequest(address);
 
-	for (const row of allRows) {
-		const roomNumber = findRoomNumber(row);
-		const roomCapacity = findRoomCapacity(row);
-		const furniture = findFurniture(row);
-		const roomType = findRoomType(row);
-		const href = findMoreInfo(row);
-		const newRoom = new Room("", "", roomNumber, "", "", 0, 0, roomCapacity, roomType, furniture, href);
-		tempRooms.push(newRoom);
+		for (const row of allRows) {
+			const roomNumber = findRoomNumber(row);
+			const roomCapacity = findRoomCapacity(row);
+			const furniture = findFurniture(row);
+			const roomType = findRoomType(row);
+			const href = findMoreInfo(row);
+			const roomID_Name = extractRoomNumber(href);
+			const shortName = extractShortName(href);
+			const newRoom = new Room(
+				fullName,
+				shortName,
+				roomNumber,
+				roomID_Name,
+				address,
+				latitude,
+				longitude,
+				roomCapacity,
+				roomType,
+				furniture,
+				href
+			);
+			tempRooms.push(newRoom);
+		}
+
+		return tempRooms;
+	} catch (error) {
+		console.error("Error getting location:", error);
+		throw error;
 	}
-	return tempRooms;
 }
 
 function findAllRows(table: any): any[] {
@@ -310,6 +387,78 @@ function findMoreInfo(row: any) {
 	return href;
 }
 
+function findNameAndAddressDiv(parsedRoomData: any): any {
+	if (!parsedRoomData) {
+		return null;
+	}
+
+	// find div with id = building-info
+	if (parsedRoomData.nodeName === "div" && parsedRoomData.attrs) {
+		const doesDivExist = parsedRoomData.attrs.find((node: any) => node.name === "id" && node.value === "building-info");
+		if (doesDivExist) {
+			return parsedRoomData;
+		}
+	}
+
+	// continue traversing
+	if (parsedRoomData.childNodes) {
+		for (const child of parsedRoomData.childNodes) {
+			const result = findNameAndAddressDiv(child);
+			if (result) {
+				return result;
+			}
+		}
+	}
+	return null;
+}
+
+function extractBuildingInfo(node: any) {
+	const buildingInfoDiv = findNameAndAddressDiv(node);
+	if (!buildingInfoDiv) {
+		return null; // If the div is not found, return null
+	}
+
+	let buildingName = "";
+	let buildingAddress = "";
+
+	// Extract building name from the h2 element
+	const h2Node = buildingInfoDiv.childNodes.find((child: any) => child.nodeName === "h2");
+	if (h2Node) {
+		const span = h2Node.childNodes.find((spanNode: any) => spanNode.nodeName === "span");
+		if (span && span.childNodes) {
+			const textNode = span.childNodes.find((textNode: any) => textNode.nodeName === "#text");
+			if (textNode) {
+				buildingName = textNode.value.trim(); // Extract the building name
+			}
+		}
+	}
+
+	// Extract building address from the first "building-field" div
+	const buildingFieldDivs = buildingInfoDiv.childNodes.filter(
+		(child: any) =>
+			child.nodeName === "div" &&
+			child.attrs?.some((attr: any) => attr.name === "class" && attr.value === "building-field")
+	);
+
+	if (buildingFieldDivs.length > 0) {
+		const firstFieldContentDiv = buildingFieldDivs[0].childNodes.find(
+			(fieldChild: any) =>
+				fieldChild.nodeName === "div" &&
+				fieldChild.attrs?.some((attr: any) => attr.name === "class" && attr.value === "field-content")
+		);
+
+		if (firstFieldContentDiv && firstFieldContentDiv.childNodes) {
+			const textNode = firstFieldContentDiv.childNodes.find((textNode: any) => textNode.nodeName === "#text");
+			if (textNode) {
+				buildingAddress = textNode.value.trim(); // Extract the building address
+			}
+		}
+	}
+	//console.log("name: " + buildingName);
+	//console.log("address: " + buildingAddress);
+	return { name: buildingName, address: buildingAddress }; // Return the extracted details
+}
+
 function findAllTables(parsedData: any): any {
 	const allTables: any[] = [];
 	traverse(parsedData);
@@ -387,6 +536,7 @@ async function createRoomsDataSetFromContent(content: string): Promise<Dataset> 
 	//console.log(parsedFileData);
 	// Find all the building links
 	const buildingLinks = findBuildingLinks(parsedFileData);
+	//console.log(buildingLinks);
 
 	// Process links
 	for (const link of buildingLinks) {
@@ -403,10 +553,11 @@ async function createRoomsDataSetFromContent(content: string): Promise<Dataset> 
 			const validTable = findValidTable(findTables);
 
 			if (validTable) {
-				const roomObjects = createAllRoomObjects(validTable);
+				const fullNameAndAddress = extractBuildingInfo(parsedRoomData);
+				const roomObjects = await createAllRoomObjects(validTable, fullNameAndAddress);
 				// Concatenate new rooms instead of overwriting
 				rooms = rooms.concat(roomObjects);
-				console.log(roomObjects);
+				console.log(rooms);
 			}
 		}
 	}
