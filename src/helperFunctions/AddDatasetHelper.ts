@@ -6,6 +6,7 @@ import Dataset from "../objects/Dataset";
 import Room from "../objects/Room";
 
 const parse5 = require("parse5");
+const http = require("http");
 //const fs = require("fs");
 
 export function validateDatasetParameters(id: string, content: string, kind: InsightDatasetKind): void {
@@ -165,38 +166,94 @@ function extractRoomNumber(url: string): any {
 	return match ? match[1].replace(/-/g, "_") : null; // Replace hyphen with underscore
 }
 
-function createAllRoomObjects(validTable: any, roomAndAddress: any): Room[] {
+async function geoLocationRequest(address: string): Promise<{ latitude: number; longitude: number }> {
+	const encodedAddress = encodeURIComponent(address);
+
+	const options = {
+		hostname: "cs310.students.cs.ubc.ca",
+		port: 11316,
+		path: `/api/v1/project_team209/${encodedAddress}`,
+		method: "GET",
+	};
+
+	return new Promise((resolve, reject) => {
+		const req = http.request(options, (res: any) => {
+			let data = "";
+
+			// A chunk of data has been received.
+			res.on("data", (chunk: any) => {
+				data += chunk;
+			});
+
+			// The whole response has been received.
+			res.on("end", () => {
+				try {
+					const response = JSON.parse(data);
+					const { latitude, longitude } = response;
+					resolve({ latitude, longitude });
+				} catch (error) {
+					reject(error);
+				}
+			});
+		});
+
+		req.on("error", (error: any) => {
+			reject(error);
+		});
+
+		// End the request
+		req.end();
+	});
+}
+
+function extractShortName(href: string) {
+	let result = "";
+	const match = href.match(/room\/([A-Z]+)-\w+/);
+	if (match) {
+		result = match[1];
+	}
+
+	return result;
+}
+async function createAllRoomObjects(validTable: any, roomAndAddress: any): Promise<Room[]> {
 	// get all tr rows
 	const allRows = findAllRows(validTable);
 	const tempRooms: Room[] = [];
 	const address = roomAndAddress.address;
 	const fullName = roomAndAddress.name;
 
-	// find room number
+	try {
+		const { latitude, longitude } = await geoLocationRequest(address);
 
-	for (const row of allRows) {
-		const roomNumber = findRoomNumber(row);
-		const roomCapacity = findRoomCapacity(row);
-		const furniture = findFurniture(row);
-		const roomType = findRoomType(row);
-		const href = findMoreInfo(row);
-		const roomID_Name = extractRoomNumber(href);
-		const newRoom = new Room(
-			fullName,
-			"",
-			roomNumber,
-			roomID_Name,
-			address,
-			0,
-			0,
-			roomCapacity,
-			roomType,
-			furniture,
-			href
-		);
-		tempRooms.push(newRoom);
+		for (const row of allRows) {
+			const roomNumber = findRoomNumber(row);
+			const roomCapacity = findRoomCapacity(row);
+			const furniture = findFurniture(row);
+			const roomType = findRoomType(row);
+			const href = findMoreInfo(row);
+			const roomID_Name = extractRoomNumber(href);
+			const shortName = extractShortName(href);
+			const newRoom = new Room(
+				fullName,
+				shortName,
+				roomNumber,
+				roomID_Name,
+				address,
+				latitude,
+				longitude,
+				roomCapacity,
+				roomType,
+				furniture,
+				href
+			);
+			tempRooms.push(newRoom);
+		}
+
+		return tempRooms;
+	} catch (error) {
+		console.error("Error getting location:", error);
+		throw error;
 	}
-	return tempRooms;
 }
 
 function findAllRows(table: any): any[] {
@@ -497,7 +554,7 @@ async function createRoomsDataSetFromContent(content: string): Promise<Dataset> 
 
 			if (validTable) {
 				const fullNameAndAddress = extractBuildingInfo(parsedRoomData);
-				const roomObjects = createAllRoomObjects(validTable, fullNameAndAddress);
+				const roomObjects = await createAllRoomObjects(validTable, fullNameAndAddress);
 				// Concatenate new rooms instead of overwriting
 				rooms = rooms.concat(roomObjects);
 				console.log(rooms);
