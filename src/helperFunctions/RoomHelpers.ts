@@ -335,7 +335,7 @@ export async function createRoomsDataSetFromContent(content: string): Promise<Da
 	tempRooms = roomResults.flat();
 
 	rooms = checkDuplicates(tempRooms);
-	console.log(rooms);
+	//console.log(rooms);
 	return new Dataset(rooms, InsightDatasetKind.Rooms);
 }
 
