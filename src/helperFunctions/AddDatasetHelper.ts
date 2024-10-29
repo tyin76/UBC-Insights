@@ -4,6 +4,7 @@ import { getAllCachedDatasetIds } from "../objects/FileManagement";
 import Section from "../objects/Section";
 import Dataset from "../objects/Dataset";
 import Room from "../objects/Room";
+import { text } from "stream/consumers";
 
 const parse5 = require("parse5");
 //const fs = require("fs");
@@ -159,20 +160,20 @@ function findBuildingLinks(node: any): string[] {
 	return links;
 }
 
-function createAllRoomObjects(validTable: any, rooms: Room[]): Room[] {
+function createAllRoomObjects(validTable: any): Room[] {
+	// get all tr rows
 	const allRows = findAllRows(validTable);
+	const tempRooms: Room[] = [];
+
 	// find room number
 
 	for (const row of allRows) {
 		const roomNumber = findRoomNumber(row);
+		const roomCapacity = findRoomCapacity(row);
+		const newRoom = new Room("", "", roomNumber, "", "", 0, 0, roomCapacity, "", "", "");
+		tempRooms.push(newRoom);
 	}
-
-	// find room capacity
-	// find furniture
-	// find room type
-	// find more room info
-
-	return rooms;
+	return tempRooms;
 }
 
 function findAllRows(table: any): any[] {
@@ -184,7 +185,7 @@ function findAllRows(table: any): any[] {
 				return;
 			}
 
-			if ((table.nodeName = "tbody")) {
+			if (table.nodeName === "tbody") {
 				if (table.childNodes) {
 					table.childNodes.forEach((child: any) => {
 						if (child.nodeName === "tr") {
@@ -207,17 +208,48 @@ function findAllRows(table: any): any[] {
 	return allRows;
 }
 
+function hasClass(td: any, classToFind: string): boolean {
+	// Fixed to properly check attrs array
+	return td.attrs?.some((attr: any) => attr.name === "class" && attr.value.includes(classToFind));
+}
+
 function findRoomNumber(row: any): string {
 	const classToFind = "views-field-field-room-number";
-	const roomNumber = "";
+	let roomNumber = "";
 
-	if (row.nodeName === "tr") {
-		if (row.childNodes) {
-			row.childNodes.filter((node: any) => node.nodeName === "td" && node.attr.value === classToFind);
+	const cells = row.childNodes.filter((node: any) => node.nodeName === "td");
+
+	cells.forEach((cell: any) => {
+		if (hasClass(cell, classToFind)) {
+			const anchor = cell.childNodes?.find((node: any) => node.nodeName === "a");
+			if (anchor && anchor.childNodes) {
+				const textNode = anchor.childNodes?.find((node: any) => node.nodeName === "#text");
+				if (textNode) {
+					roomNumber = textNode.value.trim();
+				}
+			}
 		}
-	}
-	// TODO: delete this stub
-	return "";
+	});
+
+	return roomNumber;
+}
+
+function findRoomCapacity(row: any): number {
+	const classToFind = "views-field-field-room-capacity";
+	let roomCapacity = 0;
+	const cells = row.childNodes.filter((node: any) => node.nodeName === "td");
+
+	cells.forEach((cell: any) => {
+		if (hasClass(cell, classToFind)) {
+			if (cell.childNodes) {
+				const textNode = cell.childNodes?.find((node: any) => node.nodeName === "#text");
+				if (textNode) {
+					roomCapacity = parseInt(textNode.value.trim(), 10);
+				}
+			}
+		}
+	});
+	return roomCapacity;
 }
 
 function findAllTables(parsedData: any): any {
@@ -279,7 +311,7 @@ function findValidTable(allTables: any): any {
 
 async function createRoomsDataSetFromContent(content: string): Promise<Dataset> {
 	const zip = new JSZip();
-	const rooms: Room[] = [];
+	let rooms: Room[] = [];
 	const zipData = await zip.loadAsync(content, { base64: true });
 
 	const campusFolderPath = "campus/";
@@ -311,9 +343,13 @@ async function createRoomsDataSetFromContent(content: string): Promise<Dataset> 
 			const parsedRoomData = parse5.parse(unparsedRoomData);
 			const findTables = findAllTables(parsedRoomData);
 			const validTable = findValidTable(findTables);
-			console.log(JSON.stringify(validTable));
 
-			//const roomObjects = createAllRoomObjects(validTable, rooms);
+			if (validTable) {
+				const roomObjects = createAllRoomObjects(validTable);
+				// Concatenate new rooms instead of overwriting
+				rooms = rooms.concat(roomObjects);
+				console.log(roomObjects);
+			}
 		}
 	}
 	return new Dataset(rooms, InsightDatasetKind.Rooms);
