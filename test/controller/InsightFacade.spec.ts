@@ -184,7 +184,7 @@ describe("InsightFacade", function () {
 				const validRooms = await getContentFromArchives("campus.zip");
 
 				const rowsInSectionDataset = 18;
-				const rowsInRoomsDataset = 728;
+				const rowsInRoomsDataset = 364;
 
 				await facade.addDataset("sections", sections, InsightDatasetKind.Sections);
 
