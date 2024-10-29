@@ -93,40 +93,6 @@ describe("InsightFacade", function () {
 			}
 		});
 
-		it("should list out all datasets with correct ids when adding both sections and rooms with different instance of facade [listDatasets]", async function () {
-			try {
-				const validRooms = await getContentFromArchives("campus.zip");
-
-				await facade.addDataset("rooms", validRooms, InsightDatasetKind.Rooms);
-
-				await facade.addDataset("sections", sections, InsightDatasetKind.Sections);
-
-				const newFacade = new InsightFacade();
-
-				let datasetArray = await newFacade.listDatasets();
-
-				let datasetIds = datasetArray.map((dataset) => dataset.id);
-
-				testStringArrayContents(datasetIds, "rooms");
-				testStringArrayContents(datasetIds, "sections");
-
-				await facade.addDataset("rooms2", validRooms, InsightDatasetKind.Rooms);
-				await facade.addDataset("sections2", sections, InsightDatasetKind.Sections);
-
-				datasetArray = await newFacade.listDatasets();
-
-				datasetIds = datasetArray.map((dataset) => dataset.id);
-
-				testStringArrayContents(datasetIds, "rooms");
-				testStringArrayContents(datasetIds, "sections");
-				testStringArrayContents(datasetIds, "rooms2");
-				testStringArrayContents(datasetIds, "sections2");
-			} catch (err) {
-				const errorMessage = (err as Error).message;
-				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
-			}
-		});
-
 		it("should list out all datasets with correct ids with different instance of facade [listDatasets]", async function () {
 			try {
 				await facade.addDataset("ubc1", sections, InsightDatasetKind.Sections);
