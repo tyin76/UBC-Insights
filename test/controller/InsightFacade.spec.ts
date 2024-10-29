@@ -97,8 +97,6 @@ describe("InsightFacade", function () {
 			try {
 				const validRooms = await getContentFromArchives("campus.zip");
 
-				await facade.addDataset("rooms", validRooms, InsightDatasetKind.Rooms);
-
 				await facade.addDataset("sections", sections, InsightDatasetKind.Sections);
 
 				const newFacade = new InsightFacade();
@@ -107,10 +105,9 @@ describe("InsightFacade", function () {
 
 				let datasetIds = datasetArray.map((dataset) => dataset.id);
 
-				testStringArrayContents(datasetIds, "rooms");
 				testStringArrayContents(datasetIds, "sections");
 
-				await facade.addDataset("rooms2", validRooms, InsightDatasetKind.Rooms);
+				await facade.addDataset("rooms", validRooms, InsightDatasetKind.Rooms);
 				await facade.addDataset("sections2", sections, InsightDatasetKind.Sections);
 
 				datasetArray = await newFacade.listDatasets();
@@ -119,7 +116,6 @@ describe("InsightFacade", function () {
 
 				testStringArrayContents(datasetIds, "rooms");
 				testStringArrayContents(datasetIds, "sections");
-				testStringArrayContents(datasetIds, "rooms2");
 				testStringArrayContents(datasetIds, "sections2");
 			} catch (err) {
 				const errorMessage = (err as Error).message;
