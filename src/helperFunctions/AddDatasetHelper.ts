@@ -4,6 +4,7 @@ import { getAllCachedDatasetIds } from "../objects/FileManagement";
 import Section from "../objects/Section";
 import Dataset from "../objects/Dataset";
 import Room from "../objects/Room";
+import { geoLocationRequest } from "./GeoHelper";
 
 const parse5 = require("parse5");
 const http = require("http");
@@ -166,46 +167,6 @@ function extractRoomNumber(url: string): any {
 	return match ? match[1].replace(/-/g, "_") : null; // Replace hyphen with underscore
 }
 
-async function geoLocationRequest(address: string): Promise<{ latitude: number; longitude: number }> {
-	const encodedAddress = encodeURIComponent(address);
-
-	const options = {
-		hostname: "cs310.students.cs.ubc.ca",
-		port: 11316,
-		path: `/api/v1/project_team209/${encodedAddress}`,
-		method: "GET",
-	};
-
-	return new Promise((resolve, reject) => {
-		const req = http.request(options, (res: any) => {
-			let data = "";
-
-			// A chunk of data has been received.
-			res.on("data", (chunk: any) => {
-				data += chunk;
-			});
-
-			// The whole response has been received.
-			res.on("end", () => {
-				try {
-					const response = JSON.parse(data);
-					const { latitude, longitude } = response;
-					resolve({ latitude, longitude });
-				} catch (error) {
-					reject(error);
-				}
-			});
-		});
-
-		req.on("error", (error: any) => {
-			reject(error);
-		});
-
-		// End the request
-		req.end();
-	});
-}
-
 function extractShortName(href: string) {
 	let result = "";
 	const match = href.match(/room\/([A-Z]+)-\w+/);
@@ -223,7 +184,7 @@ async function createAllRoomObjects(validTable: any, roomAndAddress: any): Promi
 	const fullName = roomAndAddress.name;
 
 	try {
-		const { latitude, longitude } = await geoLocationRequest(address);
+		const { lat, lon } = await geoLocationRequest(address);
 
 		for (const row of allRows) {
 			const roomNumber = findRoomNumber(row);
@@ -239,8 +200,8 @@ async function createAllRoomObjects(validTable: any, roomAndAddress: any): Promi
 				roomNumber,
 				roomID_Name,
 				address,
-				latitude,
-				longitude,
+				lat,
+				lon,
 				roomCapacity,
 				roomType,
 				furniture,
