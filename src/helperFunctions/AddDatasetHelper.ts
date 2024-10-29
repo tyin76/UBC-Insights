@@ -473,13 +473,7 @@ function findValidTable(allTables: any): any {
 	}
 }
 
-async function createRoomsDataSetFromContent(content: string): Promise<Dataset> {
-	const zip = new JSZip();
-	let rooms: Room[] = [];
-	let tempRooms: Room[] = [];
-
-	const zipData = await zip.loadAsync(content, { base64: true });
-
+function checkforIndexHTMAndCampusFolder(zipData: any): void {
 	const campusFolderPath = "campus/";
 	const hasCampusFolder = Object.keys(zipData.files).some((fileName) => fileName === campusFolderPath);
 	if (!hasCampusFolder) {
@@ -490,6 +484,16 @@ async function createRoomsDataSetFromContent(content: string): Promise<Dataset> 
 	if (!hasIndexHTM) {
 		throw new InsightError("No index.htm in zip file");
 	}
+}
+async function createRoomsDataSetFromContent(content: string): Promise<Dataset> {
+	const zip = new JSZip();
+	let rooms: Room[] = [];
+	let tempRooms: Room[] = [];
+
+	const zipData = await zip.loadAsync(content, { base64: true });
+
+	checkforIndexHTMAndCampusFolder(zipData);
+
 	const fileData = await zipData.file("index.htm")?.async("string");
 	const parsedFileData = parse5.parse(fileData);
 	//console.log(parsedFileData);
@@ -497,7 +501,6 @@ async function createRoomsDataSetFromContent(content: string): Promise<Dataset> 
 	const buildingLinks = findBuildingLinks(parsedFileData);
 	//console.log(buildingLinks);
 
-	// Process links
 	// Gather promises for each building link instead of awaiting inside the loop
 	const roomPromises = buildingLinks.map(async (link) => {
 		// Remove the './' from the beginning of the path if it exists
