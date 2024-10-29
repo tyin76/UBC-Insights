@@ -480,6 +480,8 @@ function findValidTable(allTables: any): any {
 async function createRoomsDataSetFromContent(content: string): Promise<Dataset> {
 	const zip = new JSZip();
 	let rooms: Room[] = [];
+	let roomNames: Set<string> = new Set();
+
 	const zipData = await zip.loadAsync(content, { base64: true });
 
 	const campusFolderPath = "campus/";
@@ -516,8 +518,14 @@ async function createRoomsDataSetFromContent(content: string): Promise<Dataset> 
 			if (validTable) {
 				const fullNameAndAddress = extractBuildingInfo(parsedRoomData);
 				const roomObjects = await createAllRoomObjects(validTable, fullNameAndAddress);
-				// Concatenate new rooms instead of overwriting
-				rooms = rooms.concat(roomObjects);
+
+				for (const room of roomObjects) {
+					const uniqueRoomName = room.getShortName() + room.getNumber();
+					if (!roomNames.has(uniqueRoomName)) {
+						roomNames.add(uniqueRoomName);
+						rooms.push(room);
+					}
+				}
 				console.log(rooms);
 			}
 		}
