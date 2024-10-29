@@ -7,8 +7,6 @@ import Room from "../objects/Room";
 import { geoLocationRequest } from "./GeoHelper";
 
 const parse5 = require("parse5");
-const http = require("http");
-//const fs = require("fs");
 
 export function validateDatasetParameters(id: string, content: string, kind: InsightDatasetKind): void {
 	if (id === null || id === undefined || id.trim() === "" || typeof id !== "string" || id.includes("_")) {
@@ -115,9 +113,8 @@ export async function createSectionsDatasetFromContent(content: string, kind: In
 	return newDataset;
 }
 
-function findBuildingLinks(node: any): string[] {
+function findBuildingLinks(indexHTM: any): string[] {
 	const links: string[] = [];
-
 	// Helper function to check if node is a td with views-field class
 	function isViewsFieldTd(node: any): boolean {
 		return (
@@ -126,25 +123,18 @@ function findBuildingLinks(node: any): string[] {
 		);
 	}
 
-	// Helper function to find href in anchor tags
-	function findHrefInNode(node: any): string | null {
-		if (node.nodeName === "a" && node.attrs) {
-			const hrefAttr = node.attrs.find((attr: any) => attr.name === "href");
-			return hrefAttr?.value || null;
-		}
-		return null;
-	}
-
 	// Recursive function to traverse the node tree
-	function traverse(node: any) {
-		if (!node) return;
+	function traverse(node: any): any {
+		if (!node) {
+			return;
+		}
 
 		if (isViewsFieldTd(node)) {
 			// If found a td with views-field class, look for anchor tags within it
 			if (node.childNodes) {
 				node.childNodes.forEach((child: any) => {
 					const href = findHrefInNode(child);
-					if (href && href.includes(".htm")) {
+					if (href?.includes(".htm")) {
 						links.push(href);
 					}
 					// Continue traversing in case there are nested elements
@@ -152,22 +142,30 @@ function findBuildingLinks(node: any): string[] {
 				});
 			}
 		} else if (node.childNodes) {
-			// Continue traversing the tree
 			node.childNodes.forEach((child: any) => traverse(child));
 		}
 	}
 
-	traverse(node);
+	traverse(indexHTM);
 	return links;
 }
 
+// Helper function to find href in anchor tags
+function findHrefInNode(node: any): string | null {
+	if (node.nodeName === "a" && node.attrs) {
+		const hrefAttr = node.attrs.find((attr: any) => attr.name === "href");
+		return hrefAttr?.value || null;
+	}
+	return null;
+}
+
 function extractRoomNumber(url: string): any {
-	const regex = /room\/([A-Z0-9\-]+)/; // Regular expression to match the room number
+	const regex = /room\/([A-Z0-9-]+)/; // Regular expression to match the room number
 	const match = url.match(regex);
 	return match ? match[1].replace(/-/g, "_") : null; // Replace hyphen with underscore
 }
 
-function extractShortName(href: string) {
+function extractShortName(href: string): string {
 	let result = "";
 	const match = href.match(/room\/([A-Z]+)-\w+/);
 	if (match) {
@@ -183,45 +181,40 @@ async function createAllRoomObjects(validTable: any, roomAndAddress: any): Promi
 	const address = roomAndAddress.address;
 	const fullName = roomAndAddress.name;
 
-	try {
-		const { lat, lon } = await geoLocationRequest(address);
+	const { lat, lon } = await geoLocationRequest(address);
 
-		for (const row of allRows) {
-			const roomNumber = findRoomNumber(row);
-			const roomCapacity = findRoomCapacity(row);
-			const furniture = findFurniture(row);
-			const roomType = findRoomType(row);
-			const href = findMoreInfo(row);
-			const roomID_Name = extractRoomNumber(href);
-			const shortName = extractShortName(href);
-			const newRoom = new Room(
-				fullName,
-				shortName,
-				roomNumber,
-				roomID_Name,
-				address,
-				lat,
-				lon,
-				roomCapacity,
-				roomType,
-				furniture,
-				href
-			);
-			tempRooms.push(newRoom);
-		}
-
-		return tempRooms;
-	} catch (error) {
-		console.error("Error getting location:", error);
-		throw error;
+	for (const row of allRows) {
+		const roomNumber = findRoomNumber(row);
+		const roomCapacity = findRoomCapacity(row);
+		const furniture = findFurniture(row);
+		const roomType = findRoomType(row);
+		const href = findMoreInfo(row);
+		const roomIdName = extractRoomNumber(href);
+		const shortName = extractShortName(href);
+		const newRoom = new Room(
+			fullName,
+			shortName,
+			roomNumber,
+			roomIdName,
+			address,
+			lat,
+			lon,
+			roomCapacity,
+			roomType,
+			furniture,
+			href
+		);
+		tempRooms.push(newRoom);
 	}
+
+	return tempRooms;
 }
 
-function findAllRows(table: any): any[] {
-	function findTableBodyRows(table: any): any[] {
+function findAllRows(topTable: any): any[] {
+	function findTableBodyRows(secondTopTable: any): any[] {
 		const rows: any[] = [];
 
-		function traverse(table: any) {
+		function traverse(table: any): any {
 			if (!table) {
 				return;
 			}
@@ -242,10 +235,10 @@ function findAllRows(table: any): any[] {
 				});
 			}
 		}
-		traverse(table);
+		traverse(secondTopTable);
 		return rows;
 	}
-	const allRows = findTableBodyRows(table);
+	const allRows = findTableBodyRows(topTable);
 	return allRows;
 }
 
@@ -263,7 +256,7 @@ function findRoomNumber(row: any): string {
 	cells.forEach((cell: any) => {
 		if (hasClass(cell, classToFind)) {
 			const anchor = cell.childNodes?.find((node: any) => node.nodeName === "a");
-			if (anchor && anchor.childNodes) {
+			if (anchor?.childNodes) {
 				const textNode = anchor.childNodes?.find((node: any) => node.nodeName === "#text");
 				if (textNode) {
 					roomNumber = textNode.value.trim();
@@ -293,7 +286,7 @@ function findRoomCapacity(row: any): number {
 	return roomCapacity;
 }
 
-function findFurniture(row: any) {
+function findFurniture(row: any): string {
 	const classToFind = "views-field-field-room-furniture";
 	let furniture = "";
 	const cells = row.childNodes.filter((node: any) => node.nodeName === "td");
@@ -311,7 +304,7 @@ function findFurniture(row: any) {
 	return furniture;
 }
 
-function findRoomType(row: any) {
+function findRoomType(row: any): string {
 	const classToFind = "views-field-field-room-type";
 	let roomType = "";
 	const cells = row.childNodes.filter((node: any) => node.nodeName === "td");
@@ -329,7 +322,7 @@ function findRoomType(row: any) {
 	return roomType;
 }
 
-function findMoreInfo(row: any) {
+function findMoreInfo(row: any): string {
 	const classToFind = "views-field-nothing";
 	let href = "";
 	const cells = row.childNodes.filter((node: any) => node.nodeName === "td");
@@ -337,7 +330,7 @@ function findMoreInfo(row: any) {
 	cells.forEach((cell: any) => {
 		if (hasClass(cell, classToFind)) {
 			const anchor = cell.childNodes?.find((node: any) => node.nodeName === "a");
-			if (anchor && anchor.attrs) {
+			if (anchor?.attrs) {
 				const hrefAttribute = anchor.attrs?.find((node: any) => node.name === "href");
 				if (hrefAttribute) {
 					href = hrefAttribute.value.trim();

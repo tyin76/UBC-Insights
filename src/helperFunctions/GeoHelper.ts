@@ -4,7 +4,7 @@ const http = require("http");
 
 export async function geoLocationRequest(address: string): Promise<{ lat: number; lon: number }> {
 	const encodedAddress = encodeURIComponent(address);
-	console.log(encodedAddress);
+	//console.log(encodedAddress);
 
 	var options = {
 		hostname: "cs310.students.cs.ubc.ca",
