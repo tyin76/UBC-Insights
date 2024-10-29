@@ -46,7 +46,7 @@ export async function saveDatasetToDataCache(id: string, dataset: Dataset, kind:
 export async function removeDatasetFromDataCache(id: string): Promise<void> {
 	let filePath = path.join(directoryPath, `${id}.json`);
 
-	const datasetKind = await getKindFromId(id);
+	//const datasetKind = await getKindFromId(id);
 
 	try {
 		await fs.promises.unlink(filePath); // remove the file from the cache

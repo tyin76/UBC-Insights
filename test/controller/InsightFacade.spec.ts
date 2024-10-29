@@ -196,8 +196,6 @@ describe("InsightFacade", function () {
 
 				const datasetRows = datasetArray.map((dataset) => dataset.numRows);
 
-				const positionOfSections2 = 2;
-
 				expect(datasetRows).to.deep.include(rowsInSectionDataset);
 				expect(datasetRows).to.deep.include(rowsInRoomsDataset);
 			} catch (err) {

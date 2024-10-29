@@ -366,26 +366,29 @@ function findNameAndAddressDiv(parsedRoomData: any): any {
 	return null;
 }
 
-function extractBuildingInfo(node: any) {
-	const buildingInfoDiv = findNameAndAddressDiv(node);
-	if (!buildingInfoDiv) {
-		return null; // If the div is not found, return null
-	}
-
+function findBuildingFullName(buildingInfoDiv: any): string {
 	let buildingName = "";
-	let buildingAddress = "";
-
-	// Extract building name from the h2 element
 	const h2Node = buildingInfoDiv.childNodes.find((child: any) => child.nodeName === "h2");
 	if (h2Node) {
 		const span = h2Node.childNodes.find((spanNode: any) => spanNode.nodeName === "span");
-		if (span && span.childNodes) {
-			const textNode = span.childNodes.find((textNode: any) => textNode.nodeName === "#text");
+		if (span?.childNodes) {
+			const textNode = span.childNodes.find((text: any) => text.nodeName === "#text");
 			if (textNode) {
 				buildingName = textNode.value.trim(); // Extract the building name
 			}
 		}
 	}
+	return buildingName;
+}
+
+function extractBuildingInfo(node: any): any {
+	const buildingInfoDiv = findNameAndAddressDiv(node);
+	if (!buildingInfoDiv) {
+		return null; // If the div is not found, return null
+	}
+
+	const buildingName = findBuildingFullName(buildingInfoDiv);
+	let buildingAddress = "";
 
 	// Extract building address from the first "building-field" div
 	const buildingFieldDivs = buildingInfoDiv.childNodes.filter(
@@ -401,8 +404,8 @@ function extractBuildingInfo(node: any) {
 				fieldChild.attrs?.some((attr: any) => attr.name === "class" && attr.value === "field-content")
 		);
 
-		if (firstFieldContentDiv && firstFieldContentDiv.childNodes) {
-			const textNode = firstFieldContentDiv.childNodes.find((textNode: any) => textNode.nodeName === "#text");
+		if (firstFieldContentDiv?.childNodes) {
+			const textNode = firstFieldContentDiv.childNodes.find((text: any) => text.nodeName === "#text");
 			if (textNode) {
 				buildingAddress = textNode.value.trim(); // Extract the building address
 			}
@@ -417,7 +420,7 @@ function findAllTables(parsedData: any): any {
 	const allTables: any[] = [];
 	traverse(parsedData);
 
-	function traverse(node: any) {
+	function traverse(node: any): any {
 		if (node.tagName === "table") {
 			allTables.push(node);
 		}
@@ -432,17 +435,19 @@ function findAllTables(parsedData: any): any {
 function findValidTable(allTables: any): any {
 	// Helper function to check if td has views-field-field-number class
 	function hasNumberFieldClass(node: any): boolean {
-		if (node.nodeName !== "td") return false;
+		if (node.nodeName !== "td") {
+			return false;
+		}
 
 		return node.attrs?.some(
 			(attr: any) => attr.name === "class" && attr.value.includes("views-field-field-room-number")
 		);
 	}
 
-	function searchTableForNumberFieldClass(node: any): boolean {
+	function searchTableForNumberFieldClass(table: any): boolean {
 		let foundValidTd = false;
 
-		function traverse(node: any) {
+		function traverse(node: any): any {
 			if (!node) {
 				return false;
 			}
@@ -454,13 +459,11 @@ function findValidTable(allTables: any): any {
 			if (node.childNodes) {
 				node.childNodes.forEach((child: any) => {
 					// kinda redundant but just checking to be safe
-					if (!foundValidTd) {
-						traverse(child);
-					}
+					traverse(child);
 				});
 			}
 		}
-		traverse(node);
+		traverse(table);
 		return foundValidTd;
 	}
 	for (const table of allTables) {
@@ -473,7 +476,7 @@ function findValidTable(allTables: any): any {
 async function createRoomsDataSetFromContent(content: string): Promise<Dataset> {
 	const zip = new JSZip();
 	let rooms: Room[] = [];
-	let roomNames: Set<string> = new Set();
+	let tempRooms: Room[] = [];
 
 	const zipData = await zip.loadAsync(content, { base64: true });
 
@@ -495,9 +498,11 @@ async function createRoomsDataSetFromContent(content: string): Promise<Dataset> 
 	//console.log(buildingLinks);
 
 	// Process links
-	for (const link of buildingLinks) {
+	// Gather promises for each building link instead of awaiting inside the loop
+	const roomPromises = buildingLinks.map(async (link) => {
 		// Remove the './' from the beginning of the path if it exists
-		const cleanPath = link.startsWith("./") ? link.slice(2) : link;
+		const sliceBy = 2;
+		const cleanPath = link.startsWith("./") ? link.slice(sliceBy) : link;
 
 		// Get the building details file from the zip
 		const roomFromBuildingFile = zipData.file(cleanPath);
@@ -510,20 +515,34 @@ async function createRoomsDataSetFromContent(content: string): Promise<Dataset> 
 
 			if (validTable) {
 				const fullNameAndAddress = extractBuildingInfo(parsedRoomData);
-				const roomObjects = await createAllRoomObjects(validTable, fullNameAndAddress);
-
-				for (const room of roomObjects) {
-					const uniqueRoomName = room.getShortName() + room.getNumber();
-					if (!roomNames.has(uniqueRoomName)) {
-						roomNames.add(uniqueRoomName);
-						rooms.push(room);
-					}
-				}
-				console.log(rooms);
+				return createAllRoomObjects(validTable, fullNameAndAddress);
 			}
 		}
-	}
+		return []; // Return an empty array if no valid table found or file not found
+	});
+
+	// Resolve all promises concurrently
+	const roomResults = await Promise.all(roomPromises);
+
+	// Flatten the results from each promise and concatenate to tempRooms
+	tempRooms = roomResults.flat();
+
+	rooms = checkDuplicates(tempRooms);
+	//console.log(rooms);
 	return new Dataset(rooms, InsightDatasetKind.Rooms);
+}
+
+function checkDuplicates(roomObjects: Room[]): Room[] {
+	const roomNames = new Set<string>();
+	const tempRooms: Room[] = [];
+	for (const room of roomObjects) {
+		const uniqueRoomName = room.getShortName() + room.getNumber();
+		if (!roomNames.has(uniqueRoomName)) {
+			roomNames.add(uniqueRoomName);
+			tempRooms.push(room);
+		}
+	}
+	return tempRooms;
 }
 
 export async function createDatasetFromContent(content: string, kind: InsightDatasetKind): Promise<Dataset> {
