@@ -39,11 +39,8 @@ export async function saveDatasetToDataCache(id: string, dataset: Dataset, kind:
 	await fs.promises.writeFile(filePath, kind); // writing the json file
 
 	// Now we are storing the sections/rows of the dataset in a file
-	// We only need to do this for sections datasets
-	if (kind === InsightDatasetKind.Sections) {
-		filePath = path.join(directoryPath, `${id}` + rowsKeyword);
-		await fs.promises.writeFile(filePath, dataset.getEntities().length + ""); // writing the json file
-	}
+	filePath = path.join(directoryPath, `${id}` + rowsKeyword);
+	await fs.promises.writeFile(filePath, dataset.getEntities().length + ""); // writing the json file
 }
 
 export async function removeDatasetFromDataCache(id: string): Promise<void> {
@@ -59,10 +56,8 @@ export async function removeDatasetFromDataCache(id: string): Promise<void> {
 		await fs.promises.unlink(filePath); // writing the json file
 
 		// delete idRows
-		if (datasetKind === InsightDatasetKind.Sections) {
-			filePath = path.join(directoryPath, `${id}` + rowsKeyword);
-			await fs.promises.unlink(filePath); // writing the json file
-		}
+		filePath = path.join(directoryPath, `${id}` + rowsKeyword);
+		await fs.promises.unlink(filePath); // writing the json file
 	} catch (err) {
 		const errorMessage = (err as Error).message;
 		throw new InsightError("Error: " + errorMessage);
