@@ -827,7 +827,60 @@ describe("InsightFacade", function () {
 			return typeof value === "number" ? Number(value) : String(value);
 		}
 
-		function checkSortedQuery(expected: InsightResult[], result: InsightResult[], keySortedAgainst: string): void {
+		function isInAscendingOrder(index: number, keysSortedAgainst: string[], result: InsightResult[]): boolean {
+
+			if (keysSortedAgainst.length === 0) {
+				return true;
+			}
+
+			const leftValue = getInsightResultValue(keysSortedAgainst[0], result[index]);
+			const rightValue = getInsightResultValue(keysSortedAgainst[0], result[index + 1]);
+
+			if (leftValue < rightValue) {
+				return true;
+			} else if (leftValue > rightValue) {
+				return false
+			} else {
+				return isInAscendingOrder(index, keysSortedAgainst.slice(1), result);
+			}
+		}
+
+		function isInDescendingOrder(index: number, keysSortedAgainst: string[], result: InsightResult[]): boolean {
+
+			if (keysSortedAgainst.length === 0) {
+				return true;
+			}
+
+			const leftValue = getInsightResultValue(keysSortedAgainst[0], result[index]);
+			const rightValue = getInsightResultValue(keysSortedAgainst[0], result[index + 1]);
+
+			if (leftValue > rightValue) {
+				return true;
+			} else if (leftValue < rightValue) {
+				return false
+			} else {
+				return isInDescendingOrder(index, keysSortedAgainst.slice(1), result);
+			}
+		}
+
+		function checkOrder(keysSortedAgainst: string[], isAscending: boolean, result: InsightResult[]): void {
+			for (let i = 0; i < result.length - 1; i++) {
+				if (isAscending) {
+					if (!isInAscendingOrder(i, keysSortedAgainst, result)) {
+						expect.fail("Sorted incorrectly for ascending order!");
+					}
+				} else {
+					if (!isInDescendingOrder(i, keysSortedAgainst, result)) {
+						expect.fail("Sorted incorrectly for descending order!");
+					}
+				}
+			}
+		}
+
+		function checkSortedQuery(expected: InsightResult[], result: InsightResult[], keysSortedAgainst: string[], isAscending: boolean): void {
+
+			const keySortedAgainst = keysSortedAgainst[0];
+
 			for (let i = 0; i < result.length - 1; i++) {
 				const currentValue = getInsightResultValue(keySortedAgainst, result[i]);
 
@@ -836,6 +889,8 @@ describe("InsightFacade", function () {
 					expect.fail("Sorted incorrectly!"); // The result is not sorted correctly
 				}
 			}
+
+			checkOrder(keysSortedAgainst, isAscending, result);
 		}
 
 		/**
@@ -843,12 +898,12 @@ describe("InsightFacade", function () {
 		 *
 		 * Note: the 'this' parameter is automatically set by Mocha and contains information about the test.
 		 */
-		async function checkQuery(this: Mocha.Context, keySortedAgainst: null | string = null): Promise<void> {
+		async function checkQuery(this: Mocha.Context, keySortedAgainst: null | string[] = null, isAscending: boolean = true): Promise<void> {
 			if (!this.test) {
 				throw new Error(
 					"Invalid call to checkQuery." +
-						"Usage: 'checkQuery' must be passed as the second parameter of Mocha's it(..) function." +
-						"Do not invoke the function directly."
+					"Usage: 'checkQuery' must be passed as the second parameter of Mocha's it(..) function." +
+					"Do not invoke the function directly."
 				);
 			}
 			// Destructuring assignment to reduce property accesses
@@ -861,7 +916,7 @@ describe("InsightFacade", function () {
 				}
 				expect(expected).to.have.deep.members(result);
 				if (keySortedAgainst !== null) {
-					checkSortedQuery(expected, result, keySortedAgainst);
+					checkSortedQuery(expected, result, keySortedAgainst, isAscending);
 				}
 			} catch (err) {
 				if (!errorExpected) {
@@ -977,7 +1032,7 @@ describe("InsightFacade", function () {
 		);
 		it("[valid/duplicateKeysInColumns.json] should still return values.", checkQuery);
 		it("[valid/ComplexNestedAndOrsNotArrays.json] should return all sections with avg greater than 70 that is not cpsc whose instructor is named johnson or whose section year is not before 2018 AND whose pass count is exactly 100 whose department is not math and whose instructor is not named smith AND sections whose department is stat whose average is greater than 85 whose number of failures is not less than 10. Ordered by sections_avg", async function () {
-			await checkQuery.call(this, "avg");
+			await checkQuery.call(this, ["avg", "instructor"]);
 		});
 		it("[invalid/invalidKeyInOptions.json] should fail as there is invalid key in OPTIONS", checkQuery);
 		it("[invalid/invalidTypeInOrder.json] should fail as there is an invalid type for ORDER", checkQuery);
@@ -1003,43 +1058,43 @@ describe("InsightFacade", function () {
 		);
 		it("[invalid/invalidWhereIsEmptyRetunsTooBig.json] should fail as we return more than 5000 sections", checkQuery);
 		it("[valid/sortedWithAudit.json] should pass when we sort with audit", async function () {
-			await checkQuery.call(this, "audit");
+			await checkQuery.call(this, ["audit"]);
 		});
 
 		it("[valid/sortedWithUuid.json] should pass when we sort with uuid", async function () {
-			await checkQuery.call(this, "uuid");
+			await checkQuery.call(this, ["uuid"]);
 		});
 
 		it("[valid/sortedWithTitle.json] should pass when we sort with title", async function () {
-			await checkQuery.call(this, "title");
+			await checkQuery.call(this, ["title"]);
 		});
 
 		it("[valid/sortedWithInstructor.json] should pass when we sort with instructor", async function () {
-			await checkQuery.call(this, "instructor");
+			await checkQuery.call(this, ["instructor"]);
 		});
 
 		it("[valid/sortedWithDept.json] should pass when we sort with dept", async function () {
-			await checkQuery.call(this, "dept");
+			await checkQuery.call(this, ["dept"]);
 		});
 
 		it("[valid/sortedWithYear.json] should pass when we sort with year", async function () {
-			await checkQuery.call(this, "year");
+			await checkQuery.call(this, ["year"]);
 		});
 
 		it("[valid/sortedWithAvg.json] should pass when we sort with avg", async function () {
-			await checkQuery.call(this, "avg");
+			await checkQuery.call(this, ["avg"]);
 		});
 
 		it("[valid/sortedWithPass.json] should pass when we sort with pass", async function () {
-			await checkQuery.call(this, "pass");
+			await checkQuery.call(this, ["pass"]);
 		});
 
 		it("[valid/sortedWithFail.json] should pass when we sort with fail", async function () {
-			await checkQuery.call(this, "fail");
+			await checkQuery.call(this, ["fail"]);
 		});
 
 		it("[valid/sortedWithId.json] should pass when we sort with id", async function () {
-			await checkQuery.call(this, "id");
+			await checkQuery.call(this, ["id"]);
 		});
 	});
 });
