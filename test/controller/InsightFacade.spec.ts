@@ -920,7 +920,7 @@ describe("InsightFacade", function () {
 				}
 			} catch (err) {
 				if (!errorExpected) {
-					expect.fail(`performQuery threw unexpected error: ${err}`);
+					expect.fail(`performQuery threw unexpected error: ${(err as Error).stack}`);
 				}
 
 				if (expected === "InsightError") {
@@ -937,11 +937,13 @@ describe("InsightFacade", function () {
 			facade = new InsightFacade();
 
 			sections = await getContentFromArchives("pair.zip");
+			rooms = await getContentFromArchives("campus.zip");
 
 			// Add the datasets to InsightFacade once.
 			// Will *fail* if there is a problem reading ANY dataset.
 			const loadDatasetPromises: Promise<string[]>[] = [
 				facade.addDataset("sections", sections, InsightDatasetKind.Sections),
+				facade.addDataset("rooms", rooms, InsightDatasetKind.Rooms)
 			];
 
 			try {
@@ -1032,7 +1034,7 @@ describe("InsightFacade", function () {
 		);
 		it("[valid/duplicateKeysInColumns.json] should still return values.", checkQuery);
 		it("[valid/ComplexNestedAndOrsNotArrays.json] should return all sections with avg greater than 70 that is not cpsc whose instructor is named johnson or whose section year is not before 2018 AND whose pass count is exactly 100 whose department is not math and whose instructor is not named smith AND sections whose department is stat whose average is greater than 85 whose number of failures is not less than 10. Ordered by sections_avg", async function () {
-			await checkQuery.call(this, ["avg", "instructor"]);
+			await checkQuery.call(this, ["avg"]);
 		});
 		it("[invalid/invalidKeyInOptions.json] should fail as there is invalid key in OPTIONS", checkQuery);
 		it("[invalid/invalidTypeInOrder.json] should fail as there is an invalid type for ORDER", checkQuery);
@@ -1095,6 +1097,12 @@ describe("InsightFacade", function () {
 
 		it("[valid/sortedWithId.json] should pass when we sort with id", async function () {
 			await checkQuery.call(this, ["id"]);
+		});
+		it("[valid/validGetAllRoomsAndTheirFields.json] should pass when we get all rooms and sort with shortname", async function () {
+			await checkQuery.call(this, ["shortname"]);
+		});
+		it("[valid/validComplexWhereTestQueryForRooms.json] should pass complex query which retrieves rooms with more than 30 seats or exactly 50 seats that are either of type Lecture, have Movable furniture, or have latitude less than 49.3 and longitude greater than -123.2.", async function () {
+			await checkQuery.call(this, ["shortname"]);
 		});
 	});
 });

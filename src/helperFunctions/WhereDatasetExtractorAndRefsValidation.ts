@@ -1,8 +1,12 @@
-import { InsightError } from "../controller/IInsightFacade";
+import { InsightDatasetKind, InsightError } from "../controller/IInsightFacade";
+import Dataset from "../objects/Dataset";
+import { getDatasetFromId, getKindFromId } from "../objects/FileManagement";
 import { getKeysWithUnderscore } from "./QueryHandler";
-import { isFieldValidSectionField } from "./ValidationHelpers";
+import { validateOptionsAndGetSingleDataset } from "./EntityValidationHelpers";
+import { isFieldValidSectionField } from "./SectionValidationHelper";
+import { isFieldValidRoomField } from "./RoomValidationHelper";
 
-export function validateDatasetRefsInWhereAndGetSingleDataset(where: any): string {
+export async function validateDatasetRefsInWhereAndGetSingleDataset(where: any): Promise<string> {
 	const datasetNameSet = new Set<string>();
 	let datasetName = "";
 
@@ -16,7 +20,8 @@ export function validateDatasetRefsInWhereAndGetSingleDataset(where: any): strin
 
 		const field = getDatasetField(datasetNameAndField);
 
-		validateDatasetField(field);
+
+		validateDatasetField(field, await getKindFromId(datasetName));
 		assertSingleDatasetReference(datasetName, datasetNameSet);
 	}
 	return datasetName;
@@ -33,10 +38,17 @@ function assertSingleDatasetReference(datasetName: string, datasetNameSet: Set<s
 	}
 }
 
-function validateDatasetField(field: string): void {
+function validateDatasetField(field: string, kind: InsightDatasetKind): void {
 	// checks to see if filed is valid, remember filed is invalid if it is not one of the following "year", "avg", "pass", "fail", "audit", "uuid", "id", "title", "instructor", "dept"
-	if (!isFieldValidSectionField(field)) {
-		throw new InsightError("Dataset field is invalid");
+	
+	if (kind === InsightDatasetKind.Sections) {
+		if (!isFieldValidSectionField(field)) {
+			throw new InsightError("Dataset field for Section is invalid");
+		}
+	} else {
+		if (!isFieldValidRoomField(field)) {
+			throw new InsightError("Dataset field for Room is invalid");
+		}
 	}
 }
 
@@ -61,4 +73,28 @@ function validateDatasetNameAndFieldFormat(datasetNameAndField: string[]): void 
 	if (datasetNameAndField.length !== correctArrayLength) {
 		throw new InsightError("Missing dataset name, or parameter");
 	}
+}
+
+export async function getDatasetAndValidateQuery(query: any): Promise<Dataset> {
+
+	const { WHERE } = query as any;
+
+	// This looks at the entire query and gets the id/name of the dataset that we need to access, this also validates the WHERE object
+// To ensure that it is formatted correctly
+const datasetNameToQueryFromWhere = await validateDatasetRefsInWhereAndGetSingleDataset(WHERE);
+
+// This looks at the entire query and gets the id/name of the dataset that we need to access, this also validates the OPTIONS object
+// To ensure that it is formatted correctly
+const datasetNameToQueryFromOptions = validateOptionsAndGetSingleDataset(query.OPTIONS);
+
+const datasetName = datasetNameToQueryFromOptions;
+
+// This means that WHERE is an empty object ie: {} and does not have the datasetName within it, so we must now find it in the columns portion
+if (datasetNameToQueryFromWhere !== "" && datasetNameToQueryFromWhere !== datasetNameToQueryFromOptions) {
+throw new InsightError("WHERE and COLOUMNS does not reference the same dataset");
+}
+
+// Gets the dataset to query
+return await getDatasetFromId(datasetName);
+
 }

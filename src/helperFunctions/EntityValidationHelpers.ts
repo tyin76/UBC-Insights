@@ -1,20 +1,10 @@
-import { InsightError } from "../controller/IInsightFacade";
+import { InsightDatasetKind, InsightError } from "../controller/IInsightFacade";
+import { isFieldValidRoomField } from "./RoomValidationHelper";
+import { isFieldValidSectionField } from "./SectionValidationHelper";
 
 const seperatedArrayLengths = 2;
 
-function isFieldValidSectionNumberField(field: string): boolean {
-	return ["year", "avg", "pass", "fail", "audit"].includes(field);
-}
-
-function isFieldValidSectionStringField(param: string): boolean {
-	return ["uuid", "id", "title", "instructor", "dept"].includes(param);
-}
-
-export function isFieldValidSectionField(param: string): boolean {
-	return isFieldValidSectionNumberField(param) || isFieldValidSectionStringField(param);
-}
-
-export function validateAndExtractSectionFieldAndComparisonValue(object: any, isStringOnlyValue: boolean): any[] {
+export function validateAndExtractEntityFieldAndComparisonValue(object: any, isStringOnlyValue: boolean, kind: InsightDatasetKind): any[] {
 	const operators = Object.keys(object);
 
 	if (operators.length !== 1) {
@@ -24,20 +14,26 @@ export function validateAndExtractSectionFieldAndComparisonValue(object: any, is
 	const conditionKey = operators[0];
 
 	// Remember that the condition key is formatted like this "sections_dept", thus splitting at _, dept should be at index 1
-	const sectionFieldToBeEvaluated = conditionKey.split("_")[1];
+	const entityFieldToBeEvaluated = conditionKey.split("_")[1];
 
-	if (!isFieldValidSectionField(sectionFieldToBeEvaluated)) {
-		throw new InsightError("Invalid condition Key");
+	if (kind === InsightDatasetKind.Sections) {
+		if (!isFieldValidSectionField(entityFieldToBeEvaluated)) {
+			throw new InsightError("Invalid condition Key");
+		}
+	} else {
+		if (!isFieldValidRoomField(entityFieldToBeEvaluated)) {
+			throw new InsightError("Invalid condition Key");
+		}
 	}
 
 	const comparisonValue = object[conditionKey];
 
-	validateSectionFieldTypeSameAsComparisonValue(comparisonValue, isStringOnlyValue);
+	validateEntityFieldTypeSameAsComparisonValue(comparisonValue, isStringOnlyValue);
 
-	return [sectionFieldToBeEvaluated, comparisonValue];
+	return [entityFieldToBeEvaluated, comparisonValue];
 }
 
-function validateSectionFieldTypeSameAsComparisonValue(comparisonValue: any, isStringOnlyValue: boolean): void {
+function validateEntityFieldTypeSameAsComparisonValue(comparisonValue: any, isStringOnlyValue: boolean): void {
 	if (typeof comparisonValue !== "number" && typeof comparisonValue !== "string") {
 		throw new InsightError("condition value is of an invalid type, not number or a string!");
 	}

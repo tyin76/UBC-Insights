@@ -175,7 +175,7 @@ function createRoomDatasetFromJson(content: string): Dataset {
 				String(roomDataObj.name),
 				String(roomDataObj.address),
 				Number(roomDataObj.lat),
-				Number(roomDataObj.number),
+				Number(roomDataObj.lon),
 				Number(roomDataObj.seats),
 				String(roomDataObj.type),
 				String(roomDataObj.furniture),
@@ -184,7 +184,7 @@ function createRoomDatasetFromJson(content: string): Dataset {
 		);
 	}
 
-	return new Dataset(roomArray, InsightDatasetKind.Sections);
+	return new Dataset(roomArray, InsightDatasetKind.Rooms);
 }
 
 async function loadJsonFileById(id: string): Promise<string> {
@@ -207,7 +207,7 @@ export async function getDatasetFromId(id: string): Promise<Dataset> {
 
 		return createRoomDatasetFromJson(content);
 	} catch (err) {
-		const errorMessage = (err as Error).message;
+		const errorMessage = (err as Error).stack;
 		throw new InsightError("Error: " + errorMessage);
 	}
 }
