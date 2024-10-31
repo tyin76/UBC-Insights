@@ -931,6 +931,7 @@ describe("InsightFacade", function () {
 
 				if (expected === "InsightError") {
 					expect(err).to.be.instanceOf(InsightError);
+					console.log((err as InsightError).message);
 				} else if (expected === "ResultTooLargeError") {
 					expect(err).to.be.instanceOf(ResultTooLargeError);
 				} else {
@@ -1179,10 +1180,38 @@ describe("InsightFacade", function () {
 			checkQuery
 		);
 		it(
-			"[invalid/invalidTransformationsMissingGroupForSection.json] should fail as group is missing in transformations ",
+			"[invalid/invalidTransformationsMissingGroup.json] should fail as group is missing in transformations",
+			checkQuery
+		);
+		it(
+			"[invalid/invalidKeyTypeInAvgForTransformations.json] should fail as type for Avg is incorrect in transformations",
+			checkQuery
+		);
+		it(
+			"[invalid/invalidKeyTypeInMaxForTransformations.json] should fail as type for Max is incorrect in transformations",
+			checkQuery
+		);
+		it(
+			"[invalid/invalidKeyTypeInMinForTransformations.json] should fail as type for Min is incorrect in transformations",
+			checkQuery
+		);
+		it(
+			"[invalid/invalidCustomKeyAppearsInGroupOfTransformation.json] should fail as custom key appears in group of transformations",
+			checkQuery
+		);
+		it(
+			"[invalid/invalidNonCustomKeysDontAllAppearInTransformationGroup.json] should fail as non custom keys don't all appear in transformation group",
+			checkQuery
+		);
+		it(
+			"[invalid/invalidCannotUseTransformationsOnCustomKeys.json] should fail as transformation aggregation cannot be used on custom keys",
 			checkQuery
 		);
 
+		it(
+			"[invalid/invalidTransformationsReferencingADifferentDatasetThanOptionsAndWhere.json] should fail as you reference a different dataset in TRANSFORMATION than OPTIONS and WHERE",
+			checkQuery
+		);
 		it(
 			"[valid/validTransformationGroupDeptAndIdForSections.json] should pass when group dept and id when we query sections",
 			checkQuery
@@ -1199,6 +1228,10 @@ describe("InsightFacade", function () {
 		);
 		it(
 			"[valid/validUnusedColumnOverallAvgForSection.json] should pass when we don't use a custom columns when we query sections",
+			checkQuery
+		);
+		it(
+			"[valid/validQuerySectionsNoOrder.json] should pass when we query sections without providing an order",
 			checkQuery
 		);
 	});

@@ -1,6 +1,7 @@
 import { InsightDatasetKind, InsightError } from "../controller/IInsightFacade";
 import { isFieldValidRoomField } from "./RoomValidationHelper";
 import { isFieldValidSectionField } from "./SectionValidationHelper";
+import { doesQueryContainTransformations } from "./TransformationsHelper";
 
 const seperatedArrayLengths = 2;
 
@@ -51,17 +52,27 @@ function validateEntityFieldTypeSameAsComparisonValue(comparisonValue: any, isSt
 	}
 }
 
-export function validateOptionsAndGetSingleDataset(options: any): string {
+export function validateOptionsAndGetSingleDataset(query: any): string {
 	// We intialize a set, remember, a set cannot hold duplicate values
 	const nameSet = new Set<string>();
 	let datasetName = "";
 
-	for (const column of options.COLUMNS) {
+	for (const column of query.OPTIONS.COLUMNS) {
+
+		// Skip past the custom keys created (it won't have an underscore)
+		if (!column.includes("_")) {
+			continue;
+		}
+
 		const columnParts = column.split("_");
 
 		// Check if the column contains a dataset name
-		if (columnParts.length !== seperatedArrayLengths) {
-			throw new InsightError("Invalid column name format. Should be 'datasetName_param'.");
+		if (!doesQueryContainTransformations(query)) {
+			if (columnParts.length !== seperatedArrayLengths) {
+				throw new InsightError("Invalid column key, keys without underscores are only allowed when transformation is present.");
+			}
+		} else {
+		//	validateTransformation(query);
 		}
 
 		datasetName = columnParts[0];

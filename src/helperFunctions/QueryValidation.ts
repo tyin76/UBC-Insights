@@ -1,4 +1,5 @@
 import { InsightError } from "../controller/IInsightFacade";
+import { doesQueryContainTransformations } from "./TransformationsHelper";
 
 export function validateQuery(query: any): void {
 	validateQueryExistence(query);
@@ -8,6 +9,35 @@ export function validateQuery(query: any): void {
 	validateOrderInOptions(query.OPTIONS);
 	validateKeysInOptions(query.OPTIONS);
 	validateKeysInQuery(query);
+	if (doesQueryContainTransformations(query)) {
+	validateKeysInTransformations(query.TRANSFORMATIONS);
+	validateApplyInTransformations(query);
+	validateOrderInTransformations(query);
+	}
+}
+
+function validateOrderInTransformations(query: any) {
+	if (!query.TRANSFORMATIONS.GROUP) {
+		throw new InsightError("TRANSFORMATIONS missing GROUP");
+	}
+}
+
+function validateApplyInTransformations(query: any) {
+	if (!query.TRANSFORMATIONS.APPLY) {
+		throw new InsightError("TRANSFORMATIONS missing APPLY");
+	}
+}
+
+function validateKeysInTransformations(transformations: any): void {
+	for (const key of Object.keys(transformations)) {
+		if (!isValidTransformationsKey(key)) {
+			throw new InsightError("TRANSFORMATIONS has an invalid key");
+		}
+	}
+}
+
+function isValidTransformationsKey(key: string): boolean {
+	return ["GROUP", "APPLY"].includes(key);
 }
 
 function isValidOptionsKey(key: string): boolean {
@@ -15,7 +45,7 @@ function isValidOptionsKey(key: string): boolean {
 }
 
 function isValidQueryKey(key: string): boolean {
-	return ["WHERE", "OPTIONS"].includes(key);
+	return ["WHERE", "OPTIONS", "TRANSFORMATIONS"].includes(key);
 }
 
 function validateQueryExistence(query: any): void {
