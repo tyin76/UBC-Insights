@@ -1,0 +1,41 @@
+{
+	"title": "invalidExtraKeysInTransformations",
+	"input": {
+		"WHERE": {},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_dept",
+				"sections_id",
+				"overallAvg",
+				"maxSectionAvg",
+				"minSectionAvg"
+			]
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"sections_dept",
+				"sections_id"
+			],
+			"APPLY": [
+				{
+					"overallAvg": {
+						"AVG": "sections_avg"
+					}
+				},
+				{
+					"maxSectionAvg": {
+						"MAX": "sections_avg"
+					}
+				},
+				{
+					"minSectionAvg": {
+						"MIN": "sections_avg"
+					}
+				}
+			],
+			"NotValid": []
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}

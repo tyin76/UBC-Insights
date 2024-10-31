@@ -1144,5 +1144,62 @@ describe("InsightFacade", function () {
 				false
 			);
 		});
+
+		it(
+			"[invalid/invalidCannotHaveUnderscoreInApplyKeyForSection.json] should fail as apply key has an underscore for transformations",
+			checkQuery
+		);
+		it(
+			"[invalid/invalidExtraKeysInTransformationsForSection.json] should fail as there are extra keys in transformations",
+			checkQuery
+		);
+
+		it(
+			"[invalid/invalidKeyInGroupWhenTransformationPresentForSection.json] should fail as there is an invalid key in group for transformations",
+			checkQuery
+		);
+		it(
+			"[invalid/invalidKeyNOTAKEYinColumnsForSection.json] should fail as there is an invalid key in columns for transformation",
+			checkQuery
+		);
+		it(
+			"[invalid/invalidKeysInColumnDoesNotAppearInGroupOrApplyWhenTransformationPresentForSection.json] should fail as keys in column do not appear in group or apply when transformation is present",
+			checkQuery
+		);
+		it(
+			"[invalid/invalidTransformationGroupMustBeNonEmptyArrayForSection.json] should fail as there group is not a non empty array for transformations",
+			checkQuery
+		);
+		it(
+			"[invalid/invalidTransformationOperatorForSection.json] should fail as there is an invalid operator in tranformation",
+			checkQuery
+		);
+		it(
+			"[invalid/invalidTransformationsMissingApplyForSection.json] should fail as apply is missing in transformations",
+			checkQuery
+		);
+		it(
+			"[invalid/invalidTransformationsMissingGroupForSection.json] should fail as group is missing in transformations ",
+			checkQuery
+		);
+
+		it(
+			"[valid/validTransformationGroupDeptAndIdForSections.json] should pass when group dept and id when we query sections",
+			checkQuery
+		);
+		it(
+			"[valid/validTransformationsApplyHasEmptyArrayForSection.json] should pass even when apply has an empty array when we query sections",
+			checkQuery
+		);
+		// not sure how to write a test for this it("[valid/validTransformationGroupDeptAndIdForSections.json]", checkQuery);
+		// not sure how to write a test for this it("[valid/validTransformationSectionSortedWithCustomField.json]", checkQuery);
+		it(
+			"[valid/validTransformationsMultipleCustomColumnsForSection.json] should pass when we have multiple custom columns when we query sections",
+			checkQuery
+		);
+		it(
+			"[valid/validUnusedColumnOverallAvgForSection.json] should pass when we don't use a custom columns when we query sections",
+			checkQuery
+		);
 	});
 });
