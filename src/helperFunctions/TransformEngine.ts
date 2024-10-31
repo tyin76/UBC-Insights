@@ -2,6 +2,7 @@ import Decimal from "decimal.js";
 import {InsightError, InsightResult } from "../controller/IInsightFacade";
 import { isFieldValidRoomNumberField, isFieldValidRoomStringField } from "./RoomValidationHelper";
 import { isFieldValidSectionNumberField, isFieldValidSectionStringField } from "./SectionValidationHelper";
+import { recursiveInsightResultCompare } from "./InsightResultSortHelper";
 
 export function transformEngine(insightResults: InsightResult[], query: any): InsightResult[] {
 	if (insightResults.length === 0) {
@@ -20,7 +21,34 @@ export function transformEngine(insightResults: InsightResult[], query: any): In
 		transform(transformationInsightResults, insightResults, query, instruction[0], instruction[1], instruction[2]);
 	}
 
-	return columnFilteredInsightResults(query, Object.values(transformationInsightResults));
+	const filteredInsightResults = columnFilteredInsightResults(query, Object.values(transformationInsightResults))
+
+	return sortInsightResults(query, filteredInsightResults);
+}
+
+function sortInsightResults(query: any, insightResults: InsightResult[]): InsightResult[] {
+	if (query.OPTIONS.ORDER !== null && query.OPTIONS.ORDER !== undefined) {
+		if (typeof query.OPTIONS.ORDER === "string") {
+			sortInsightResultsUsingKey([query.OPTIONS.ORDER], insightResults);
+		} else {
+			sortInsightResultsUsingKey(
+				query.OPTIONS.ORDER.keys,
+				insightResults,
+				query.OPTIONS.ORDER.dir
+			);
+		}
+	}
+	return insightResults;
+}
+
+function sortInsightResultsUsingKey(conditionKeys: string[], insightResultsToSort: InsightResult[], direction = "UP"): void {
+	insightResultsToSort.sort((x, y) => recursiveInsightResultCompare(conditionKeys, x, y));
+
+	if (direction === "DOWN") {
+		insightResultsToSort.reverse();
+	} else if (direction !== "UP") {
+		throw new InsightError("Invalid dir key");
+	}
 }
 
 function columnFilteredInsightResults(query: any, insightResults: InsightResult[]): InsightResult[] {

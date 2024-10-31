@@ -1259,7 +1259,6 @@ describe("InsightFacade", function () {
 			checkQuery
 		);
 		// not sure how to write a test for this it("[valid/validTransformationGroupDeptAndIdForSections.json]", checkQuery);
-		// not sure how to write a test for this it("[valid/validTransformationSectionSortedWithCustomField.json]", checkQuery);
 		it(
 			"[valid/validTransformationsMultipleCustomColumnsForSection.json] should pass when we have multiple custom columns when we query sections",
 			checkQuery
@@ -1288,5 +1287,6 @@ describe("InsightFacade", function () {
 			"[valid/validUsingMultipleTransformationOperatorsForRoomsQuery.json] should pass when we use query rooms with multiple trasnformations",
 			checkQuery
 		);
+		it("[valid/validTransformationSectionSortedWithCustomField.json] should pass sorting the query correctly", checkQuery);
 	});
 });

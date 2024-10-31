@@ -9,7 +9,7 @@ export function parseSectionsData(sections: Section[], query: any): InsightResul
 	const insightResultsToReturn: InsightResult[] = [];
 
 	// This sorts based on the parameter provided to ORDER
-	if (query.OPTIONS.ORDER !== null && query.OPTIONS.ORDER !== undefined) {
+	if (query.OPTIONS.ORDER !== null && query.OPTIONS.ORDER !== undefined && !doesQueryContainTransformations(query)) {
 		if (typeof query.OPTIONS.ORDER === "string") {
 			sortSectionUsingKey([query.OPTIONS.ORDER.split("_")[1]], sections);
 		} else {
