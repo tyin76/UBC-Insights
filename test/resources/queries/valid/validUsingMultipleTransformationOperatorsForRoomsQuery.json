@@ -1,0 +1,456 @@
+{
+	"title": "validUsingMultipleTransformationOperatorsForRoomsQuery",
+	"input": {
+		"WHERE": {
+			"AND": [
+				{
+					"IS": {
+						"rooms_furniture": "*Tables*"
+					}
+				},
+				{
+					"GT": {
+						"rooms_seats": 0
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"rooms_shortname",
+				"countRooms",
+				"maxRoomType",
+				"minRoomType",
+				"countFurniture",
+				"maxFurnitureType",
+				"minFurnitureType",
+				"countShortname"
+			]
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"rooms_shortname"
+			],
+			"APPLY": [
+				{
+					"countRooms": {
+						"COUNT": "rooms_seats"
+					}
+				},
+				{
+					"maxRoomType": {
+						"MAX": "rooms_seats"
+					}
+				},
+				{
+					"minRoomType": {
+						"MIN": "rooms_lon"
+					}
+				},
+				{
+					"countFurniture": {
+						"COUNT": "rooms_furniture"
+					}
+				},
+				{
+					"maxFurnitureType": {
+						"AVG": "rooms_lon"
+					}
+				},
+				{
+					"minFurnitureType": {
+						"MIN": "rooms_lat"
+					}
+				},
+				{
+					"countShortname": {
+						"COUNT": "rooms_shortname"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"rooms_shortname": "ALRD",
+			"countRooms": 4,
+			"maxRoomType": 94,
+			"minRoomType": -123.25318,
+			"countFurniture": 2,
+			"maxFurnitureType": -123.25,
+			"minFurnitureType": 49.2699,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "ANSO",
+			"countRooms": 3,
+			"maxRoomType": 37,
+			"minRoomType": -123.25741,
+			"countFurniture": 2,
+			"maxFurnitureType": -123.26,
+			"minFurnitureType": 49.26958,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "AUDX",
+			"countRooms": 2,
+			"maxRoomType": 21,
+			"minRoomType": -123.25655,
+			"countFurniture": 1,
+			"maxFurnitureType": -123.26,
+			"minFurnitureType": 49.2666,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "BIOL",
+			"countRooms": 2,
+			"maxRoomType": 76,
+			"minRoomType": -123.25249,
+			"countFurniture": 2,
+			"maxFurnitureType": -123.25,
+			"minFurnitureType": 49.26479,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "BRKX",
+			"countRooms": 2,
+			"maxRoomType": 70,
+			"minRoomType": -123.25237,
+			"countFurniture": 2,
+			"maxFurnitureType": -123.25,
+			"minFurnitureType": 49.26862,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"countRooms": 12,
+			"maxRoomType": 108,
+			"minRoomType": -123.25468,
+			"countFurniture": 5,
+			"maxFurnitureType": -123.25,
+			"minFurnitureType": 49.26826,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "CHBE",
+			"countRooms": 3,
+			"maxRoomType": 200,
+			"minRoomType": -123.24718,
+			"countFurniture": 2,
+			"maxFurnitureType": -123.25,
+			"minFurnitureType": 49.26228,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "CEME",
+			"countRooms": 6,
+			"maxRoomType": 100,
+			"minRoomType": -123.24894,
+			"countFurniture": 3,
+			"maxFurnitureType": -123.25,
+			"minFurnitureType": 49.26273,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "EOSM",
+			"countRooms": 1,
+			"maxRoomType": 50,
+			"minRoomType": -123.25198,
+			"countFurniture": 1,
+			"maxFurnitureType": -123.25,
+			"minFurnitureType": 49.26228,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "ESB",
+			"countRooms": 1,
+			"maxRoomType": 80,
+			"minRoomType": -123.25224,
+			"countFurniture": 1,
+			"maxFurnitureType": -123.25,
+			"minFurnitureType": 49.26274,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "FNH",
+			"countRooms": 1,
+			"maxRoomType": 28,
+			"minRoomType": -123.24959,
+			"countFurniture": 1,
+			"maxFurnitureType": -123.25,
+			"minFurnitureType": 49.26414,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "FSC",
+			"countRooms": 5,
+			"maxRoomType": 65,
+			"minRoomType": -123.24886,
+			"countFurniture": 2,
+			"maxFurnitureType": -123.25,
+			"minFurnitureType": 49.26044,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "FORW",
+			"countRooms": 3,
+			"maxRoomType": 63,
+			"minRoomType": -123.25179,
+			"countFurniture": 2,
+			"maxFurnitureType": -123.25,
+			"minFurnitureType": 49.26176,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "LASR",
+			"countRooms": 2,
+			"maxRoomType": 80,
+			"minRoomType": -123.25583,
+			"countFurniture": 2,
+			"maxFurnitureType": -123.26,
+			"minFurnitureType": 49.26767,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "FRDM",
+			"countRooms": 1,
+			"maxRoomType": 160,
+			"minRoomType": -123.24608,
+			"countFurniture": 1,
+			"maxFurnitureType": -123.25,
+			"minFurnitureType": 49.26541,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "GEOG",
+			"countRooms": 6,
+			"maxRoomType": 100,
+			"minRoomType": -123.25623,
+			"countFurniture": 3,
+			"maxFurnitureType": -123.26,
+			"minFurnitureType": 49.26605,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "HEBB",
+			"countRooms": 2,
+			"maxRoomType": 375,
+			"minRoomType": -123.25165,
+			"countFurniture": 2,
+			"maxFurnitureType": -123.25,
+			"minFurnitureType": 49.2661,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "HENN",
+			"countRooms": 2,
+			"maxRoomType": 36,
+			"minRoomType": -123.25374,
+			"countFurniture": 1,
+			"maxFurnitureType": -123.25,
+			"minFurnitureType": 49.26627,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"countRooms": 15,
+			"maxRoomType": 260,
+			"minRoomType": -123.25364,
+			"countFurniture": 2,
+			"maxFurnitureType": -123.25,
+			"minFurnitureType": 49.26486,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "DMP",
+			"countRooms": 4,
+			"maxRoomType": 160,
+			"minRoomType": -123.24807,
+			"countFurniture": 2,
+			"maxFurnitureType": -123.25,
+			"minFurnitureType": 49.26125,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "IONA",
+			"countRooms": 2,
+			"maxRoomType": 100,
+			"minRoomType": -123.25042,
+			"countFurniture": 2,
+			"maxFurnitureType": -123.25,
+			"minFurnitureType": 49.27106,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "IBLC",
+			"countRooms": 9,
+			"maxRoomType": 154,
+			"minRoomType": -123.2521,
+			"countFurniture": 4,
+			"maxFurnitureType": -123.25,
+			"minFurnitureType": 49.26766,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "SOWK",
+			"countRooms": 2,
+			"maxRoomType": 16,
+			"minRoomType": -123.25505,
+			"countFurniture": 1,
+			"maxFurnitureType": -123.26,
+			"minFurnitureType": 49.2643,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "LSK",
+			"countRooms": 4,
+			"maxRoomType": 205,
+			"minRoomType": -123.25533,
+			"countFurniture": 2,
+			"maxFurnitureType": -123.26,
+			"minFurnitureType": 49.26545,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "LSC",
+			"countRooms": 2,
+			"maxRoomType": 350,
+			"minRoomType": -123.24494,
+			"countFurniture": 1,
+			"maxFurnitureType": -123.24,
+			"minFurnitureType": 49.26236,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "MCLD",
+			"countRooms": 5,
+			"maxRoomType": 136,
+			"minRoomType": -123.24935,
+			"countFurniture": 2,
+			"maxFurnitureType": -123.25,
+			"minFurnitureType": 49.26176,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "MCML",
+			"countRooms": 6,
+			"maxRoomType": 72,
+			"minRoomType": -123.25027,
+			"countFurniture": 3,
+			"maxFurnitureType": -123.25,
+			"minFurnitureType": 49.26114,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "MATH",
+			"countRooms": 2,
+			"maxRoomType": 60,
+			"minRoomType": -123.255534,
+			"countFurniture": 1,
+			"maxFurnitureType": -123.26,
+			"minFurnitureType": 49.266463,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "SCRF",
+			"countRooms": 6,
+			"maxRoomType": 60,
+			"minRoomType": -123.2531,
+			"countFurniture": 2,
+			"maxFurnitureType": -123.25,
+			"minFurnitureType": 49.26398,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "ORCH",
+			"countRooms": 3,
+			"maxRoomType": 72,
+			"minRoomType": -123.24944,
+			"countFurniture": 2,
+			"maxFurnitureType": -123.25,
+			"minFurnitureType": 49.26048,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "PHRM",
+			"countRooms": 5,
+			"maxRoomType": 236,
+			"minRoomType": -123.24342,
+			"countFurniture": 2,
+			"maxFurnitureType": -123.24,
+			"minFurnitureType": 49.26229,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "PCOH",
+			"countRooms": 2,
+			"maxRoomType": 40,
+			"minRoomType": -123.2559,
+			"countFurniture": 2,
+			"maxFurnitureType": -123.26,
+			"minFurnitureType": 49.264,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "OSBO",
+			"countRooms": 2,
+			"maxRoomType": 442,
+			"minRoomType": -123.24467,
+			"countFurniture": 1,
+			"maxFurnitureType": -123.24,
+			"minFurnitureType": 49.26047,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "SPPH",
+			"countRooms": 6,
+			"maxRoomType": 66,
+			"minRoomType": -123.24842,
+			"countFurniture": 2,
+			"maxFurnitureType": -123.25,
+			"minFurnitureType": 49.2642,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "SRC",
+			"countRooms": 1,
+			"maxRoomType": 299,
+			"minRoomType": -123.24894,
+			"countFurniture": 1,
+			"maxFurnitureType": -123.25,
+			"minFurnitureType": 49.2683,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "UCLL",
+			"countRooms": 3,
+			"maxRoomType": 55,
+			"minRoomType": -123.25692,
+			"countFurniture": 2,
+			"maxFurnitureType": -123.26,
+			"minFurnitureType": 49.26867,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "SWNG",
+			"countRooms": 5,
+			"maxRoomType": 190,
+			"minRoomType": -123.25431,
+			"countFurniture": 3,
+			"maxFurnitureType": -123.25,
+			"minFurnitureType": 49.26293,
+			"countShortname": 1
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"countRooms": 7,
+			"maxRoomType": 120,
+			"minRoomType": -123.24673,
+			"countFurniture": 2,
+			"maxFurnitureType": -123.25,
+			"minFurnitureType": 49.26478,
+			"countShortname": 1
+		}
+	]
+}

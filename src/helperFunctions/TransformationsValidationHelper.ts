@@ -25,8 +25,30 @@ export function validateTransformationsAndGetSingleDataset(query: any): string {
 	const datasetName = getAndCheckTransformationReferencesSingleDataset(query);
 	checkDoesEveryCustomKeyAppearInApply(query, customKeysInColumn);
 	checkTransformationNotUsedOnCustomKeys(query, customKeysInColumn);
+	checkIfDuplicateApplyKeysInTransformation(query);
 
 	return datasetName;
+}
+
+function checkIfDuplicateApplyKeysInTransformation(query: any): void {
+
+	const objects = query.TRANSFORMATIONS.APPLY
+
+	const keysInApply: string[] = [];
+
+	const keySet: {[x:string]: boolean} = {};
+
+	for (const obj of objects as Object[]) {
+		keysInApply.push(Object.keys(obj)[0]);
+	}
+
+	for (const key of keysInApply) {
+		if (keySet[key] === undefined) {
+			keySet[key] = true;
+		} else {
+			throw new InsightError("Duplicate apply keys in transformations");
+		}
+	}
 }
 
 function getAndCheckTransformationReferencesSingleDataset(query: any): string {

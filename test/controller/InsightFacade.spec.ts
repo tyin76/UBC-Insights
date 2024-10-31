@@ -1233,9 +1233,16 @@ describe("InsightFacade", function () {
 			"[invalid/invalidCannotUseTransformationsOnCustomKeys.json] should fail as transformation aggregation cannot be used on custom keys",
 			checkQuery
 		);
-
 		it(
 			"[invalid/invalidTransformationsReferencingADifferentDatasetThanOptionsAndWhere.json] should fail as you reference a different dataset in TRANSFORMATION than OPTIONS and WHERE",
+			checkQuery
+		);
+		it(
+			"[invalid/duplicateApplyKeyInTransformations.json] should fail there are duplicate apply keys in transformations.",
+			checkQuery
+		);
+		it(
+			"[invalid/usingTransformationOperatorWrongly.json] should fail as you use the transformation operator as a field to transform in apply.",
 			checkQuery
 		);
 		it("[valid/validAggregateMaxOnly.json] should pass when aggregate max only.", checkQuery);
@@ -1267,6 +1274,18 @@ describe("InsightFacade", function () {
 		);
 		it(
 			"[valid/validallAggregationTransformations.json] should pass when we use all aggregation transformations in one query.",
+			checkQuery
+		);
+		it(
+			"[valid/validMultipleRepeatedTransformationOperators.json] should pass when we use all aggregation transformations multiple times in one query.",
+			checkQuery
+		);
+		it(
+			"[valid/validMultipleRepeatedTransformationOperators.json] should pass when we use query rooms with transformations, no order yet",
+			checkQuery
+		);
+		it(
+			"[valid/validUsingMultipleTransformationOperatorsForRoomsQuery.json] should pass when we use query rooms with multiple trasnformations",
 			checkQuery
 		);
 	});

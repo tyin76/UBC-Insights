@@ -254,10 +254,10 @@ function getSumForGroup(
 		}
 		if (transformationInsightResults[currGroupId] === undefined) {
 			transformationInsightResults[currGroupId] = insightResult;
-		} else {
-			sumMap[currGroupId] = (sumMap[currGroupId] as Decimal).add(new Decimal(result[fieldToSum]));
 		}
-		if (sumMap[currGroupId] === undefined) {
+		if (sumMap[currGroupId] !== undefined){
+			sumMap[currGroupId] = (sumMap[currGroupId] as Decimal).add(new Decimal(result[fieldToSum]));
+		}else if (sumMap[currGroupId] === undefined) {
 			sumMap[currGroupId] = new Decimal(result[fieldToSum]);
 		}
 	}
@@ -294,13 +294,14 @@ function getAvgForGroup(
 		}
 		if (transformationInsightResults[currGroupId] === undefined) {
 			transformationInsightResults[currGroupId] = insightResult;
-		} else {
+		} 
+		
+		if (avgMap[currGroupId] !== undefined){
 			avgMap[currGroupId][totalKeyword] = (avgMap[currGroupId][totalKeyword] as Decimal).add(
 				new Decimal(result[fieldToAvg])
 			);
 			avgMap[currGroupId][rowsKeyword] = (avgMap[currGroupId][rowsKeyword] as number) + 1;
-		}
-		if (avgMap[currGroupId] === undefined) {
+		} else if (avgMap[currGroupId] === undefined) {
 			avgMap[currGroupId] = {};
 			avgMap[currGroupId][rowsKeyword] = 1;
 			avgMap[currGroupId][totalKeyword] = new Decimal(result[fieldToAvg]);
