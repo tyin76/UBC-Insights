@@ -1213,7 +1213,23 @@ describe("InsightFacade", function () {
 			checkQuery
 		);
 		it(
+			"[valid/validAggregateMaxOnly.json] should pass when aggregate max only.",
+			checkQuery
+		);
+		it(
+			"[valid/validAggregateCountOnly.json] should pass when aggregate count only.",
+			checkQuery
+		);
+		it(
+			"[valid/validAggregateMinOnly.json] should pass when aggregate min only.",
+			checkQuery
+		);
+		it(
 			"[valid/validAggregateAvgOnly.json] should pass when aggregate avg only.",
+			checkQuery
+		);
+		it(
+			"[valid/validAggregateSumOnly.json] should pass when aggregate sum only.",
 			checkQuery
 		);
 		it(
