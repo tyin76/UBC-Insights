@@ -189,7 +189,7 @@ export async function getAllValidEntities(query: any): Promise<Section[] | Room[
 	const datasetToQuery = await getDatasetAndValidateQuery(query);
 
 	if (datasetToQuery.getKind() === InsightDatasetKind.Sections) {
-		return filterSectionDataset(datasetToQuery, operator, operatorParameter);
+		return filterSectionDataset(datasetToQuery, operator, operatorParameter, query);
 	}
 
 	return filterRoomDataset(datasetToQuery, operator, operatorParameter);

@@ -1213,6 +1213,10 @@ describe("InsightFacade", function () {
 			checkQuery
 		);
 		it(
+			"[valid/validAggregateAvgOnly.json] should pass when aggregate avg only.",
+			checkQuery
+		);
+		it(
 			"[valid/validTransformationGroupDeptAndIdForSections.json] should pass when group dept and id when we query sections",
 			checkQuery
 		);

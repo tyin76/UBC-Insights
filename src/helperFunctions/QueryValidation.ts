@@ -1,5 +1,5 @@
 import { InsightError } from "../controller/IInsightFacade";
-import { doesQueryContainTransformations } from "./TransformationsHelper";
+import { doesQueryContainTransformations } from "./TransformationsValidationHelper";
 
 export function validateQuery(query: any): void {
 	validateQueryExistence(query);

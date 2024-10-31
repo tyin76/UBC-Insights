@@ -24,6 +24,8 @@ import {
 import Room from "../objects/Room";
 import { parseSectionsData } from "../helperFunctions/SectionParseHelper";
 import { parseRoomsData } from "../helperFunctions/RoomParseHelper";
+import { doesQueryContainTransformations } from "../helperFunctions/TransformationsValidationHelper";
+import { transformEngine } from "../helperFunctions/TransformEngine";
 
 /**
  * This is the main programmatic entry point for the project.
@@ -73,11 +75,17 @@ export default class InsightFacade implements IInsightFacade {
 		}
 
 		if (entities[0] instanceof Section) {
-			const insightSectionResults: InsightResult[] = parseSectionsData(entities as Section[], query);
+			let insightSectionResults: InsightResult[] = parseSectionsData(entities as Section[], query);
+			if (doesQueryContainTransformations(query)) {
+				insightSectionResults = transformEngine(insightSectionResults, query);
+			}
 			return insightSectionResults;
 		} else {
-			const insightSectionResults: InsightResult[] = parseRoomsData(entities as Room[], query);
-			return insightSectionResults;
+			let insightRoomsResults: InsightResult[] = parseRoomsData(entities as Room[], query);
+			if (doesQueryContainTransformations(query)) {
+				insightRoomsResults = transformEngine(insightRoomsResults, query);
+			}
+			return insightRoomsResults;
 		}
 	}
 

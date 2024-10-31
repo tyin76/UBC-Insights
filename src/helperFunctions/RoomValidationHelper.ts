@@ -1,8 +1,8 @@
-function isFieldValidRoomNumberField(field: string): boolean {
+export function isFieldValidRoomNumberField(field: string): boolean {
 	return ["lat", "lon", "seats"].includes(field);
 }
 
-function isFieldValidRoomStringField(param: string): boolean {
+export function isFieldValidRoomStringField(param: string): boolean {
 	return ["fullname", "shortname", "number", "name", "address", "type", "furniture", "href"].includes(param);
 }
 

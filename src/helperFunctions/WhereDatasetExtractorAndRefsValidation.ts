@@ -5,7 +5,10 @@ import { getKeysWithUnderscore } from "./QueryHandler";
 import { validateOptionsAndGetSingleDataset } from "./EntityValidationHelpers";
 import { isFieldValidSectionField } from "./SectionValidationHelper";
 import { isFieldValidRoomField } from "./RoomValidationHelper";
-import { doesQueryContainTransformations, validateTransformationsAndGetSingleDataset } from "./TransformationsHelper";
+import {
+	doesQueryContainTransformations,
+	validateTransformationsAndGetSingleDataset,
+} from "./TransformationsValidationHelper";
 
 export async function validateDatasetRefsInWhereAndGetSingleDataset(where: any): Promise<string> {
 	const datasetNameSet = new Set<string>();
@@ -77,6 +80,14 @@ function validateDatasetNameAndFieldFormat(datasetNameAndField: string[]): void 
 	if (datasetNameAndField.length !== correctArrayLength) {
 		throw new InsightError("Missing dataset name, or parameter");
 	}
+}
+
+export function dangerouslyGetDatasetNameFromQuery(query: any): string {
+	const datasetNameToQueryFromOptions = validateOptionsAndGetSingleDataset(query);
+
+	const datasetName = datasetNameToQueryFromOptions;
+
+	return datasetName;
 }
 
 export async function getDatasetAndValidateQuery(query: any): Promise<Dataset> {

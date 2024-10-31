@@ -1,7 +1,7 @@
 import { InsightDatasetKind, InsightError } from "../controller/IInsightFacade";
 import { isFieldValidRoomField } from "./RoomValidationHelper";
 import { isFieldValidSectionField } from "./SectionValidationHelper";
-import { doesQueryContainTransformations } from "./TransformationsHelper";
+import { doesQueryContainTransformations } from "./TransformationsValidationHelper";
 
 const seperatedArrayLengths = 2;
 

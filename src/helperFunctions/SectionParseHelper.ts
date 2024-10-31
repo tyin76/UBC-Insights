@@ -2,6 +2,8 @@ import { InsightError, InsightResult } from "../controller/IInsightFacade";
 import Section from "../objects/Section";
 import { getSectionValueFromConditionKey } from "./SectionsFilterHelper";
 import { recursiveStringNumCompare } from "./SortHelper";
+import { doesQueryContainTransformations } from "./TransformationsValidationHelper";
+import { dangerouslyGetDatasetNameFromQuery } from "./WhereDatasetExtractorAndRefsValidation";
 
 export function parseSectionsData(sections: Section[], query: any): InsightResult[] {
 	const insightResultsToReturn: InsightResult[] = [];
@@ -22,9 +24,19 @@ export function parseSectionsData(sections: Section[], query: any): InsightResul
 	for (const section of sections) {
 		const insightResult: InsightResult = {};
 
-		for (const key of query.OPTIONS.COLUMNS) {
+		let keysToKeep = query.OPTIONS.COLUMNS;
+
+		if (doesQueryContainTransformations(query)) {
+			keysToKeep = getAllSectionKeys(query);
+		}
+
+		for (const key of keysToKeep) {
 			const datasetAndVariable: string[] = key.split("_");
 			const variable = datasetAndVariable[1];
+
+			if (!variable && doesQueryContainTransformations(query)) { // means that if variable is undefined, then likely transformations is present and a custom field is in the columns
+				continue;
+			}
 
 			insightResult[key] = getSectionValueFromConditionKey(variable, section);
 		}
@@ -44,3 +56,8 @@ function sortSectionUsingKey(conditionKeys: string[], sectionsToSort: Section[],
 		throw new InsightError("Invalid dir key");
 	}
 }
+
+function getAllSectionKeys(query: any): string[] {
+	const datasetName = dangerouslyGetDatasetNameFromQuery(query);
+	return [`${datasetName}_uuid`, `${datasetName}_id`, `${datasetName}_title`, `${datasetName}_instructor`, `${datasetName}_dept`, `${datasetName}_year`, `${datasetName}_avg`, `${datasetName}_pass`, `${datasetName}_fail`, `${datasetName}_audit`];
+}			

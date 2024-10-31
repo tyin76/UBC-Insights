@@ -1,8 +1,8 @@
-function isFieldValidSectionNumberField(field: string): boolean {
+export function isFieldValidSectionNumberField(field: string): boolean {
 	return ["year", "avg", "pass", "fail", "audit"].includes(field);
 }
 
-function isFieldValidSectionStringField(param: string): boolean {
+export function isFieldValidSectionStringField(param: string): boolean {
 	return ["uuid", "id", "title", "instructor", "dept"].includes(param);
 }
 

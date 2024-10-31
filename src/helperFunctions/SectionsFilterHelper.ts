@@ -2,8 +2,14 @@ import { InsightError, ResultTooLargeError } from "../controller/IInsightFacade"
 import Dataset from "../objects/Dataset";
 import Section from "../objects/Section";
 import { entityMatchesQueryRequirements, maxSections } from "./QueryHandler";
+import { doesQueryContainTransformations } from "./TransformationsValidationHelper";
 
-export function filterSectionDataset(datasetToQuery: Dataset, operator: any, operatorParameter: any): Section[] {
+export function filterSectionDataset(
+	datasetToQuery: Dataset,
+	operator: any,
+	operatorParameter: any,
+	query: any
+): Section[] {
 	// This will store all the sections that we should return to be processed
 	const sectionsToReturn: Section[] = [];
 
@@ -11,7 +17,7 @@ export function filterSectionDataset(datasetToQuery: Dataset, operator: any, ope
 		if (entityMatchesQueryRequirements(operator, operatorParameter, section, datasetToQuery.getKind())) {
 			sectionsToReturn.push(section);
 
-			if (sectionsToReturn.length > maxSections) {
+			if (sectionsToReturn.length > maxSections && !doesQueryContainTransformations(query)) {
 				throw new ResultTooLargeError("More than 5000 sections are going to be returned!");
 			}
 		}

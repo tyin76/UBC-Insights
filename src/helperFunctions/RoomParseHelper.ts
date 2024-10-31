@@ -2,6 +2,8 @@ import { InsightError, InsightResult } from "../controller/IInsightFacade";
 import Room from "../objects/Room";
 import { getRoomValueFromConditionKey } from "./RoomsFilterHelper";
 import { recursiveStringNumCompare } from "./SortHelper";
+import { doesQueryContainTransformations } from "./TransformationsValidationHelper";
+import { dangerouslyGetDatasetNameFromQuery } from "./WhereDatasetExtractorAndRefsValidation";
 
 export function parseRoomsData(rooms: Room[], query: any): InsightResult[] {
 	const insightResultsToReturn: InsightResult[] = [];
@@ -22,9 +24,19 @@ export function parseRoomsData(rooms: Room[], query: any): InsightResult[] {
 	for (const room of rooms) {
 		const insightResult: InsightResult = {};
 
-		for (const key of query.OPTIONS.COLUMNS) {
+        let keysToKeep = query.OPTIONS.COLUMNS;
+
+        if (doesQueryContainTransformations(query)) {
+			keysToKeep = getAllRoomKeys(query);
+		}
+
+		for (const key of keysToKeep) {
 			const datasetAndVariable: string[] = key.split("_");
 			const variable = datasetAndVariable[1];
+
+            if (!variable && doesQueryContainTransformations(query)) { // means that if variable is undefined, then likely transformations is present and a custom field is in the columns
+				continue;
+			}
 
 			insightResult[key] = getRoomValueFromConditionKey(variable, room);
 		}
@@ -44,3 +56,9 @@ function sortRoomUsingKey(conditionKeys: string[], roomsToSort: Room[], directio
 		throw new InsightError("Invalid dir key");
 	}
 }
+
+function getAllRoomKeys(query: any): string[] {
+	const datasetName = dangerouslyGetDatasetNameFromQuery(query);
+	return [`${datasetName}_fullname`, `${datasetName}_shortname`, `${datasetName}_number`, `${datasetName}_name`, `${datasetName}_address`, `${datasetName}_lat`, `${datasetName}_lon`, `${datasetName}_seats`, `${datasetName}_type`, `${datasetName}_furniture`, `${datasetName}_href`];
+}
+
