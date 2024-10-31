@@ -34,7 +34,8 @@ export function parseSectionsData(sections: Section[], query: any): InsightResul
 			const datasetAndVariable: string[] = key.split("_");
 			const variable = datasetAndVariable[1];
 
-			if (!variable && doesQueryContainTransformations(query)) { // means that if variable is undefined, then likely transformations is present and a custom field is in the columns
+			if (!variable && doesQueryContainTransformations(query)) {
+				// means that if variable is undefined, then likely transformations is present and a custom field is in the columns
 				continue;
 			}
 
@@ -59,5 +60,16 @@ function sortSectionUsingKey(conditionKeys: string[], sectionsToSort: Section[],
 
 function getAllSectionKeys(query: any): string[] {
 	const datasetName = dangerouslyGetDatasetNameFromQuery(query);
-	return [`${datasetName}_uuid`, `${datasetName}_id`, `${datasetName}_title`, `${datasetName}_instructor`, `${datasetName}_dept`, `${datasetName}_year`, `${datasetName}_avg`, `${datasetName}_pass`, `${datasetName}_fail`, `${datasetName}_audit`];
-}			
+	return [
+		`${datasetName}_uuid`,
+		`${datasetName}_id`,
+		`${datasetName}_title`,
+		`${datasetName}_instructor`,
+		`${datasetName}_dept`,
+		`${datasetName}_year`,
+		`${datasetName}_avg`,
+		`${datasetName}_pass`,
+		`${datasetName}_fail`,
+		`${datasetName}_audit`,
+	];
+}

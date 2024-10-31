@@ -16,13 +16,13 @@ export function validateQuery(query: any): void {
 	}
 }
 
-function validateOrderInTransformations(query: any) {
+function validateOrderInTransformations(query: any): void {
 	if (!query.TRANSFORMATIONS.GROUP) {
 		throw new InsightError("TRANSFORMATIONS missing GROUP");
 	}
 }
 
-function validateApplyInTransformations(query: any) {
+function validateApplyInTransformations(query: any): void {
 	if (!query.TRANSFORMATIONS.APPLY) {
 		throw new InsightError("TRANSFORMATIONS missing APPLY");
 	}

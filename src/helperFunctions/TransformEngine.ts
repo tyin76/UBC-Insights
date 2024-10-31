@@ -1,8 +1,7 @@
 import Decimal from "decimal.js";
-import { InsightDatasetKind, InsightError, InsightResult } from "../controller/IInsightFacade";
+import {InsightError, InsightResult } from "../controller/IInsightFacade";
 import { isFieldValidRoomNumberField, isFieldValidRoomStringField } from "./RoomValidationHelper";
 import { isFieldValidSectionNumberField, isFieldValidSectionStringField } from "./SectionValidationHelper";
-import InsightFacade from "../controller/InsightFacade";
 
 export function transformEngine(insightResults: InsightResult[], query: any): InsightResult[] {
 	if (insightResults.length === 0) {
@@ -13,11 +12,32 @@ export function transformEngine(insightResults: InsightResult[], query: any): In
 
 	const transformationInsightResults: { [key: string]: InsightResult } = {};
 
-		for (const instruction of transformInstructions) {
-			transform(transformationInsightResults, insightResults, query, instruction[0], instruction[1], instruction[2]);
-		}
+	if (transformInstructions.length === 0) {
+		return groupOnly(transformationInsightResults, insightResults, query);
+	}
 
-	return Object.values(transformationInsightResults);
+	for (const instruction of transformInstructions) {
+		transform(transformationInsightResults, insightResults, query, instruction[0], instruction[1], instruction[2]);
+	}
+
+	return columnFilteredInsightResults(query, Object.values(transformationInsightResults));
+}
+
+function columnFilteredInsightResults(query: any, insightResults: InsightResult[]): InsightResult[] {
+	const columns = query.OPTIONS.COLUMNS;
+
+	const newInsightToReturn: InsightResult[] = [];
+
+	for (const result of insightResults) {
+		const newInsightResult: InsightResult = {};
+		for (const key of Object.keys(result)) {
+			if (columns.includes(key)) {
+				newInsightResult[key] = result[key];
+			}
+		}
+		newInsightToReturn.push(newInsightResult);
+	}
+	return newInsightToReturn;
 }
 
 function transform(
@@ -26,7 +46,7 @@ function transform(
 	query: any,
 	customFieldName: string,
 	transformationOperator: string,
-	fieldToTransform: string,
+	fieldToTransform: string
 ): InsightResult[] {
 	switch (transformationOperator) {
 		case "MAX":
@@ -41,6 +61,26 @@ function transform(
 			return getCountForGroup(transformationInsightResults, insightResults, query, customFieldName, fieldToTransform);
 	}
 	throw new InsightError("Invalid transformation operator");
+}
+
+function groupOnly(	transformationInsightResults: { [key: string]: InsightResult },
+	insightResults: InsightResult[],
+	query: any,): InsightResult[]  {
+	const fieldsToGroupBy: string[] = getFieldsToGroupBy(query);
+
+	for (const result of insightResults) {
+		let currGroupId: string = "";
+		const insightResult: InsightResult = {};
+		for (const field of fieldsToGroupBy) {
+			currGroupId += result[field];
+			insightResult[field] = result[field];
+		}
+	
+		if (transformationInsightResults[currGroupId] === undefined) {
+			transformationInsightResults[currGroupId] = insightResult;
+		} 
+	}
+	return Object.values(transformationInsightResults);
 }
 
 function getTransformInstructions(query: any): string[][] {
@@ -69,16 +109,22 @@ function getCountForGroup(
 	customFieldName: string,
 	fieldToCount: string
 ): InsightResult[] {
+	const parsedField = fieldToCount.split("_")[1];
 
-    const parsedField = fieldToCount.split("_")[1];
-
-    if (!(isFieldValidRoomNumberField(parsedField) || isFieldValidSectionNumberField(parsedField) || isFieldValidRoomStringField(parsedField) || isFieldValidSectionStringField(parsedField))) {
+	if (
+		!(
+			isFieldValidRoomNumberField(parsedField) ||
+			isFieldValidSectionNumberField(parsedField) ||
+			isFieldValidRoomStringField(parsedField) ||
+			isFieldValidSectionStringField(parsedField)
+		)
+	) {
 		throw new InsightError("Field provided is of the wrong type for transformation");
 	}
 
 	const fieldsToGroupBy: string[] = getFieldsToGroupBy(query);
 
-	const countMap: {[key: string]: Set<number | string>} = {};
+	const countMap: { [key: string]: Set<number | string> } = {};
 
 	for (const result of insightResults) {
 		let currGroupId: string = "";
@@ -87,13 +133,18 @@ function getCountForGroup(
 			currGroupId += result[field];
 			insightResult[field] = result[field];
 		}
-		if (!transformationInsightResults[currGroupId]) {
-			transformationInsightResults[currGroupId] = insightResult;
-			transformationInsightResults[currGroupId][customFieldName] = 0;
+		if (countMap[currGroupId] === undefined) {
 			countMap[currGroupId] = new Set();
 			countMap[currGroupId].add(result[fieldToCount]);
 		} else {
 			countMap[currGroupId].add(result[fieldToCount]);
+		}
+		if (transformationInsightResults[currGroupId] === undefined) {
+			transformationInsightResults[currGroupId] = insightResult;
+		} 
+		if (transformationInsightResults[currGroupId][customFieldName] === undefined) {
+			transformationInsightResults[currGroupId][customFieldName] = 0;
+
 		}
 	}
 
@@ -113,8 +164,6 @@ function getMinForGroup(
 ): InsightResult[] {
 	checkIfFieldTypeOfNumber(fieldToFindMin);
 
-    
-
 	const fieldsToGroupBy: string[] = getFieldsToGroupBy(query);
 
 	for (const result of insightResults) {
@@ -124,13 +173,16 @@ function getMinForGroup(
 			currGroupId += result[field];
 			insightResult[field] = result[field];
 		}
-		if (!transformationInsightResults[currGroupId]) {
+		
+		if (transformationInsightResults[currGroupId] === undefined) {
 			transformationInsightResults[currGroupId] = insightResult;
-			transformationInsightResults[currGroupId][customFieldName] = result[fieldToFindMin] as number;
-		} else {
+		} 
+		if (transformationInsightResults[currGroupId][customFieldName] !== undefined) {
 			const min = transformationInsightResults[currGroupId][customFieldName];
 			const potentialMin = result[fieldToFindMin];
 			transformationInsightResults[currGroupId][customFieldName] = Math.min(min as number, potentialMin as number);
+		} else if (transformationInsightResults[currGroupId][customFieldName] === undefined) {
+			transformationInsightResults[currGroupId][customFieldName] = result[fieldToFindMin] as number;
 		}
 	}
 
@@ -138,14 +190,13 @@ function getMinForGroup(
 }
 
 function checkIfFieldTypeOfNumber(field: string): void {
+	const parsedField = field.split("_")[1];
 
-    const parsedField = field.split("_")[1];
+	if (isFieldValidRoomNumberField(parsedField) || isFieldValidSectionNumberField(parsedField)) {
+		return;
+	}
 
-    if (isFieldValidRoomNumberField(parsedField) || isFieldValidSectionNumberField(parsedField)) {
-        return;
-    }
-
-		throw new InsightError("Field provided is of the wrong type for transformation");
+	throw new InsightError("Field provided is of the wrong type for transformation");
 }
 
 function getMaxForGroup(
@@ -157,7 +208,6 @@ function getMaxForGroup(
 ): InsightResult[] {
 	checkIfFieldTypeOfNumber(fieldToFindMax);
 
-	
 	const fieldsToGroupBy: string[] = getFieldsToGroupBy(query);
 
 	for (const result of insightResults) {
@@ -167,13 +217,15 @@ function getMaxForGroup(
 			currGroupId += result[field];
 			insightResult[field] = result[field];
 		}
-		if (!transformationInsightResults[currGroupId]) {
+		if (transformationInsightResults[currGroupId] === undefined) {
 			transformationInsightResults[currGroupId] = insightResult;
-			transformationInsightResults[currGroupId][customFieldName] = result[fieldToFindMax] as number;
-		} else {
+		}
+		 if (transformationInsightResults[currGroupId][customFieldName] !== undefined) {
 			const max = transformationInsightResults[currGroupId][customFieldName];
 			const potentialMax = result[fieldToFindMax];
 			transformationInsightResults[currGroupId][customFieldName] = Math.max(max as number, potentialMax as number);
+		} else if (transformationInsightResults[currGroupId][customFieldName] === undefined) {
+			transformationInsightResults[currGroupId][customFieldName] = result[fieldToFindMax] as number;
 		}
 	}
 
@@ -191,7 +243,7 @@ function getSumForGroup(
 
 	const fieldsToGroupBy: string[] = getFieldsToGroupBy(query);
 
-	const sumMap: {[key: string]: Decimal} = {};
+	const sumMap: { [key: string]: Decimal } = {};
 
 	for (const result of insightResults) {
 		let currGroupId: string = "";
@@ -200,16 +252,18 @@ function getSumForGroup(
 			currGroupId += result[field];
 			insightResult[field] = result[field];
 		}
-		if (!transformationInsightResults[currGroupId]) {
+		if (transformationInsightResults[currGroupId] === undefined) {
 			transformationInsightResults[currGroupId] = insightResult;
-			sumMap[currGroupId] = new Decimal(result[fieldToSum]);
 		} else {
 			sumMap[currGroupId] = (sumMap[currGroupId] as Decimal).add(new Decimal(result[fieldToSum]));
+		}
+		if (sumMap[currGroupId] === undefined) {
+			sumMap[currGroupId] = new Decimal(result[fieldToSum]);
 		}
 	}
 
 	for (const key of Object.keys(sumMap)) {
-		transformationInsightResults[key][customFieldName] =  Number(sumMap[key].toFixed(2));
+		transformationInsightResults[key][customFieldName] = Number(sumMap[key].toFixed(2));
 	}
 
 	return Object.values(transformationInsightResults);
@@ -226,8 +280,8 @@ function getAvgForGroup(
 
 	const fieldsToGroupBy: string[] = getFieldsToGroupBy(query);
 
-	const avgMap: {[key: string]: {[x: string]: Decimal | number}} = {};
-	
+	const avgMap: { [key: string]: { [x: string]: Decimal | number } } = {};
+
 	const rowsKeyword = "rows";
 	const totalKeyword = "total";
 
@@ -238,22 +292,26 @@ function getAvgForGroup(
 			currGroupId += result[field];
 			insightResult[field] = result[field];
 		}
-		if (!transformationInsightResults[currGroupId]) {
+		if (transformationInsightResults[currGroupId] === undefined) {
 			transformationInsightResults[currGroupId] = insightResult;
-			avgMap[currGroupId] = {};
-			avgMap[currGroupId][rowsKeyword] = 1; 
-			avgMap[currGroupId][totalKeyword] = new Decimal(result[fieldToAvg]);
 		} else {
-			avgMap[currGroupId][totalKeyword] = (avgMap[currGroupId][totalKeyword] as Decimal).add(new Decimal(result[fieldToAvg]));
-			avgMap[currGroupId][rowsKeyword] = avgMap[currGroupId][rowsKeyword] as number + 1;
+			avgMap[currGroupId][totalKeyword] = (avgMap[currGroupId][totalKeyword] as Decimal).add(
+				new Decimal(result[fieldToAvg])
+			);
+			avgMap[currGroupId][rowsKeyword] = (avgMap[currGroupId][rowsKeyword] as number) + 1;
+		}
+		if (avgMap[currGroupId] === undefined) {
+			avgMap[currGroupId] = {};
+			avgMap[currGroupId][rowsKeyword] = 1;
+			avgMap[currGroupId][totalKeyword] = new Decimal(result[fieldToAvg]);
 		}
 	}
 
 	for (const key of Object.keys(avgMap)) {
 		const total = (avgMap[key][totalKeyword] as Decimal).toNumber();
 		const rows = avgMap[key][rowsKeyword] as number;
-		const avg = total/rows
-		transformationInsightResults[key][customFieldName] =  Number(avg.toFixed(2));
+		const avg = total / rows;
+		transformationInsightResults[key][customFieldName] = Number(avg.toFixed(2));
 	}
 
 	return Object.values(transformationInsightResults);

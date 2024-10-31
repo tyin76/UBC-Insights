@@ -6,6 +6,7 @@ import {
 	NotFoundError,
 	ResultTooLargeError,
 } from "../../src/controller/IInsightFacade";
+import * as fs from "fs";
 import InsightFacade from "../../src/controller/InsightFacade";
 import { clearDisk, getContentFromArchives, loadTestQuery } from "../TestUtil";
 
@@ -860,7 +861,6 @@ describe("InsightFacade", function () {
 				return isInDescendingOrder(index, keysSortedAgainst.slice(1), result);
 			}
 		}
-
 		function checkOrder(keysSortedAgainst: string[], isAscending: boolean, result: InsightResult[]): void {
 			for (let i = 0; i < result.length - 1; i++) {
 				if (isAscending) {
@@ -920,7 +920,34 @@ describe("InsightFacade", function () {
 				if (errorExpected) {
 					expect.fail(`performQuery resolved when it should have rejected with ${expected}`);
 				}
+
+				function writeTextToFile(filePath: string, text: string): void {
+					fs.writeFile(filePath, text, "utf8", (err) => {
+						if (err) {
+							return;
+						}
+					});
+				}
+
+				writeTextToFile("expected.txt", JSON.stringify(expected));
+				writeTextToFile("result.txt", JSON.stringify(result));
+
+				const differences = findDifferences(expected, result);
+			//	console.log('Missing in Result:', differences.missingInResult);
+			//	console.log('Extra in Result:', differences.extraInResult);
+
+				function findDifferences(expected: any, result: any) {
+					const expectedSet = new Set(expected);
+					const resultSet = new Set(result);
+				
+					const missingInResult = [...expectedSet].filter(item => !resultSet.has(item));
+					const extraInResult = [...resultSet].filter(item => !expectedSet.has(item));
+				
+					return { missingInResult, extraInResult };
+				}
+
 				expect(expected).to.have.deep.members(result);
+
 				if (keySortedAgainst !== null) {
 					checkSortedQuery(expected, result, keySortedAgainst, isAscending);
 				}
@@ -931,7 +958,6 @@ describe("InsightFacade", function () {
 
 				if (expected === "InsightError") {
 					expect(err).to.be.instanceOf(InsightError);
-					console.log((err as InsightError).message);
 				} else if (expected === "ResultTooLargeError") {
 					expect(err).to.be.instanceOf(ResultTooLargeError);
 				} else {
@@ -1212,26 +1238,11 @@ describe("InsightFacade", function () {
 			"[invalid/invalidTransformationsReferencingADifferentDatasetThanOptionsAndWhere.json] should fail as you reference a different dataset in TRANSFORMATION than OPTIONS and WHERE",
 			checkQuery
 		);
-		it(
-			"[valid/validAggregateMaxOnly.json] should pass when aggregate max only.",
-			checkQuery
-		);
-		it(
-			"[valid/validAggregateCountOnly.json] should pass when aggregate count only.",
-			checkQuery
-		);
-		it(
-			"[valid/validAggregateMinOnly.json] should pass when aggregate min only.",
-			checkQuery
-		);
-		it(
-			"[valid/validAggregateAvgOnly.json] should pass when aggregate avg only.",
-			checkQuery
-		);
-		it(
-			"[valid/validAggregateSumOnly.json] should pass when aggregate sum only.",
-			checkQuery
-		);
+		it("[valid/validAggregateMaxOnly.json] should pass when aggregate max only.", checkQuery);
+		it("[valid/validAggregateCountOnly.json] should pass when aggregate count only.", checkQuery);
+		it("[valid/validAggregateMinOnly.json] should pass when aggregate min only.", checkQuery);
+		it("[valid/validAggregateAvgOnly.json] should pass when aggregate avg only.", checkQuery);
+		it("[valid/validAggregateSumOnly.json] should pass when aggregate sum only.", checkQuery);
 		it(
 			"[valid/validTransformationGroupDeptAndIdForSections.json] should pass when group dept and id when we query sections",
 			checkQuery
@@ -1247,11 +1258,15 @@ describe("InsightFacade", function () {
 			checkQuery
 		);
 		it(
+			"[valid/validQuerySectionsNoOrder.json] should pass when we query sections without providing an order",
+			checkQuery
+		);
+		it(
 			"[valid/validUnusedColumnOverallAvgForSection.json] should pass when we don't use a custom columns when we query sections",
 			checkQuery
 		);
 		it(
-			"[valid/validQuerySectionsNoOrder.json] should pass when we query sections without providing an order",
+			"[valid/validallAggregationTransformations.json] should pass when we use all aggregation transformations in one query.",
 			checkQuery
 		);
 	});

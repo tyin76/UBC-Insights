@@ -99,7 +99,7 @@ function checkTransformationNotUsedOnCustomKeys(query: any, customKeysInColumn: 
 	}
 }
 
-function checkNoCustomKeysAppearInGroup(query: any, customKeys: string[]) {
+function checkNoCustomKeysAppearInGroup(query: any, customKeys: string[]): void {
 	for (const key of customKeys) {
 		if (query.TRANSFORMATIONS.GROUP.includes(key)) {
 			throw new InsightError("No custom keys are allowed in GROUP");
@@ -139,7 +139,7 @@ function validateTranformationOperator(operator: string): void {
 	}
 }
 
-function checkDoesEveryCustomKeyAppearInApply(query: any, customKeys: string[]) {
+function checkDoesEveryCustomKeyAppearInApply(query: any, customKeys: string[]): void {
 	const objects = query.TRANSFORMATIONS.APPLY;
 
 	const keysInApply: string[] = [];
@@ -155,7 +155,7 @@ function checkDoesEveryCustomKeyAppearInApply(query: any, customKeys: string[]) 
 	}
 }
 
-function checkDoesEveryNonCustomKeyAppearInGroup(query: any, nonCustomKeys: string[]) {
+function checkDoesEveryNonCustomKeyAppearInGroup(query: any, nonCustomKeys: string[]): void {
 	for (const key of nonCustomKeys) {
 		const keysInGroup: string[] = query.TRANSFORMATIONS.GROUP;
 		if (!keysInGroup.includes(key)) {

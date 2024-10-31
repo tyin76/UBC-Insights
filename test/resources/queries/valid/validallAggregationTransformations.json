@@ -1,0 +1,1758 @@
+{
+	"title": "ValidallAggregationTransformations",
+	"input": {
+		"WHERE": {},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_dept",
+				"overallAvg",
+				"maxSectionAvg",
+				"minSectionAvg",
+				"avgAudit",
+				"sumAudit",
+				"countInstructor"
+			]
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"sections_dept"
+			],
+			"APPLY": [
+				{
+					"overallAvg": {
+						"AVG": "sections_avg"
+					}
+				},
+				{
+					"maxSectionAvg": {
+						"MAX": "sections_avg"
+					}
+				},
+				{
+					"minSectionAvg": {
+						"MIN": "sections_avg"
+					}
+				},
+				{
+					"avgAudit": {
+						"AVG": "sections_audit"
+					}
+				},
+				{
+					"sumAudit": {
+						"SUM": "sections_audit"
+					}
+				},
+				{
+					"countInstructor": {
+						"COUNT": "sections_instructor"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"sections_dept": "aanb",
+			"overallAvg": 91.14,
+			"maxSectionAvg": 94.44,
+			"minSectionAvg": 87.83,
+			"avgAudit": 4.5,
+			"sumAudit": 18,
+			"countInstructor": 1
+		},
+		{
+			"sections_dept": "adhe",
+			"overallAvg": 82.94,
+			"maxSectionAvg": 96.11,
+			"minSectionAvg": 67.5,
+			"avgAudit": 0.01,
+			"sumAudit": 2,
+			"countInstructor": 15
+		},
+		{
+			"sections_dept": "anat",
+			"overallAvg": 84.9,
+			"maxSectionAvg": 92,
+			"minSectionAvg": 80.28,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 5
+		},
+		{
+			"sections_dept": "anth",
+			"overallAvg": 77.55,
+			"maxSectionAvg": 92.29,
+			"minSectionAvg": 60.05,
+			"avgAudit": 0.25,
+			"sumAudit": 70,
+			"countInstructor": 41
+		},
+		{
+			"sections_dept": "apbi",
+			"overallAvg": 77.62,
+			"maxSectionAvg": 91.86,
+			"minSectionAvg": 52.08,
+			"avgAudit": 0.06,
+			"sumAudit": 28,
+			"countInstructor": 55
+		},
+		{
+			"sections_dept": "appp",
+			"overallAvg": 80.7,
+			"maxSectionAvg": 85.16,
+			"minSectionAvg": 77.99,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 5
+		},
+		{
+			"sections_dept": "apsc",
+			"overallAvg": 76.62,
+			"maxSectionAvg": 96,
+			"minSectionAvg": 57.68,
+			"avgAudit": 0.05,
+			"sumAudit": 33,
+			"countInstructor": 85
+		},
+		{
+			"sections_dept": "arbc",
+			"overallAvg": 80.08,
+			"maxSectionAvg": 83.13,
+			"minSectionAvg": 75.4,
+			"avgAudit": 0.38,
+			"sumAudit": 6,
+			"countInstructor": 2
+		},
+		{
+			"sections_dept": "arch",
+			"overallAvg": 81.24,
+			"maxSectionAvg": 90,
+			"minSectionAvg": 73,
+			"avgAudit": 0.01,
+			"sumAudit": 10,
+			"countInstructor": 85
+		},
+		{
+			"sections_dept": "arcl",
+			"overallAvg": 73.32,
+			"maxSectionAvg": 80.82,
+			"minSectionAvg": 64.5,
+			"avgAudit": 0.19,
+			"sumAudit": 9,
+			"countInstructor": 7
+		},
+		{
+			"sections_dept": "arst",
+			"overallAvg": 84.48,
+			"maxSectionAvg": 96.94,
+			"minSectionAvg": 73.56,
+			"avgAudit": 0.03,
+			"sumAudit": 8,
+			"countInstructor": 32
+		},
+		{
+			"sections_dept": "arth",
+			"overallAvg": 77.87,
+			"maxSectionAvg": 93,
+			"minSectionAvg": 66.38,
+			"avgAudit": 0.45,
+			"sumAudit": 189,
+			"countInstructor": 47
+		},
+		{
+			"sections_dept": "asia",
+			"overallAvg": 74.53,
+			"maxSectionAvg": 86.24,
+			"minSectionAvg": 57.33,
+			"avgAudit": 0.29,
+			"sumAudit": 182,
+			"countInstructor": 59
+		},
+		{
+			"sections_dept": "asic",
+			"overallAvg": 76.93,
+			"maxSectionAvg": 80.79,
+			"minSectionAvg": 71.27,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 3
+		},
+		{
+			"sections_dept": "astr",
+			"overallAvg": 76.36,
+			"maxSectionAvg": 91.4,
+			"minSectionAvg": 62.5,
+			"avgAudit": 0.13,
+			"sumAudit": 24,
+			"countInstructor": 25
+		},
+		{
+			"sections_dept": "astu",
+			"overallAvg": 72.27,
+			"maxSectionAvg": 83.14,
+			"minSectionAvg": 63.14,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 8
+		},
+		{
+			"sections_dept": "atsc",
+			"overallAvg": 81.26,
+			"maxSectionAvg": 92,
+			"minSectionAvg": 69.25,
+			"avgAudit": 0.23,
+			"sumAudit": 18,
+			"countInstructor": 14
+		},
+		{
+			"sections_dept": "audi",
+			"overallAvg": 86.35,
+			"maxSectionAvg": 96.9,
+			"minSectionAvg": 62.63,
+			"avgAudit": 0.04,
+			"sumAudit": 22,
+			"countInstructor": 52
+		},
+		{
+			"sections_dept": "ba",
+			"overallAvg": 82.02,
+			"maxSectionAvg": 87.24,
+			"minSectionAvg": 74.58,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 1
+		},
+		{
+			"sections_dept": "baac",
+			"overallAvg": 80.26,
+			"maxSectionAvg": 86.81,
+			"minSectionAvg": 74.39,
+			"avgAudit": 0.03,
+			"sumAudit": 4,
+			"countInstructor": 15
+		},
+		{
+			"sections_dept": "babs",
+			"overallAvg": 82.46,
+			"maxSectionAvg": 91.38,
+			"minSectionAvg": 75.63,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 12
+		},
+		{
+			"sections_dept": "baen",
+			"overallAvg": 82.54,
+			"maxSectionAvg": 87.13,
+			"minSectionAvg": 78.97,
+			"avgAudit": 0.05,
+			"sumAudit": 4,
+			"countInstructor": 18
+		},
+		{
+			"sections_dept": "bafi",
+			"overallAvg": 82.79,
+			"maxSectionAvg": 89.43,
+			"minSectionAvg": 75.54,
+			"avgAudit": 0.08,
+			"sumAudit": 26,
+			"countInstructor": 25
+		},
+		{
+			"sections_dept": "bahr",
+			"overallAvg": 81.34,
+			"maxSectionAvg": 86.7,
+			"minSectionAvg": 74.21,
+			"avgAudit": 0.06,
+			"sumAudit": 10,
+			"countInstructor": 14
+		},
+		{
+			"sections_dept": "bait",
+			"overallAvg": 83.04,
+			"maxSectionAvg": 86.83,
+			"minSectionAvg": 79.75,
+			"avgAudit": 0.02,
+			"sumAudit": 2,
+			"countInstructor": 15
+		},
+		{
+			"sections_dept": "bala",
+			"overallAvg": 77.05,
+			"maxSectionAvg": 83.2,
+			"minSectionAvg": 71.92,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 3
+		},
+		{
+			"sections_dept": "bama",
+			"overallAvg": 81.92,
+			"maxSectionAvg": 87.7,
+			"minSectionAvg": 77.57,
+			"avgAudit": 0.03,
+			"sumAudit": 6,
+			"countInstructor": 20
+		},
+		{
+			"sections_dept": "bams",
+			"overallAvg": 82.78,
+			"maxSectionAvg": 91.47,
+			"minSectionAvg": 77.2,
+			"avgAudit": 0.02,
+			"sumAudit": 4,
+			"countInstructor": 18
+		},
+		{
+			"sections_dept": "bapa",
+			"overallAvg": 81.4,
+			"maxSectionAvg": 85.4,
+			"minSectionAvg": 79,
+			"avgAudit": 0.08,
+			"sumAudit": 4,
+			"countInstructor": 8
+		},
+		{
+			"sections_dept": "basc",
+			"overallAvg": 81.25,
+			"maxSectionAvg": 86.04,
+			"minSectionAvg": 74.42,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 8
+		},
+		{
+			"sections_dept": "basm",
+			"overallAvg": 82.55,
+			"maxSectionAvg": 87.56,
+			"minSectionAvg": 77.68,
+			"avgAudit": 0.01,
+			"sumAudit": 2,
+			"countInstructor": 15
+		},
+		{
+			"sections_dept": "baul",
+			"overallAvg": 82.67,
+			"maxSectionAvg": 85.62,
+			"minSectionAvg": 76.77,
+			"avgAudit": 0.11,
+			"sumAudit": 2,
+			"countInstructor": 3
+		},
+		{
+			"sections_dept": "bioc",
+			"overallAvg": 77.9,
+			"maxSectionAvg": 90.57,
+			"minSectionAvg": 64.67,
+			"avgAudit": 0.15,
+			"sumAudit": 43,
+			"countInstructor": 50
+		},
+		{
+			"sections_dept": "biof",
+			"overallAvg": 89.77,
+			"maxSectionAvg": 93.45,
+			"minSectionAvg": 87.33,
+			"avgAudit": 0.22,
+			"sumAudit": 5,
+			"countInstructor": 6
+		},
+		{
+			"sections_dept": "biol",
+			"overallAvg": 75.99,
+			"maxSectionAvg": 94.33,
+			"minSectionAvg": 55.96,
+			"avgAudit": 0.16,
+			"sumAudit": 330,
+			"countInstructor": 289
+		},
+		{
+			"sections_dept": "bmeg",
+			"overallAvg": 84.83,
+			"maxSectionAvg": 95.15,
+			"minSectionAvg": 75.76,
+			"avgAudit": 0.02,
+			"sumAudit": 2,
+			"countInstructor": 17
+		},
+		{
+			"sections_dept": "bota",
+			"overallAvg": 87.4,
+			"maxSectionAvg": 92,
+			"minSectionAvg": 83.43,
+			"avgAudit": 0.13,
+			"sumAudit": 4,
+			"countInstructor": 10
+		},
+		{
+			"sections_dept": "busi",
+			"overallAvg": 70.63,
+			"maxSectionAvg": 88.88,
+			"minSectionAvg": 4,
+			"avgAudit": 0,
+			"sumAudit": 2,
+			"countInstructor": 50
+		},
+		{
+			"sections_dept": "caps",
+			"overallAvg": 81.16,
+			"maxSectionAvg": 89.8,
+			"minSectionAvg": 65.5,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 23
+		},
+		{
+			"sections_dept": "ccst",
+			"overallAvg": 85.76,
+			"maxSectionAvg": 93.67,
+			"minSectionAvg": 77.5,
+			"avgAudit": 0.24,
+			"sumAudit": 12,
+			"countInstructor": 12
+		},
+		{
+			"sections_dept": "ceen",
+			"overallAvg": 84.25,
+			"maxSectionAvg": 94.27,
+			"minSectionAvg": 74.96,
+			"avgAudit": 0.06,
+			"sumAudit": 3,
+			"countInstructor": 7
+		},
+		{
+			"sections_dept": "cell",
+			"overallAvg": 89.14,
+			"maxSectionAvg": 94.4,
+			"minSectionAvg": 84.29,
+			"avgAudit": 0.08,
+			"sumAudit": 12,
+			"countInstructor": 12
+		},
+		{
+			"sections_dept": "cens",
+			"overallAvg": 79.49,
+			"maxSectionAvg": 87.87,
+			"minSectionAvg": 68.23,
+			"avgAudit": 0.16,
+			"sumAudit": 14,
+			"countInstructor": 25
+		},
+		{
+			"sections_dept": "chbe",
+			"overallAvg": 79.05,
+			"maxSectionAvg": 95.54,
+			"minSectionAvg": 42,
+			"avgAudit": 0.18,
+			"sumAudit": 146,
+			"countInstructor": 64
+		},
+		{
+			"sections_dept": "chem",
+			"overallAvg": 74.29,
+			"maxSectionAvg": 92.57,
+			"minSectionAvg": 42.5,
+			"avgAudit": 0.13,
+			"sumAudit": 169,
+			"countInstructor": 171
+		},
+		{
+			"sections_dept": "chil",
+			"overallAvg": 88.92,
+			"maxSectionAvg": 92,
+			"minSectionAvg": 83,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 1
+		},
+		{
+			"sections_dept": "chin",
+			"overallAvg": 76.45,
+			"maxSectionAvg": 86.13,
+			"minSectionAvg": 65,
+			"avgAudit": 0.29,
+			"sumAudit": 280,
+			"countInstructor": 26
+		},
+		{
+			"sections_dept": "cics",
+			"overallAvg": 82.56,
+			"maxSectionAvg": 89.68,
+			"minSectionAvg": 76.39,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 6
+		},
+		{
+			"sections_dept": "civl",
+			"overallAvg": 79.95,
+			"maxSectionAvg": 96.27,
+			"minSectionAvg": 33,
+			"avgAudit": 0.22,
+			"sumAudit": 269,
+			"countInstructor": 115
+		},
+		{
+			"sections_dept": "clch",
+			"overallAvg": 75.84,
+			"maxSectionAvg": 79.5,
+			"minSectionAvg": 69.76,
+			"avgAudit": 0.29,
+			"sumAudit": 4,
+			"countInstructor": 4
+		},
+		{
+			"sections_dept": "clst",
+			"overallAvg": 74.31,
+			"maxSectionAvg": 88.4,
+			"minSectionAvg": 62.74,
+			"avgAudit": 0.18,
+			"sumAudit": 63,
+			"countInstructor": 38
+		},
+		{
+			"sections_dept": "cnps",
+			"overallAvg": 87.04,
+			"maxSectionAvg": 99.19,
+			"minSectionAvg": 70.66,
+			"avgAudit": 0.07,
+			"sumAudit": 50,
+			"countInstructor": 100
+		},
+		{
+			"sections_dept": "cnrs",
+			"overallAvg": 78.68,
+			"maxSectionAvg": 89.13,
+			"minSectionAvg": 71.3,
+			"avgAudit": 0.32,
+			"sumAudit": 10,
+			"countInstructor": 7
+		},
+		{
+			"sections_dept": "cnto",
+			"overallAvg": 86.53,
+			"maxSectionAvg": 89.42,
+			"minSectionAvg": 84.59,
+			"avgAudit": 5.8,
+			"sumAudit": 29,
+			"countInstructor": 2
+		},
+		{
+			"sections_dept": "coec",
+			"overallAvg": 77.54,
+			"maxSectionAvg": 82.77,
+			"minSectionAvg": 73.34,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 6
+		},
+		{
+			"sections_dept": "cogs",
+			"overallAvg": 77.06,
+			"maxSectionAvg": 89.33,
+			"minSectionAvg": 66.37,
+			"avgAudit": 0.09,
+			"sumAudit": 12,
+			"countInstructor": 35
+		},
+		{
+			"sections_dept": "cohr",
+			"overallAvg": 79.07,
+			"maxSectionAvg": 90.46,
+			"minSectionAvg": 72.14,
+			"avgAudit": 0.1,
+			"sumAudit": 18,
+			"countInstructor": 23
+		},
+		{
+			"sections_dept": "comm",
+			"overallAvg": 76.36,
+			"maxSectionAvg": 94.75,
+			"minSectionAvg": 46.71,
+			"avgAudit": 0.09,
+			"sumAudit": 334,
+			"countInstructor": 339
+		},
+		{
+			"sections_dept": "cons",
+			"overallAvg": 77.98,
+			"maxSectionAvg": 90.39,
+			"minSectionAvg": 67.64,
+			"avgAudit": 0.34,
+			"sumAudit": 73,
+			"countInstructor": 23
+		},
+		{
+			"sections_dept": "cpen",
+			"overallAvg": 77.94,
+			"maxSectionAvg": 86.9,
+			"minSectionAvg": 69.41,
+			"avgAudit": 0.07,
+			"sumAudit": 3,
+			"countInstructor": 18
+		},
+		{
+			"sections_dept": "cpsc",
+			"overallAvg": 77.58,
+			"maxSectionAvg": 95,
+			"minSectionAvg": 64,
+			"avgAudit": 0.21,
+			"sumAudit": 238,
+			"countInstructor": 89
+		},
+		{
+			"sections_dept": "crwr",
+			"overallAvg": 83.09,
+			"maxSectionAvg": 98,
+			"minSectionAvg": 72.31,
+			"avgAudit": 0.23,
+			"sumAudit": 48,
+			"countInstructor": 32
+		},
+		{
+			"sections_dept": "dani",
+			"overallAvg": 83.57,
+			"maxSectionAvg": 89.27,
+			"minSectionAvg": 73.43,
+			"avgAudit": 0.46,
+			"sumAudit": 12,
+			"countInstructor": 2
+		},
+		{
+			"sections_dept": "dent",
+			"overallAvg": 84.31,
+			"maxSectionAvg": 94.33,
+			"minSectionAvg": 72.75,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 30
+		},
+		{
+			"sections_dept": "dhyg",
+			"overallAvg": 81.27,
+			"maxSectionAvg": 93.72,
+			"minSectionAvg": 58.4,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 30
+		},
+		{
+			"sections_dept": "eced",
+			"overallAvg": 84.87,
+			"maxSectionAvg": 93.72,
+			"minSectionAvg": 75.25,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 19
+		},
+		{
+			"sections_dept": "econ",
+			"overallAvg": 76.39,
+			"maxSectionAvg": 95,
+			"minSectionAvg": 60.89,
+			"avgAudit": 0.26,
+			"sumAudit": 584,
+			"countInstructor": 125
+		},
+		{
+			"sections_dept": "edcp",
+			"overallAvg": 88.38,
+			"maxSectionAvg": 95.58,
+			"minSectionAvg": 76.18,
+			"avgAudit": 0.13,
+			"sumAudit": 35,
+			"countInstructor": 48
+		},
+		{
+			"sections_dept": "edst",
+			"overallAvg": 87.61,
+			"maxSectionAvg": 96.46,
+			"minSectionAvg": 78.18,
+			"avgAudit": 0.24,
+			"sumAudit": 88,
+			"countInstructor": 51
+		},
+		{
+			"sections_dept": "educ",
+			"overallAvg": 83.72,
+			"maxSectionAvg": 97.5,
+			"minSectionAvg": 39.03,
+			"avgAudit": 0.25,
+			"sumAudit": 46,
+			"countInstructor": 61
+		},
+		{
+			"sections_dept": "eece",
+			"overallAvg": 85.39,
+			"maxSectionAvg": 98.75,
+			"minSectionAvg": 72.76,
+			"avgAudit": 0.32,
+			"sumAudit": 158,
+			"countInstructor": 47
+		},
+		{
+			"sections_dept": "elec",
+			"overallAvg": 75.79,
+			"maxSectionAvg": 93.93,
+			"minSectionAvg": 52.67,
+			"avgAudit": 0.02,
+			"sumAudit": 2,
+			"countInstructor": 47
+		},
+		{
+			"sections_dept": "ends",
+			"overallAvg": 80.61,
+			"maxSectionAvg": 87.17,
+			"minSectionAvg": 71.17,
+			"avgAudit": 0.01,
+			"sumAudit": 2,
+			"countInstructor": 30
+		},
+		{
+			"sections_dept": "engl",
+			"overallAvg": 73.96,
+			"maxSectionAvg": 89.68,
+			"minSectionAvg": 53.5,
+			"avgAudit": 0.03,
+			"sumAudit": 65,
+			"countInstructor": 151
+		},
+		{
+			"sections_dept": "enph",
+			"overallAvg": 78.99,
+			"maxSectionAvg": 85.69,
+			"minSectionAvg": 58,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 12
+		},
+		{
+			"sections_dept": "envr",
+			"overallAvg": 81.7,
+			"maxSectionAvg": 89.17,
+			"minSectionAvg": 72.6,
+			"avgAudit": 0.02,
+			"sumAudit": 2,
+			"countInstructor": 27
+		},
+		{
+			"sections_dept": "eosc",
+			"overallAvg": 77.74,
+			"maxSectionAvg": 93.47,
+			"minSectionAvg": 57,
+			"avgAudit": 0.11,
+			"sumAudit": 183,
+			"countInstructor": 219
+		},
+		{
+			"sections_dept": "epse",
+			"overallAvg": 89.94,
+			"maxSectionAvg": 98.8,
+			"minSectionAvg": 65.55,
+			"avgAudit": 0.16,
+			"sumAudit": 176,
+			"countInstructor": 124
+		},
+		{
+			"sections_dept": "etec",
+			"overallAvg": 89.05,
+			"maxSectionAvg": 96.47,
+			"minSectionAvg": 78.55,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 39
+		},
+		{
+			"sections_dept": "fhis",
+			"overallAvg": 77.76,
+			"maxSectionAvg": 79.89,
+			"minSectionAvg": 75.63,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 2
+		},
+		{
+			"sections_dept": "fipr",
+			"overallAvg": 82.14,
+			"maxSectionAvg": 96.4,
+			"minSectionAvg": 70.3,
+			"avgAudit": 0.03,
+			"sumAudit": 6,
+			"countInstructor": 30
+		},
+		{
+			"sections_dept": "fish",
+			"overallAvg": 87.64,
+			"maxSectionAvg": 94,
+			"minSectionAvg": 78,
+			"avgAudit": 0.5,
+			"sumAudit": 22,
+			"countInstructor": 9
+		},
+		{
+			"sections_dept": "fist",
+			"overallAvg": 75.93,
+			"maxSectionAvg": 85.38,
+			"minSectionAvg": 67.11,
+			"avgAudit": 0.26,
+			"sumAudit": 53,
+			"countInstructor": 17
+		},
+		{
+			"sections_dept": "fmst",
+			"overallAvg": 72.75,
+			"maxSectionAvg": 86,
+			"minSectionAvg": 61.97,
+			"avgAudit": 0.08,
+			"sumAudit": 22,
+			"countInstructor": 16
+		},
+		{
+			"sections_dept": "fnel",
+			"overallAvg": 81.04,
+			"maxSectionAvg": 87.5,
+			"minSectionAvg": 73,
+			"avgAudit": 0.5,
+			"sumAudit": 10,
+			"countInstructor": 8
+		},
+		{
+			"sections_dept": "fnh",
+			"overallAvg": 78.28,
+			"maxSectionAvg": 93.05,
+			"minSectionAvg": 65.44,
+			"avgAudit": 0.05,
+			"sumAudit": 40,
+			"countInstructor": 1
+		},
+		{
+			"sections_dept": "fnis",
+			"overallAvg": 77.72,
+			"maxSectionAvg": 84.78,
+			"minSectionAvg": 72.18,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 8
+		},
+		{
+			"sections_dept": "food",
+			"overallAvg": 81.66,
+			"maxSectionAvg": 90.68,
+			"minSectionAvg": 72.07,
+			"avgAudit": 0.12,
+			"sumAudit": 20,
+			"countInstructor": 21
+		},
+		{
+			"sections_dept": "fopr",
+			"overallAvg": 75.19,
+			"maxSectionAvg": 91,
+			"minSectionAvg": 4.5,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 6
+		},
+		{
+			"sections_dept": "fre",
+			"overallAvg": 77.26,
+			"maxSectionAvg": 88.47,
+			"minSectionAvg": 57.2,
+			"avgAudit": 0.11,
+			"sumAudit": 28,
+			"countInstructor": 1
+		},
+		{
+			"sections_dept": "fren",
+			"overallAvg": 73.66,
+			"maxSectionAvg": 88.5,
+			"minSectionAvg": 61.36,
+			"avgAudit": 0.24,
+			"sumAudit": 249,
+			"countInstructor": 133
+		},
+		{
+			"sections_dept": "frst",
+			"overallAvg": 78.12,
+			"maxSectionAvg": 96.36,
+			"minSectionAvg": 0,
+			"avgAudit": 0.3,
+			"sumAudit": 273,
+			"countInstructor": 84
+		},
+		{
+			"sections_dept": "gbpr",
+			"overallAvg": 84.9,
+			"maxSectionAvg": 85,
+			"minSectionAvg": 84.8,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 2
+		},
+		{
+			"sections_dept": "geob",
+			"overallAvg": 73.56,
+			"maxSectionAvg": 88.17,
+			"minSectionAvg": 62.81,
+			"avgAudit": 0.14,
+			"sumAudit": 47,
+			"countInstructor": 66
+		},
+		{
+			"sections_dept": "geog",
+			"overallAvg": 74.54,
+			"maxSectionAvg": 90,
+			"minSectionAvg": 62.22,
+			"avgAudit": 0.14,
+			"sumAudit": 128,
+			"countInstructor": 104
+		},
+		{
+			"sections_dept": "germ",
+			"overallAvg": 79.69,
+			"maxSectionAvg": 92.25,
+			"minSectionAvg": 59.61,
+			"avgAudit": 0.5,
+			"sumAudit": 413,
+			"countInstructor": 57
+		},
+		{
+			"sections_dept": "gpp",
+			"overallAvg": 84.89,
+			"maxSectionAvg": 93.04,
+			"minSectionAvg": 80.16,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 1
+		},
+		{
+			"sections_dept": "grek",
+			"overallAvg": 78.97,
+			"maxSectionAvg": 84.43,
+			"minSectionAvg": 70.4,
+			"avgAudit": 0.32,
+			"sumAudit": 9,
+			"countInstructor": 6
+		},
+		{
+			"sections_dept": "grsj",
+			"overallAvg": 79.73,
+			"maxSectionAvg": 90,
+			"minSectionAvg": 64.67,
+			"avgAudit": 0.11,
+			"sumAudit": 18,
+			"countInstructor": 33
+		},
+		{
+			"sections_dept": "gsat",
+			"overallAvg": 87.82,
+			"maxSectionAvg": 90.29,
+			"minSectionAvg": 84.9,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 7
+		},
+		{
+			"sections_dept": "hebr",
+			"overallAvg": 77.74,
+			"maxSectionAvg": 83.57,
+			"minSectionAvg": 65.58,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 4
+		},
+		{
+			"sections_dept": "hgse",
+			"overallAvg": 86.22,
+			"maxSectionAvg": 95.29,
+			"minSectionAvg": 78,
+			"avgAudit": 0.03,
+			"sumAudit": 2,
+			"countInstructor": 2
+		},
+		{
+			"sections_dept": "hinu",
+			"overallAvg": 84.28,
+			"maxSectionAvg": 93.22,
+			"minSectionAvg": 76.09,
+			"avgAudit": 0.63,
+			"sumAudit": 10,
+			"countInstructor": 4
+		},
+		{
+			"sections_dept": "hist",
+			"overallAvg": 74.06,
+			"maxSectionAvg": 93,
+			"minSectionAvg": 34,
+			"avgAudit": 0.27,
+			"sumAudit": 274,
+			"countInstructor": 104
+		},
+		{
+			"sections_dept": "hunu",
+			"overallAvg": 86.47,
+			"maxSectionAvg": 91.33,
+			"minSectionAvg": 81.6,
+			"avgAudit": 0.08,
+			"sumAudit": 2,
+			"countInstructor": 6
+		},
+		{
+			"sections_dept": "iar",
+			"overallAvg": 84.61,
+			"maxSectionAvg": 87.5,
+			"minSectionAvg": 80,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 1
+		},
+		{
+			"sections_dept": "igen",
+			"overallAvg": 79.86,
+			"maxSectionAvg": 89.06,
+			"minSectionAvg": 68.06,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 13
+		},
+		{
+			"sections_dept": "info",
+			"overallAvg": 85.4,
+			"maxSectionAvg": 85.4,
+			"minSectionAvg": 85.4,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 2
+		},
+		{
+			"sections_dept": "isci",
+			"overallAvg": 81.64,
+			"maxSectionAvg": 90.44,
+			"minSectionAvg": 75.79,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 20
+		},
+		{
+			"sections_dept": "ital",
+			"overallAvg": 74.71,
+			"maxSectionAvg": 91.5,
+			"minSectionAvg": 61,
+			"avgAudit": 0.38,
+			"sumAudit": 124,
+			"countInstructor": 20
+		},
+		{
+			"sections_dept": "itst",
+			"overallAvg": 76.26,
+			"maxSectionAvg": 93,
+			"minSectionAvg": 68.4,
+			"avgAudit": 0.24,
+			"sumAudit": 24,
+			"countInstructor": 7
+		},
+		{
+			"sections_dept": "iwme",
+			"overallAvg": 84,
+			"maxSectionAvg": 84,
+			"minSectionAvg": 84,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 2
+		},
+		{
+			"sections_dept": "japn",
+			"overallAvg": 73.18,
+			"maxSectionAvg": 86.95,
+			"minSectionAvg": 54.81,
+			"avgAudit": 0.39,
+			"sumAudit": 374,
+			"countInstructor": 30
+		},
+		{
+			"sections_dept": "jrnl",
+			"overallAvg": 84.93,
+			"maxSectionAvg": 89.93,
+			"minSectionAvg": 74.5,
+			"avgAudit": 0.06,
+			"sumAudit": 2,
+			"countInstructor": 7
+		},
+		{
+			"sections_dept": "kin",
+			"overallAvg": 79.33,
+			"maxSectionAvg": 96.06,
+			"minSectionAvg": 61.45,
+			"avgAudit": 0.05,
+			"sumAudit": 32,
+			"countInstructor": 1
+		},
+		{
+			"sections_dept": "korn",
+			"overallAvg": 76.34,
+			"maxSectionAvg": 84,
+			"minSectionAvg": 65.75,
+			"avgAudit": 0.45,
+			"sumAudit": 38,
+			"countInstructor": 8
+		},
+		{
+			"sections_dept": "lais",
+			"overallAvg": 86.52,
+			"maxSectionAvg": 86.71,
+			"minSectionAvg": 86.33,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 2
+		},
+		{
+			"sections_dept": "larc",
+			"overallAvg": 82.51,
+			"maxSectionAvg": 92.8,
+			"minSectionAvg": 73.56,
+			"avgAudit": 0.07,
+			"sumAudit": 22,
+			"countInstructor": 47
+		},
+		{
+			"sections_dept": "laso",
+			"overallAvg": 73.52,
+			"maxSectionAvg": 78.72,
+			"minSectionAvg": 68.53,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 6
+		},
+		{
+			"sections_dept": "last",
+			"overallAvg": 75.47,
+			"maxSectionAvg": 84.58,
+			"minSectionAvg": 65.9,
+			"avgAudit": 0.38,
+			"sumAudit": 12,
+			"countInstructor": 9
+		},
+		{
+			"sections_dept": "latn",
+			"overallAvg": 74.88,
+			"maxSectionAvg": 84.29,
+			"minSectionAvg": 60.67,
+			"avgAudit": 0.55,
+			"sumAudit": 26,
+			"countInstructor": 9
+		},
+		{
+			"sections_dept": "law",
+			"overallAvg": 76.21,
+			"maxSectionAvg": 86.6,
+			"minSectionAvg": 65.64,
+			"avgAudit": 0.16,
+			"sumAudit": 180,
+			"countInstructor": 1
+		},
+		{
+			"sections_dept": "lfs",
+			"overallAvg": 78.41,
+			"maxSectionAvg": 90.83,
+			"minSectionAvg": 0,
+			"avgAudit": 0.03,
+			"sumAudit": 5,
+			"countInstructor": 1
+		},
+		{
+			"sections_dept": "libe",
+			"overallAvg": 85.07,
+			"maxSectionAvg": 92.26,
+			"minSectionAvg": 78.72,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 17
+		},
+		{
+			"sections_dept": "libr",
+			"overallAvg": 84.73,
+			"maxSectionAvg": 96.1,
+			"minSectionAvg": 74.07,
+			"avgAudit": 0.22,
+			"sumAudit": 106,
+			"countInstructor": 45
+		},
+		{
+			"sections_dept": "ling",
+			"overallAvg": 78.83,
+			"maxSectionAvg": 92.25,
+			"minSectionAvg": 59.06,
+			"avgAudit": 0.17,
+			"sumAudit": 83,
+			"countInstructor": 42
+		},
+		{
+			"sections_dept": "lled",
+			"overallAvg": 78.38,
+			"maxSectionAvg": 93.2,
+			"minSectionAvg": 47.29,
+			"avgAudit": 0.02,
+			"sumAudit": 12,
+			"countInstructor": 72
+		},
+		{
+			"sections_dept": "math",
+			"overallAvg": 72.03,
+			"maxSectionAvg": 99.78,
+			"minSectionAvg": 46.52,
+			"avgAudit": 0.07,
+			"sumAudit": 190,
+			"countInstructor": 390
+		},
+		{
+			"sections_dept": "mdvl",
+			"overallAvg": 74.89,
+			"maxSectionAvg": 77.39,
+			"minSectionAvg": 69.28,
+			"avgAudit": 0.1,
+			"sumAudit": 2,
+			"countInstructor": 6
+		},
+		{
+			"sections_dept": "mech",
+			"overallAvg": 79,
+			"maxSectionAvg": 93.5,
+			"minSectionAvg": 53.86,
+			"avgAudit": 0.12,
+			"sumAudit": 160,
+			"countInstructor": 127
+		},
+		{
+			"sections_dept": "medg",
+			"overallAvg": 84.22,
+			"maxSectionAvg": 94.7,
+			"minSectionAvg": 54.43,
+			"avgAudit": 0.19,
+			"sumAudit": 46,
+			"countInstructor": 37
+		},
+		{
+			"sections_dept": "medi",
+			"overallAvg": 87.4,
+			"maxSectionAvg": 93.5,
+			"minSectionAvg": 78.6,
+			"avgAudit": 0.38,
+			"sumAudit": 48,
+			"countInstructor": 10
+		},
+		{
+			"sections_dept": "micb",
+			"overallAvg": 79.53,
+			"maxSectionAvg": 94.17,
+			"minSectionAvg": 63.59,
+			"avgAudit": 0.29,
+			"sumAudit": 140,
+			"countInstructor": 53
+		},
+		{
+			"sections_dept": "midw",
+			"overallAvg": 86.92,
+			"maxSectionAvg": 96.5,
+			"minSectionAvg": 79.22,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 26
+		},
+		{
+			"sections_dept": "mine",
+			"overallAvg": 79.77,
+			"maxSectionAvg": 96.59,
+			"minSectionAvg": 65.12,
+			"avgAudit": 0.31,
+			"sumAudit": 164,
+			"countInstructor": 39
+		},
+		{
+			"sections_dept": "mrne",
+			"overallAvg": 84.41,
+			"maxSectionAvg": 89.4,
+			"minSectionAvg": 78.17,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 2
+		},
+		{
+			"sections_dept": "mtrl",
+			"overallAvg": 75.93,
+			"maxSectionAvg": 96.25,
+			"minSectionAvg": 57.4,
+			"avgAudit": 0.09,
+			"sumAudit": 65,
+			"countInstructor": 78
+		},
+		{
+			"sections_dept": "musc",
+			"overallAvg": 80,
+			"maxSectionAvg": 96.5,
+			"minSectionAvg": 58.33,
+			"avgAudit": 0.21,
+			"sumAudit": 182,
+			"countInstructor": 76
+		},
+		{
+			"sections_dept": "name",
+			"overallAvg": 84.63,
+			"maxSectionAvg": 91.57,
+			"minSectionAvg": 77.62,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 11
+		},
+		{
+			"sections_dept": "nest",
+			"overallAvg": 74.18,
+			"maxSectionAvg": 87.5,
+			"minSectionAvg": 65.67,
+			"avgAudit": 0.27,
+			"sumAudit": 22,
+			"countInstructor": 9
+		},
+		{
+			"sections_dept": "nrsc",
+			"overallAvg": 84.2,
+			"maxSectionAvg": 90.67,
+			"minSectionAvg": 68,
+			"avgAudit": 0.42,
+			"sumAudit": 32,
+			"countInstructor": 2
+		},
+		{
+			"sections_dept": "nurs",
+			"overallAvg": 84.53,
+			"maxSectionAvg": 98.71,
+			"minSectionAvg": 70,
+			"avgAudit": 0.01,
+			"sumAudit": 8,
+			"countInstructor": 125
+		},
+		{
+			"sections_dept": "obst",
+			"overallAvg": 85.35,
+			"maxSectionAvg": 95,
+			"minSectionAvg": 62.5,
+			"avgAudit": 0.06,
+			"sumAudit": 4,
+			"countInstructor": 10
+		},
+		{
+			"sections_dept": "onco",
+			"overallAvg": 89.82,
+			"maxSectionAvg": 93.07,
+			"minSectionAvg": 83.45,
+			"avgAudit": 0.44,
+			"sumAudit": 8,
+			"countInstructor": 4
+		},
+		{
+			"sections_dept": "path",
+			"overallAvg": 83.22,
+			"maxSectionAvg": 93.5,
+			"minSectionAvg": 73.47,
+			"avgAudit": 0.05,
+			"sumAudit": 22,
+			"countInstructor": 84
+		},
+		{
+			"sections_dept": "pcth",
+			"overallAvg": 84.95,
+			"maxSectionAvg": 96,
+			"minSectionAvg": 62.33,
+			"avgAudit": 0.02,
+			"sumAudit": 4,
+			"countInstructor": 27
+		},
+		{
+			"sections_dept": "pers",
+			"overallAvg": 82.01,
+			"maxSectionAvg": 89.25,
+			"minSectionAvg": 67.78,
+			"avgAudit": 0.24,
+			"sumAudit": 12,
+			"countInstructor": 2
+		},
+		{
+			"sections_dept": "phar",
+			"overallAvg": 81.65,
+			"maxSectionAvg": 95.07,
+			"minSectionAvg": 51.25,
+			"avgAudit": 0.01,
+			"sumAudit": 12,
+			"countInstructor": 90
+		},
+		{
+			"sections_dept": "phil",
+			"overallAvg": 72.58,
+			"maxSectionAvg": 96,
+			"minSectionAvg": 33.2,
+			"avgAudit": 0.24,
+			"sumAudit": 80,
+			"countInstructor": 58
+		},
+		{
+			"sections_dept": "phrm",
+			"overallAvg": 84.23,
+			"maxSectionAvg": 94.23,
+			"minSectionAvg": 70.11,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 6
+		},
+		{
+			"sections_dept": "phth",
+			"overallAvg": 86.59,
+			"maxSectionAvg": 95.37,
+			"minSectionAvg": 81.32,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 14
+		},
+		{
+			"sections_dept": "phys",
+			"overallAvg": 78.21,
+			"maxSectionAvg": 95.43,
+			"minSectionAvg": 55.25,
+			"avgAudit": 0.09,
+			"sumAudit": 100,
+			"countInstructor": 143
+		},
+		{
+			"sections_dept": "plan",
+			"overallAvg": 87.66,
+			"maxSectionAvg": 96.47,
+			"minSectionAvg": 78.51,
+			"avgAudit": 0.12,
+			"sumAudit": 18,
+			"countInstructor": 26
+		},
+		{
+			"sections_dept": "poli",
+			"overallAvg": 74.31,
+			"maxSectionAvg": 86,
+			"minSectionAvg": 54.01,
+			"avgAudit": 0.07,
+			"sumAudit": 37,
+			"countInstructor": 64
+		},
+		{
+			"sections_dept": "pols",
+			"overallAvg": 81.3,
+			"maxSectionAvg": 88.3,
+			"minSectionAvg": 77.36,
+			"avgAudit": 0.36,
+			"sumAudit": 8,
+			"countInstructor": 3
+		},
+		{
+			"sections_dept": "port",
+			"overallAvg": 79.99,
+			"maxSectionAvg": 90,
+			"minSectionAvg": 67.73,
+			"avgAudit": 0.6,
+			"sumAudit": 30,
+			"countInstructor": 5
+		},
+		{
+			"sections_dept": "psyc",
+			"overallAvg": 72.59,
+			"maxSectionAvg": 97,
+			"minSectionAvg": 43.33,
+			"avgAudit": 0.12,
+			"sumAudit": 162,
+			"countInstructor": 147
+		},
+		{
+			"sections_dept": "punj",
+			"overallAvg": 81,
+			"maxSectionAvg": 89.08,
+			"minSectionAvg": 64.89,
+			"avgAudit": 0.09,
+			"sumAudit": 6,
+			"countInstructor": 4
+		},
+		{
+			"sections_dept": "relg",
+			"overallAvg": 76.7,
+			"maxSectionAvg": 84.6,
+			"minSectionAvg": 65.38,
+			"avgAudit": 0.31,
+			"sumAudit": 33,
+			"countInstructor": 18
+		},
+		{
+			"sections_dept": "rgla",
+			"overallAvg": 77.64,
+			"maxSectionAvg": 80.58,
+			"minSectionAvg": 67.43,
+			"avgAudit": 0.13,
+			"sumAudit": 2,
+			"countInstructor": 3
+		},
+		{
+			"sections_dept": "rhsc",
+			"overallAvg": 85.99,
+			"maxSectionAvg": 95,
+			"minSectionAvg": 68.5,
+			"avgAudit": 2.79,
+			"sumAudit": 586,
+			"countInstructor": 22
+		},
+		{
+			"sections_dept": "rmes",
+			"overallAvg": 83.86,
+			"maxSectionAvg": 89.25,
+			"minSectionAvg": 74.33,
+			"avgAudit": 0.29,
+			"sumAudit": 42,
+			"countInstructor": 27
+		},
+		{
+			"sections_dept": "rmst",
+			"overallAvg": 69.93,
+			"maxSectionAvg": 79,
+			"minSectionAvg": 61.21,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 3
+		},
+		{
+			"sections_dept": "rsot",
+			"overallAvg": 85.27,
+			"maxSectionAvg": 91.7,
+			"minSectionAvg": 77.98,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 9
+		},
+		{
+			"sections_dept": "russ",
+			"overallAvg": 81.51,
+			"maxSectionAvg": 92.3,
+			"minSectionAvg": 64.13,
+			"avgAudit": 0.46,
+			"sumAudit": 56,
+			"countInstructor": 10
+		},
+		{
+			"sections_dept": "sans",
+			"overallAvg": 84.92,
+			"maxSectionAvg": 92.5,
+			"minSectionAvg": 70.69,
+			"avgAudit": 0.4,
+			"sumAudit": 8,
+			"countInstructor": 4
+		},
+		{
+			"sections_dept": "scan",
+			"overallAvg": 81.11,
+			"maxSectionAvg": 86.35,
+			"minSectionAvg": 76.63,
+			"avgAudit": 0.05,
+			"sumAudit": 2,
+			"countInstructor": 5
+		},
+		{
+			"sections_dept": "scie",
+			"overallAvg": 75.19,
+			"maxSectionAvg": 86.81,
+			"minSectionAvg": 65.81,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 92
+		},
+		{
+			"sections_dept": "soci",
+			"overallAvg": 76.46,
+			"maxSectionAvg": 88.71,
+			"minSectionAvg": 65.07,
+			"avgAudit": 0.27,
+			"sumAudit": 88,
+			"countInstructor": 45
+		},
+		{
+			"sections_dept": "soil",
+			"overallAvg": 82.38,
+			"maxSectionAvg": 91.43,
+			"minSectionAvg": 73.38,
+			"avgAudit": 0.2,
+			"sumAudit": 13,
+			"countInstructor": 11
+		},
+		{
+			"sections_dept": "sowk",
+			"overallAvg": 84.77,
+			"maxSectionAvg": 96.15,
+			"minSectionAvg": 72.95,
+			"avgAudit": 0.05,
+			"sumAudit": 27,
+			"countInstructor": 77
+		},
+		{
+			"sections_dept": "span",
+			"overallAvg": 74.34,
+			"maxSectionAvg": 93.25,
+			"minSectionAvg": 61.03,
+			"avgAudit": 0.35,
+			"sumAudit": 232,
+			"countInstructor": 70
+		},
+		{
+			"sections_dept": "spha",
+			"overallAvg": 82.5,
+			"maxSectionAvg": 89.76,
+			"minSectionAvg": 74.57,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 38
+		},
+		{
+			"sections_dept": "spph",
+			"overallAvg": 86.36,
+			"maxSectionAvg": 98.98,
+			"minSectionAvg": 66.8,
+			"avgAudit": 0.35,
+			"sumAudit": 219,
+			"countInstructor": 90
+		},
+		{
+			"sections_dept": "stat",
+			"overallAvg": 75.75,
+			"maxSectionAvg": 94.7,
+			"minSectionAvg": 60.6,
+			"avgAudit": 0.34,
+			"sumAudit": 133,
+			"countInstructor": 37
+		},
+		{
+			"sections_dept": "sts",
+			"overallAvg": 87.25,
+			"maxSectionAvg": 90,
+			"minSectionAvg": 85.57,
+			"avgAudit": 0.83,
+			"sumAudit": 10,
+			"countInstructor": 1
+		},
+		{
+			"sections_dept": "surg",
+			"overallAvg": 82.42,
+			"maxSectionAvg": 94.25,
+			"minSectionAvg": 60.25,
+			"avgAudit": 0.05,
+			"sumAudit": 2,
+			"countInstructor": 5
+		},
+		{
+			"sections_dept": "swed",
+			"overallAvg": 81.57,
+			"maxSectionAvg": 84.92,
+			"minSectionAvg": 77.88,
+			"avgAudit": 0.15,
+			"sumAudit": 4,
+			"countInstructor": 2
+		},
+		{
+			"sections_dept": "test",
+			"overallAvg": 60,
+			"maxSectionAvg": 60,
+			"minSectionAvg": 60,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 1
+		},
+		{
+			"sections_dept": "thtr",
+			"overallAvg": 82.8,
+			"maxSectionAvg": 95.2,
+			"minSectionAvg": 63.78,
+			"avgAudit": 0.04,
+			"sumAudit": 20,
+			"countInstructor": 66
+		},
+		{
+			"sections_dept": "udes",
+			"overallAvg": 84.98,
+			"maxSectionAvg": 89.5,
+			"minSectionAvg": 76.43,
+			"avgAudit": 0.13,
+			"sumAudit": 2,
+			"countInstructor": 6
+		},
+		{
+			"sections_dept": "ufor",
+			"overallAvg": 81.51,
+			"maxSectionAvg": 84.08,
+			"minSectionAvg": 79.7,
+			"avgAudit": 0.33,
+			"sumAudit": 2,
+			"countInstructor": 3
+		},
+		{
+			"sections_dept": "urst",
+			"overallAvg": 78.08,
+			"maxSectionAvg": 82.16,
+			"minSectionAvg": 69.34,
+			"avgAudit": 0.09,
+			"sumAudit": 3,
+			"countInstructor": 5
+		},
+		{
+			"sections_dept": "ursy",
+			"overallAvg": 80.36,
+			"maxSectionAvg": 82.83,
+			"minSectionAvg": 77.89,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 3
+		},
+		{
+			"sections_dept": "vant",
+			"overallAvg": 68.31,
+			"maxSectionAvg": 76.03,
+			"minSectionAvg": 56.77,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 14
+		},
+		{
+			"sections_dept": "visa",
+			"overallAvg": 76.92,
+			"maxSectionAvg": 89,
+			"minSectionAvg": 65.5,
+			"avgAudit": 0.07,
+			"sumAudit": 45,
+			"countInstructor": 35
+		},
+		{
+			"sections_dept": "wood",
+			"overallAvg": 75.35,
+			"maxSectionAvg": 89,
+			"minSectionAvg": 1,
+			"avgAudit": 0.05,
+			"sumAudit": 19,
+			"countInstructor": 30
+		},
+		{
+			"sections_dept": "wrds",
+			"overallAvg": 70.28,
+			"maxSectionAvg": 79.12,
+			"minSectionAvg": 53.64,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 22
+		},
+		{
+			"sections_dept": "zool",
+			"overallAvg": 88.98,
+			"maxSectionAvg": 92.71,
+			"minSectionAvg": 83.67,
+			"avgAudit": 0,
+			"sumAudit": 0,
+			"countInstructor": 6
+		}
+	]
+}

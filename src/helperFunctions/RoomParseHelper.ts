@@ -24,9 +24,9 @@ export function parseRoomsData(rooms: Room[], query: any): InsightResult[] {
 	for (const room of rooms) {
 		const insightResult: InsightResult = {};
 
-        let keysToKeep = query.OPTIONS.COLUMNS;
+		let keysToKeep = query.OPTIONS.COLUMNS;
 
-        if (doesQueryContainTransformations(query)) {
+		if (doesQueryContainTransformations(query)) {
 			keysToKeep = getAllRoomKeys(query);
 		}
 
@@ -34,7 +34,8 @@ export function parseRoomsData(rooms: Room[], query: any): InsightResult[] {
 			const datasetAndVariable: string[] = key.split("_");
 			const variable = datasetAndVariable[1];
 
-            if (!variable && doesQueryContainTransformations(query)) { // means that if variable is undefined, then likely transformations is present and a custom field is in the columns
+			if (!variable && doesQueryContainTransformations(query)) {
+				// means that if variable is undefined, then likely transformations is present and a custom field is in the columns
 				continue;
 			}
 
@@ -59,6 +60,17 @@ function sortRoomUsingKey(conditionKeys: string[], roomsToSort: Room[], directio
 
 function getAllRoomKeys(query: any): string[] {
 	const datasetName = dangerouslyGetDatasetNameFromQuery(query);
-	return [`${datasetName}_fullname`, `${datasetName}_shortname`, `${datasetName}_number`, `${datasetName}_name`, `${datasetName}_address`, `${datasetName}_lat`, `${datasetName}_lon`, `${datasetName}_seats`, `${datasetName}_type`, `${datasetName}_furniture`, `${datasetName}_href`];
+	return [
+		`${datasetName}_fullname`,
+		`${datasetName}_shortname`,
+		`${datasetName}_number`,
+		`${datasetName}_name`,
+		`${datasetName}_address`,
+		`${datasetName}_lat`,
+		`${datasetName}_lon`,
+		`${datasetName}_seats`,
+		`${datasetName}_type`,
+		`${datasetName}_furniture`,
+		`${datasetName}_href`,
+	];
 }
-
