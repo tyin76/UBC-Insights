@@ -10,9 +10,9 @@ export function validateQuery(query: any): void {
 	validateKeysInOptions(query.OPTIONS);
 	validateKeysInQuery(query);
 	if (doesQueryContainTransformations(query)) {
-	validateKeysInTransformations(query.TRANSFORMATIONS);
-	validateApplyInTransformations(query);
-	validateOrderInTransformations(query);
+		validateKeysInTransformations(query.TRANSFORMATIONS);
+		validateApplyInTransformations(query);
+		validateOrderInTransformations(query);
 	}
 }
 

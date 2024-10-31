@@ -102,7 +102,12 @@ export async function getDatasetAndValidateQuery(query: any): Promise<Dataset> {
 	if (doesQueryContainTransformations(query)) {
 		datasetNameToQueryFromTransformations = validateTransformationsAndGetSingleDataset(query);
 
-		if (datasetNameToQueryFromWhere !== "" && datasetNameToQueryFromWhere !== datasetNameToQueryFromOptions && datasetNameToQueryFromWhere !== datasetNameToQueryFromTransformations && datasetNameToQueryFromOptions !== datasetNameToQueryFromTransformations) {
+		if (
+			datasetNameToQueryFromWhere !== "" &&
+			datasetNameToQueryFromWhere !== datasetNameToQueryFromOptions &&
+			datasetNameToQueryFromWhere !== datasetNameToQueryFromTransformations &&
+			datasetNameToQueryFromOptions !== datasetNameToQueryFromTransformations
+		) {
 			throw new InsightError("WHERE and COLOUMNS and TRANSFORMATIONS does not reference the same dataset");
 		}
 	}

@@ -58,7 +58,6 @@ export function validateOptionsAndGetSingleDataset(query: any): string {
 	let datasetName = "";
 
 	for (const column of query.OPTIONS.COLUMNS) {
-
 		// Skip past the custom keys created (it won't have an underscore)
 		if (!column.includes("_")) {
 			continue;
@@ -69,10 +68,12 @@ export function validateOptionsAndGetSingleDataset(query: any): string {
 		// Check if the column contains a dataset name
 		if (!doesQueryContainTransformations(query)) {
 			if (columnParts.length !== seperatedArrayLengths) {
-				throw new InsightError("Invalid column key, keys without underscores are only allowed when transformation is present.");
+				throw new InsightError(
+					"Invalid column key, keys without underscores are only allowed when transformation is present."
+				);
 			}
 		} else {
-		//	validateTransformation(query);
+			//	validateTransformation(query);
 		}
 
 		datasetName = columnParts[0];
