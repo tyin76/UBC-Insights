@@ -6,7 +6,6 @@ import {
 	NotFoundError,
 	ResultTooLargeError,
 } from "../../src/controller/IInsightFacade";
-import * as fs from "fs";
 import InsightFacade from "../../src/controller/InsightFacade";
 import { clearDisk, getContentFromArchives, loadTestQuery } from "../TestUtil";
 
@@ -807,34 +806,19 @@ describe("InsightFacade", function () {
 	});
 
 	describe("PerformQuery", function () {
-		function getInsightResultValue(input: string, insightResult: InsightResult): string | number {
-			const keys = Object.keys(insightResult);
 
-			// Here we get the correct key whose text beyond the _ matches the input
-			const matchingKey = keys.find((key) => key.split("_")[1] === input);
-
-			// If no matching key is found, throw an error
-			if (!matchingKey) {
-				throw new Error("Invalid input: No matching key found.");
-			}
-
-			const value = insightResult[matchingKey];
-
-			if (value === undefined) {
-				throw new Error("Invalid input");
-			}
-
-			// If numeber return number, else return string
-			return typeof value === "number" ? Number(value) : String(value);
-		}
 
 		function isInAscendingOrder(index: number, keysSortedAgainst: string[], result: InsightResult[]): boolean {
 			if (keysSortedAgainst.length === 0) {
 				return true;
 			}
 
-			const leftValue = getInsightResultValue(keysSortedAgainst[0], result[index]);
-			const rightValue = getInsightResultValue(keysSortedAgainst[0], result[index + 1]);
+			const leftValue = result[index][keysSortedAgainst[0]];
+			const rightValue = result[index + 1][keysSortedAgainst[0]];
+
+			if (leftValue === undefined || rightValue === undefined) {
+				expect.fail("Value from key/field sorted against is undefined");
+			}
 
 			if (leftValue < rightValue) {
 				return true;
@@ -850,8 +834,12 @@ describe("InsightFacade", function () {
 				return true;
 			}
 
-			const leftValue = getInsightResultValue(keysSortedAgainst[0], result[index]);
-			const rightValue = getInsightResultValue(keysSortedAgainst[0], result[index + 1]);
+			const leftValue = result[index][keysSortedAgainst[0]];
+			const rightValue = result[index + 1][keysSortedAgainst[0]];
+
+			if (leftValue === undefined || rightValue === undefined) {
+				expect.fail("Value from key/field sorted against is undefined");
+			}
 
 			if (leftValue > rightValue) {
 				return true;
@@ -884,9 +872,14 @@ describe("InsightFacade", function () {
 			const keySortedAgainst = keysSortedAgainst[0];
 
 			for (let i = 0; i < result.length - 1; i++) {
-				const currentValue = getInsightResultValue(keySortedAgainst, result[i]);
+				const currentValue = result[i][keySortedAgainst]
 
-				const expectedCurrentValue = getInsightResultValue(keySortedAgainst, expected[i]);
+				const expectedCurrentValue = expected[i][keySortedAgainst];
+
+				if (currentValue === undefined || expectedCurrentValue === undefined) {
+					expect.fail("Value from key/field sorted against is undefined");
+				}
+
 				if (currentValue !== expectedCurrentValue) {
 					expect.fail("Sorted incorrectly!"); // The result is not sorted correctly
 				}
@@ -920,32 +913,6 @@ describe("InsightFacade", function () {
 				if (errorExpected) {
 					expect.fail(`performQuery resolved when it should have rejected with ${expected}`);
 				}
-
-				function writeTextToFile(filePath: string, text: string): void {
-					fs.writeFile(filePath, text, "utf8", (err) => {
-						if (err) {
-							return;
-						}
-					});
-				}
-
-				writeTextToFile("expected.txt", JSON.stringify(expected));
-				writeTextToFile("result.txt", JSON.stringify(result));
-
-				const differences = findDifferences(expected, result);
-			//	console.log('Missing in Result:', differences.missingInResult);
-			//	console.log('Extra in Result:', differences.extraInResult);
-
-				function findDifferences(expected: any, result: any) {
-					const expectedSet = new Set(expected);
-					const resultSet = new Set(result);
-				
-					const missingInResult = [...expectedSet].filter(item => !resultSet.has(item));
-					const extraInResult = [...resultSet].filter(item => !expectedSet.has(item));
-				
-					return { missingInResult, extraInResult };
-				}
-
 				expect(expected).to.have.deep.members(result);
 
 				if (keySortedAgainst !== null) {
@@ -1067,7 +1034,7 @@ describe("InsightFacade", function () {
 		);
 		it("[valid/duplicateKeysInColumns.json] should still return values.", checkQuery);
 		it("[valid/ComplexNestedAndOrsNotArrays.json] should return all sections with avg greater than 70 that is not cpsc whose instructor is named johnson or whose section year is not before 2018 AND whose pass count is exactly 100 whose department is not math and whose instructor is not named smith AND sections whose department is stat whose average is greater than 85 whose number of failures is not less than 10. Ordered by sections_avg", async function () {
-			await checkQuery.call(this, ["avg"]);
+			await checkQuery.call(this, ["sections_avg"]);
 		});
 		it("[invalid/invalidKeyInOptions.json] should fail as there is invalid key in OPTIONS", checkQuery);
 		it("[invalid/invalidTypeInOrder.json] should fail as there is an invalid type for ORDER", checkQuery);
@@ -1093,81 +1060,81 @@ describe("InsightFacade", function () {
 		);
 		it("[invalid/invalidWhereIsEmptyRetunsTooBig.json] should fail as we return more than 5000 sections", checkQuery);
 		it("[valid/sortedWithAudit.json] should pass when we sort with audit", async function () {
-			await checkQuery.call(this, ["audit"]);
+			await checkQuery.call(this, ["sections_audit"]);
 		});
 
 		it("[valid/sortedWithUuid.json] should pass when we sort with uuid", async function () {
-			await checkQuery.call(this, ["uuid"]);
+			await checkQuery.call(this, ["sections_uuid"]);
 		});
 
 		it("[valid/sortedWithTitle.json] should pass when we sort with title", async function () {
-			await checkQuery.call(this, ["title"]);
+			await checkQuery.call(this, ["sections_title"]);
 		});
 
 		it("[valid/sortedWithInstructor.json] should pass when we sort with instructor", async function () {
-			await checkQuery.call(this, ["instructor"]);
+			await checkQuery.call(this, ["sections_instructor"]);
 		});
 
 		it("[valid/sortedWithDept.json] should pass when we sort with dept", async function () {
-			await checkQuery.call(this, ["dept"]);
+			await checkQuery.call(this, ["sections_dept"]);
 		});
 
 		it("[valid/sortedWithYear.json] should pass when we sort with year", async function () {
-			await checkQuery.call(this, ["year"]);
+			await checkQuery.call(this, ["sections_year"]);
 		});
 
 		it("[valid/sortedWithAvg.json] should pass when we sort with avg", async function () {
-			await checkQuery.call(this, ["avg"]);
+			await checkQuery.call(this, ["sections_avg"]);
 		});
 
 		it("[valid/sortedWithPass.json] should pass when we sort with pass", async function () {
-			await checkQuery.call(this, ["pass"]);
+			await checkQuery.call(this, ["sections_pass"]);
 		});
 
 		it("[valid/sortedWithFail.json] should pass when we sort with fail", async function () {
-			await checkQuery.call(this, ["fail"]);
+			await checkQuery.call(this, ["sections_fail"]);
 		});
 
 		it("[valid/sortedWithId.json] should pass when we sort with id", async function () {
-			await checkQuery.call(this, ["id"]);
+			await checkQuery.call(this, ["sections_id"]);
 		});
 		it("[valid/validGetAllRoomsAndTheirFields.json] should pass when we get all rooms and sort with shortname", async function () {
-			await checkQuery.call(this, ["shortname"]);
+			await checkQuery.call(this, ["rooms_shortname"]);
 		});
 		it("[valid/validComplexWhereTestQueryForRooms.json] should pass complex query which retrieves rooms with more than 30 seats or exactly 50 seats that are either of type Lecture, have Movable furniture, or have latitude less than 49.3 and longitude greater than -123.2.", async function () {
-			await checkQuery.call(this, ["shortname"]);
+			await checkQuery.call(this, ["rooms_shortname"]);
 		});
 		it("[valid/validSortingMultipleKeysRoomsQuery.json] should pass when we query for rooms and then sort with multiple keys in descending order", async function () {
-			await checkQuery.call(this, ["shortname", "number", "seats"], false);
+			await checkQuery.call(this, ["rooms_shortname", "rooms_number", "rooms_seats"], false);
 		});
 		it("[valid/validSortingMultipleKeysSectionsQuery.json] should pass when we query for sections and then sort with multiple keys in descending order", async function () {
-			await checkQuery.call(this, ["avg", "instructor"], false);
+			await checkQuery.call(this, ["sections_avg", "sections_instructor"], false);
 		});
 		it("[valid/validSortAscendingWithAllFieldsInSections.json] should pass when we query for sections and then sort with all keys in ascending order", async function () {
 			await checkQuery.call(
 				this,
-				["dept", "instructor", "title", "year", "id", "avg", "pass", "fail", "audit", "uuid"],
+				["sections_dept", "sections_instructor", "sections_title", "sections_year", "sections_id", "sections_avg", "sections_pass", "sections_fail", "sections_audit", "sections_uuid"],
 				true
 			);
 		});
 		it("[valid/validSortDescendingWithAllFieldsInSections.json] should pass when we query for sections and then sort with all keys in descending order", async function () {
 			await checkQuery.call(
 				this,
-				["dept", "instructor", "title", "year", "id", "avg", "pass", "fail", "audit", "uuid"],
+				["sections_dept", "sections_instructor", "sections_title", "sections_year", "sections_id", "sections_avg", "sections_pass", "sections_fail", "sections_audit", "sections_uuid"],
 				false
 			);
 		});
 		it("[valid/validSortAscendingWithAllFieldsInRooms.json] should pass when we query for rooms and then sort with all keys in ascending order", async function () {
 			await checkQuery.call(
 				this,
-				["fullname", "shortname", "address", "lat", "lon", "type", "furniture", "number", "seats", "name", "href"],
+				["rooms_fullname", "rooms_shortname", "rooms_address", "rooms_lat", "rooms_lon", "rooms_type", "rooms_furniture", "rooms_number", "rooms_seats", "rooms_name", "rooms_href"],
 				true
 			);
 		});
 		it("[valid/validSortDescendingWithAllFieldsInRooms.json] should pass when we query for rooms and then sort with all keys in descending order", async function () {
 			await checkQuery.call(
 				this,
-				["fullname", "shortname", "address", "lat", "lon", "type", "furniture", "number", "seats", "name", "href"],
+				["rooms_fullname", "rooms_shortname", "rooms_address", "rooms_lat", "rooms_lon", "rooms_type", "rooms_furniture", "rooms_number", "rooms_seats", "rooms_name", "rooms_href"],
 				false
 			);
 		});
@@ -1287,6 +1254,33 @@ describe("InsightFacade", function () {
 			"[valid/validUsingMultipleTransformationOperatorsForRoomsQuery.json] should pass when we use query rooms with multiple trasnformations",
 			checkQuery
 		);
-		it("[valid/validTransformationSectionSortedWithCustomField.json] should pass sorting the query correctly", checkQuery);
+		it("[valid/validTransformationSectionSortedWithCustomField.json] should pass sorting the query correctly", async function () {
+			await checkQuery.call(
+				this,
+				["maxSectionAvg"],
+				true
+			);
+		});
+		it("[valid/validTransformationSectionSortedDescendingWithMultipleCustomField.json] should pass sorting the transformed query descending", async function () {
+			await checkQuery.call(
+				this,
+				["sections_dept",
+					"overallAvg",
+					"maxSectionAvg",
+					"minSectionAvg"],
+				false
+			);
+		});
+		it("[valid/validTransformationSortWithMultipleFieldsWithTies.json] should pass sorting the transformed query with fields that have many ties descendingly", async function () {
+			await checkQuery.call(
+				this,
+				[
+					"maxSectionAvg",
+					"sections_dept",
+					"minSectionAvg"
+				  ],
+				false
+			);
+		});
 	});
 });
