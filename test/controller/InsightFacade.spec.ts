@@ -828,7 +828,6 @@ describe("InsightFacade", function () {
 		}
 
 		function isInAscendingOrder(index: number, keysSortedAgainst: string[], result: InsightResult[]): boolean {
-
 			if (keysSortedAgainst.length === 0) {
 				return true;
 			}
@@ -839,14 +838,13 @@ describe("InsightFacade", function () {
 			if (leftValue < rightValue) {
 				return true;
 			} else if (leftValue > rightValue) {
-				return false
+				return false;
 			} else {
 				return isInAscendingOrder(index, keysSortedAgainst.slice(1), result);
 			}
 		}
 
 		function isInDescendingOrder(index: number, keysSortedAgainst: string[], result: InsightResult[]): boolean {
-
 			if (keysSortedAgainst.length === 0) {
 				return true;
 			}
@@ -857,7 +855,7 @@ describe("InsightFacade", function () {
 			if (leftValue > rightValue) {
 				return true;
 			} else if (leftValue < rightValue) {
-				return false
+				return false;
 			} else {
 				return isInDescendingOrder(index, keysSortedAgainst.slice(1), result);
 			}
@@ -867,18 +865,22 @@ describe("InsightFacade", function () {
 			for (let i = 0; i < result.length - 1; i++) {
 				if (isAscending) {
 					if (!isInAscendingOrder(i, keysSortedAgainst, result)) {
-						expect.fail("Sorted incorrectly for ascending order!");
+						expect.fail("Sorted incorrectly for ascending order! " + "At index " + [i]);
 					}
 				} else {
 					if (!isInDescendingOrder(i, keysSortedAgainst, result)) {
-						expect.fail("Sorted incorrectly for descending order!");
+						expect.fail("Sorted incorrectly for descending order!" + "At index " + [i]);
 					}
 				}
 			}
 		}
 
-		function checkSortedQuery(expected: InsightResult[], result: InsightResult[], keysSortedAgainst: string[], isAscending: boolean): void {
-
+		function checkSortedQuery(
+			expected: InsightResult[],
+			result: InsightResult[],
+			keysSortedAgainst: string[],
+			isAscending: boolean
+		): void {
 			const keySortedAgainst = keysSortedAgainst[0];
 
 			for (let i = 0; i < result.length - 1; i++) {
@@ -898,12 +900,16 @@ describe("InsightFacade", function () {
 		 *
 		 * Note: the 'this' parameter is automatically set by Mocha and contains information about the test.
 		 */
-		async function checkQuery(this: Mocha.Context, keySortedAgainst: null | string[] = null, isAscending: boolean = true): Promise<void> {
+		async function checkQuery(
+			this: Mocha.Context,
+			keySortedAgainst: null | string[] = null,
+			isAscending = true
+		): Promise<void> {
 			if (!this.test) {
 				throw new Error(
 					"Invalid call to checkQuery." +
-					"Usage: 'checkQuery' must be passed as the second parameter of Mocha's it(..) function." +
-					"Do not invoke the function directly."
+						"Usage: 'checkQuery' must be passed as the second parameter of Mocha's it(..) function." +
+						"Do not invoke the function directly."
 				);
 			}
 			// Destructuring assignment to reduce property accesses
@@ -943,7 +949,7 @@ describe("InsightFacade", function () {
 			// Will *fail* if there is a problem reading ANY dataset.
 			const loadDatasetPromises: Promise<string[]>[] = [
 				facade.addDataset("sections", sections, InsightDatasetKind.Sections),
-				facade.addDataset("rooms", rooms, InsightDatasetKind.Rooms)
+				facade.addDataset("rooms", rooms, InsightDatasetKind.Rooms),
 			];
 
 			try {
@@ -1103,6 +1109,26 @@ describe("InsightFacade", function () {
 		});
 		it("[valid/validComplexWhereTestQueryForRooms.json] should pass complex query which retrieves rooms with more than 30 seats or exactly 50 seats that are either of type Lecture, have Movable furniture, or have latitude less than 49.3 and longitude greater than -123.2.", async function () {
 			await checkQuery.call(this, ["shortname"]);
+		});
+		it("[valid/validSortingMultipleKeysRoomsQuery.json] should pass when we query for rooms and then sort with multiple keys in descending order", async function () {
+			await checkQuery.call(this, ["shortname", "number", "seats"], false);
+		});
+		it("[valid/validSortingMultipleKeysSectionsQuery.json] should pass when we query for sections and then sort with multiple keys in descending order", async function () {
+			await checkQuery.call(this, ["avg", "instructor"], false);
+		});
+		it("[valid/validSortAscendingWithAllFieldsInSections.json] should pass when we query for sections and then sort with all keys in ascending order", async function () {
+			await checkQuery.call(
+				this,
+				["dept", "instructor", "title", "year", "id", "avg", "pass", "fail", "audit", "uuid"],
+				true
+			);
+		});
+		it("[valid/validSortDescendingWithAllFieldsInSections.json] should pass when we query for sections and then sort with all keys in descending order", async function () {
+			await checkQuery.call(
+				this,
+				["dept", "instructor", "title", "year", "id", "avg", "pass", "fail", "audit", "uuid"],
+				false
+			);
 		});
 	});
 });

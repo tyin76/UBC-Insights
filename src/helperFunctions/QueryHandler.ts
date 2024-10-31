@@ -1,5 +1,4 @@
-import { InsightDatasetKind, InsightError, InsightResult, ResultTooLargeError } from "../controller/IInsightFacade";
-import Dataset from "../objects/Dataset";
+import { InsightDatasetKind, InsightError } from "../controller/IInsightFacade";
 import Room from "../objects/Room";
 import Section from "../objects/Section";
 import { validateAndExtractEntityFieldAndComparisonValue } from "./EntityValidationHelpers";
@@ -189,7 +188,6 @@ export async function getAllValidEntities(query: any): Promise<Section[] | Room[
 	// Gets the dataset to query
 	const datasetToQuery = await getDatasetAndValidateQuery(query);
 
-	console.log(datasetToQuery.getKind());
 	if (datasetToQuery.getKind() === InsightDatasetKind.Sections) {
 		return filterSectionDataset(datasetToQuery, operator, operatorParameter);
 	}

@@ -4,7 +4,11 @@ import { isFieldValidSectionField } from "./SectionValidationHelper";
 
 const seperatedArrayLengths = 2;
 
-export function validateAndExtractEntityFieldAndComparisonValue(object: any, isStringOnlyValue: boolean, kind: InsightDatasetKind): any[] {
+export function validateAndExtractEntityFieldAndComparisonValue(
+	object: any,
+	isStringOnlyValue: boolean,
+	kind: InsightDatasetKind
+): any[] {
 	const operators = Object.keys(object);
 
 	if (operators.length !== 1) {

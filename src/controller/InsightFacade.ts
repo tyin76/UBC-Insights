@@ -74,10 +74,10 @@ export default class InsightFacade implements IInsightFacade {
 
 		if (entities[0] instanceof Section) {
 			const insightSectionResults: InsightResult[] = parseSectionsData(entities as Section[], query);
-			return insightSectionResults
+			return insightSectionResults;
 		} else {
 			const insightSectionResults: InsightResult[] = parseRoomsData(entities as Room[], query);
-			return insightSectionResults
+			return insightSectionResults;
 		}
 	}
 
@@ -102,4 +102,3 @@ export default class InsightFacade implements IInsightFacade {
 		return datasets; // Return the resolved datasets
 	}
 }
-

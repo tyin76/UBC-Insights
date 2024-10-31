@@ -1,13 +1,22 @@
-import { InsightResult } from "../controller/IInsightFacade";
+import { InsightError, InsightResult } from "../controller/IInsightFacade";
 import Room from "../objects/Room";
 import { getRoomValueFromConditionKey } from "./RoomsFilterHelper";
+import { recursiveStringNumCompare } from "./SortHelper";
 
 export function parseRoomsData(rooms: Room[], query: any): InsightResult[] {
 	const insightResultsToReturn: InsightResult[] = [];
 
 	// This sorts based on the parameter provided to ORDER
 	if (query.OPTIONS.ORDER !== null && query.OPTIONS.ORDER !== undefined) {
-		sortRoomUsingKey(query.OPTIONS.ORDER.split("_")[1], rooms);
+		if (typeof query.OPTIONS.ORDER === "string") {
+			sortRoomUsingKey([query.OPTIONS.ORDER.split("_")[1]], rooms);
+		} else {
+			sortRoomUsingKey(
+				query.OPTIONS.ORDER.keys.map((key: string) => key.split("_")[1]),
+				rooms,
+				query.OPTIONS.ORDER.dir
+			);
+		}
 	}
 
 	for (const room of rooms) {
@@ -26,40 +35,12 @@ export function parseRoomsData(rooms: Room[], query: any): InsightResult[] {
 	return insightResultsToReturn;
 }
 
-function sortRoomUsingKey(conditionKey: string, roomsToSort: Room[]): void {
-	switch (conditionKey) {
-		case "fullname":
-			roomsToSort.sort((x, y) => x.getFullName().localeCompare(y.getFullName()));
-			break;
-		case "shortname":
-			roomsToSort.sort((x, y) => x.getShortName().localeCompare(y.getShortName()));
-			break;
-		case "number":
-			roomsToSort.sort((x, y) => x.getNumber().localeCompare(y.getNumber()));
-			break;
-		case "name":
-			roomsToSort.sort((x, y) => x.getName().localeCompare(y.getName()));
-			break;
-		case "address":
-			roomsToSort.sort((x, y) => x.getAddress().localeCompare(y.getAddress()));
-			break;
-		case "lat":
-			roomsToSort.sort((x, y) => x.getLat() - y.getLat());
-			break;
-		case "lon":
-			roomsToSort.sort((x, y) => x.getLon() - y.getLon());
-			break;
-		case "seats":
-			roomsToSort.sort((x, y) => x.getSeats() - y.getSeats());
-			break;
-		case "type":
-			roomsToSort.sort((x, y) => x.getType().localeCompare(y.getType()));
-			break;
-		case "furniture":
-			roomsToSort.sort((x, y) => x.getFurniture().localeCompare(y.getFurniture()));
-			break;
-        case "href":
-            roomsToSort.sort((x, y) => x.getHref().localeCompare(y.getHref()));
-            break;
+function sortRoomUsingKey(conditionKeys: string[], roomsToSort: Room[], direction = "UP"): void {
+	roomsToSort.sort((x, y) => recursiveStringNumCompare(conditionKeys, x, y));
+
+	if (direction === "DOWN") {
+		roomsToSort.reverse();
+	} else if (direction !== "UP") {
+		throw new InsightError("Invalid dir key");
 	}
 }

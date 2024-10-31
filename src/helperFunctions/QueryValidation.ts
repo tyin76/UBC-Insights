@@ -58,15 +58,34 @@ function validateOptionsColumns(columns: any): void {
 	}
 }
 
+function isDirValid(dir: any): boolean {
+	return ["UP", "DOWN"].includes(dir);
+}
+
+function isOrderKeyInColumns(keys: any, options: any): boolean {
+	for (const key of keys) {
+		if (!options.COLUMNS.includes(key)) {
+			return false;
+		}
+	}
+	return true;
+}
+
 function validateOrderInOptions(options: any): void {
 	if (options.ORDER !== null && options.ORDER !== undefined) {
-		if (typeof options.ORDER !== "string") {
-			throw new InsightError("ORDER key is of the wrong type");
+		if (typeof options.ORDER === "string" && isOrderKeyInColumns([options.ORDER], options)) {
+			return;
 		}
 
-		if (!options.COLUMNS.includes(options.ORDER)) {
-			throw new InsightError("ORDER key must be in COLUMNS array.");
+		if (
+			isDirValid(options.ORDER.dir) &&
+			isOrderKeyInColumns(options.ORDER.keys, options) &&
+			options.ORDER.keys.length > 0
+		) {
+			return;
 		}
+
+		throw new InsightError("ORDER section is of an invalid format");
 	}
 }
 
