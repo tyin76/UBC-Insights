@@ -806,8 +806,6 @@ describe("InsightFacade", function () {
 	});
 
 	describe("PerformQuery", function () {
-
-
 		function isInAscendingOrder(index: number, keysSortedAgainst: string[], result: InsightResult[]): boolean {
 			if (keysSortedAgainst.length === 0) {
 				return true;
@@ -872,7 +870,7 @@ describe("InsightFacade", function () {
 			const keySortedAgainst = keysSortedAgainst[0];
 
 			for (let i = 0; i < result.length - 1; i++) {
-				const currentValue = result[i][keySortedAgainst]
+				const currentValue = result[i][keySortedAgainst];
 
 				const expectedCurrentValue = expected[i][keySortedAgainst];
 
@@ -1113,28 +1111,74 @@ describe("InsightFacade", function () {
 		it("[valid/validSortAscendingWithAllFieldsInSections.json] should pass when we query for sections and then sort with all keys in ascending order", async function () {
 			await checkQuery.call(
 				this,
-				["sections_dept", "sections_instructor", "sections_title", "sections_year", "sections_id", "sections_avg", "sections_pass", "sections_fail", "sections_audit", "sections_uuid"],
+				[
+					"sections_dept",
+					"sections_instructor",
+					"sections_title",
+					"sections_year",
+					"sections_id",
+					"sections_avg",
+					"sections_pass",
+					"sections_fail",
+					"sections_audit",
+					"sections_uuid",
+				],
 				true
 			);
 		});
 		it("[valid/validSortDescendingWithAllFieldsInSections.json] should pass when we query for sections and then sort with all keys in descending order", async function () {
 			await checkQuery.call(
 				this,
-				["sections_dept", "sections_instructor", "sections_title", "sections_year", "sections_id", "sections_avg", "sections_pass", "sections_fail", "sections_audit", "sections_uuid"],
+				[
+					"sections_dept",
+					"sections_instructor",
+					"sections_title",
+					"sections_year",
+					"sections_id",
+					"sections_avg",
+					"sections_pass",
+					"sections_fail",
+					"sections_audit",
+					"sections_uuid",
+				],
 				false
 			);
 		});
 		it("[valid/validSortAscendingWithAllFieldsInRooms.json] should pass when we query for rooms and then sort with all keys in ascending order", async function () {
 			await checkQuery.call(
 				this,
-				["rooms_fullname", "rooms_shortname", "rooms_address", "rooms_lat", "rooms_lon", "rooms_type", "rooms_furniture", "rooms_number", "rooms_seats", "rooms_name", "rooms_href"],
+				[
+					"rooms_fullname",
+					"rooms_shortname",
+					"rooms_address",
+					"rooms_lat",
+					"rooms_lon",
+					"rooms_type",
+					"rooms_furniture",
+					"rooms_number",
+					"rooms_seats",
+					"rooms_name",
+					"rooms_href",
+				],
 				true
 			);
 		});
 		it("[valid/validSortDescendingWithAllFieldsInRooms.json] should pass when we query for rooms and then sort with all keys in descending order", async function () {
 			await checkQuery.call(
 				this,
-				["rooms_fullname", "rooms_shortname", "rooms_address", "rooms_lat", "rooms_lon", "rooms_type", "rooms_furniture", "rooms_number", "rooms_seats", "rooms_name", "rooms_href"],
+				[
+					"rooms_fullname",
+					"rooms_shortname",
+					"rooms_address",
+					"rooms_lat",
+					"rooms_lon",
+					"rooms_type",
+					"rooms_furniture",
+					"rooms_number",
+					"rooms_seats",
+					"rooms_name",
+					"rooms_href",
+				],
 				false
 			);
 		});
@@ -1255,32 +1299,13 @@ describe("InsightFacade", function () {
 			checkQuery
 		);
 		it("[valid/validTransformationSectionSortedWithCustomField.json] should pass sorting the query correctly", async function () {
-			await checkQuery.call(
-				this,
-				["maxSectionAvg"],
-				true
-			);
+			await checkQuery.call(this, ["maxSectionAvg"], true);
 		});
 		it("[valid/validTransformationSectionSortedDescendingWithMultipleCustomField.json] should pass sorting the transformed query descending", async function () {
-			await checkQuery.call(
-				this,
-				["sections_dept",
-					"overallAvg",
-					"maxSectionAvg",
-					"minSectionAvg"],
-				false
-			);
+			await checkQuery.call(this, ["sections_dept", "overallAvg", "maxSectionAvg", "minSectionAvg"], false);
 		});
 		it("[valid/validTransformationSortWithMultipleFieldsWithTies.json] should pass sorting the transformed query with fields that have many ties descendingly", async function () {
-			await checkQuery.call(
-				this,
-				[
-					"maxSectionAvg",
-					"sections_dept",
-					"minSectionAvg"
-				  ],
-				false
-			);
+			await checkQuery.call(this, ["maxSectionAvg", "sections_dept", "minSectionAvg"], false);
 		});
 	});
 });

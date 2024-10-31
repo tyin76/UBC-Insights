@@ -6,9 +6,9 @@ export function recursiveInsightResultCompare(fieldsToSortBy: string[], x: Insig
 	}
 
 	const errorCode = -3333;
-    
-    let xVal: string | number = errorCode;
-    let yVal: string | number = errorCode;
+
+	let xVal: string | number = errorCode;
+	let yVal: string | number = errorCode;
 
 	xVal = x[fieldsToSortBy[0]];
 	yVal = y[fieldsToSortBy[0]];

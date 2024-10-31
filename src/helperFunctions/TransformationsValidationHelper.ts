@@ -31,12 +31,11 @@ export function validateTransformationsAndGetSingleDataset(query: any): string {
 }
 
 function checkIfDuplicateApplyKeysInTransformation(query: any): void {
-
-	const objects = query.TRANSFORMATIONS.APPLY
+	const objects = query.TRANSFORMATIONS.APPLY;
 
 	const keysInApply: string[] = [];
 
-	const keySet: {[x:string]: boolean} = {};
+	const keySet: { [x: string]: boolean } = {};
 
 	for (const obj of objects as Object[]) {
 		keysInApply.push(Object.keys(obj)[0]);

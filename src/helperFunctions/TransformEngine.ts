@@ -1,5 +1,5 @@
 import Decimal from "decimal.js";
-import {InsightError, InsightResult } from "../controller/IInsightFacade";
+import { InsightError, InsightResult } from "../controller/IInsightFacade";
 import { isFieldValidRoomNumberField, isFieldValidRoomStringField } from "./RoomValidationHelper";
 import { isFieldValidSectionNumberField, isFieldValidSectionStringField } from "./SectionValidationHelper";
 import { recursiveInsightResultCompare } from "./InsightResultSortHelper";
@@ -21,7 +21,7 @@ export function transformEngine(insightResults: InsightResult[], query: any): In
 		transform(transformationInsightResults, insightResults, query, instruction[0], instruction[1], instruction[2]);
 	}
 
-	const filteredInsightResults = columnFilteredInsightResults(query, Object.values(transformationInsightResults))
+	const filteredInsightResults = columnFilteredInsightResults(query, Object.values(transformationInsightResults));
 
 	return sortInsightResults(query, filteredInsightResults);
 }
@@ -31,17 +31,17 @@ function sortInsightResults(query: any, insightResults: InsightResult[]): Insigh
 		if (typeof query.OPTIONS.ORDER === "string") {
 			sortInsightResultsUsingKey([query.OPTIONS.ORDER], insightResults);
 		} else {
-			sortInsightResultsUsingKey(
-				query.OPTIONS.ORDER.keys,
-				insightResults,
-				query.OPTIONS.ORDER.dir
-			);
+			sortInsightResultsUsingKey(query.OPTIONS.ORDER.keys, insightResults, query.OPTIONS.ORDER.dir);
 		}
 	}
 	return insightResults;
 }
 
-function sortInsightResultsUsingKey(conditionKeys: string[], insightResultsToSort: InsightResult[], direction = "UP"): void {
+function sortInsightResultsUsingKey(
+	conditionKeys: string[],
+	insightResultsToSort: InsightResult[],
+	direction = "UP"
+): void {
 	insightResultsToSort.sort((x, y) => recursiveInsightResultCompare(conditionKeys, x, y));
 
 	if (direction === "DOWN") {
@@ -91,9 +91,11 @@ function transform(
 	throw new InsightError("Invalid transformation operator");
 }
 
-function groupOnly(	transformationInsightResults: { [key: string]: InsightResult },
+function groupOnly(
+	transformationInsightResults: { [key: string]: InsightResult },
 	insightResults: InsightResult[],
-	query: any,): InsightResult[]  {
+	query: any
+): InsightResult[] {
 	const fieldsToGroupBy: string[] = getFieldsToGroupBy(query);
 
 	for (const result of insightResults) {
@@ -103,10 +105,10 @@ function groupOnly(	transformationInsightResults: { [key: string]: InsightResult
 			currGroupId += result[field];
 			insightResult[field] = result[field];
 		}
-	
+
 		if (transformationInsightResults[currGroupId] === undefined) {
 			transformationInsightResults[currGroupId] = insightResult;
-		} 
+		}
 	}
 	return Object.values(transformationInsightResults);
 }
@@ -169,10 +171,9 @@ function getCountForGroup(
 		}
 		if (transformationInsightResults[currGroupId] === undefined) {
 			transformationInsightResults[currGroupId] = insightResult;
-		} 
+		}
 		if (transformationInsightResults[currGroupId][customFieldName] === undefined) {
 			transformationInsightResults[currGroupId][customFieldName] = 0;
-
 		}
 	}
 
@@ -201,10 +202,10 @@ function getMinForGroup(
 			currGroupId += result[field];
 			insightResult[field] = result[field];
 		}
-		
+
 		if (transformationInsightResults[currGroupId] === undefined) {
 			transformationInsightResults[currGroupId] = insightResult;
-		} 
+		}
 		if (transformationInsightResults[currGroupId][customFieldName] !== undefined) {
 			const min = transformationInsightResults[currGroupId][customFieldName];
 			const potentialMin = result[fieldToFindMin];
@@ -248,7 +249,7 @@ function getMaxForGroup(
 		if (transformationInsightResults[currGroupId] === undefined) {
 			transformationInsightResults[currGroupId] = insightResult;
 		}
-		 if (transformationInsightResults[currGroupId][customFieldName] !== undefined) {
+		if (transformationInsightResults[currGroupId][customFieldName] !== undefined) {
 			const max = transformationInsightResults[currGroupId][customFieldName];
 			const potentialMax = result[fieldToFindMax];
 			transformationInsightResults[currGroupId][customFieldName] = Math.max(max as number, potentialMax as number);
@@ -283,9 +284,9 @@ function getSumForGroup(
 		if (transformationInsightResults[currGroupId] === undefined) {
 			transformationInsightResults[currGroupId] = insightResult;
 		}
-		if (sumMap[currGroupId] !== undefined){
+		if (sumMap[currGroupId] !== undefined) {
 			sumMap[currGroupId] = (sumMap[currGroupId] as Decimal).add(new Decimal(result[fieldToSum]));
-		}else if (sumMap[currGroupId] === undefined) {
+		} else if (sumMap[currGroupId] === undefined) {
 			sumMap[currGroupId] = new Decimal(result[fieldToSum]);
 		}
 	}
@@ -322,9 +323,9 @@ function getAvgForGroup(
 		}
 		if (transformationInsightResults[currGroupId] === undefined) {
 			transformationInsightResults[currGroupId] = insightResult;
-		} 
-		
-		if (avgMap[currGroupId] !== undefined){
+		}
+
+		if (avgMap[currGroupId] !== undefined) {
 			avgMap[currGroupId][totalKeyword] = (avgMap[currGroupId][totalKeyword] as Decimal).add(
 				new Decimal(result[fieldToAvg])
 			);
