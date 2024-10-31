@@ -1130,5 +1130,19 @@ describe("InsightFacade", function () {
 				false
 			);
 		});
+		it("[valid/validSortAscendingWithAllFieldsInRooms.json] should pass when we query for rooms and then sort with all keys in ascending order", async function () {
+			await checkQuery.call(
+				this,
+				["fullname", "shortname", "address", "lat", "lon", "type", "furniture", "number", "seats", "name", "href"],
+				true
+			);
+		});
+		it("[valid/validSortDescendingWithAllFieldsInRooms.json] should pass when we query for rooms and then sort with all keys in descending order", async function () {
+			await checkQuery.call(
+				this,
+				["fullname", "shortname", "address", "lat", "lon", "type", "furniture", "number", "seats", "name", "href"],
+				false
+			);
+		});
 	});
 });

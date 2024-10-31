@@ -11,7 +11,8 @@ export async function validateDatasetRefsInWhereAndGetSingleDataset(where: any):
 	let datasetName = "";
 
 	// This for loop checks that all keys have dataset names that are referenceing the same dataset, and that all parameters are valid
-	for (const datasetNameField of getKeysWithUnderscore(where)) {
+
+	const validationPromises = getKeysWithUnderscore(where).map(async (datasetNameField) => {
 		const datasetNameAndField = getDatasetNameAndFieldInArray(datasetNameField);
 
 		validateDatasetNameAndFieldFormat(datasetNameAndField);
@@ -20,10 +21,12 @@ export async function validateDatasetRefsInWhereAndGetSingleDataset(where: any):
 
 		const field = getDatasetField(datasetNameAndField);
 
-
 		validateDatasetField(field, await getKindFromId(datasetName));
 		assertSingleDatasetReference(datasetName, datasetNameSet);
-	}
+	});
+
+	await Promise.all(validationPromises);
+
 	return datasetName;
 }
 
@@ -40,7 +43,7 @@ function assertSingleDatasetReference(datasetName: string, datasetNameSet: Set<s
 
 function validateDatasetField(field: string, kind: InsightDatasetKind): void {
 	// checks to see if filed is valid, remember filed is invalid if it is not one of the following "year", "avg", "pass", "fail", "audit", "uuid", "id", "title", "instructor", "dept"
-	
+
 	if (kind === InsightDatasetKind.Sections) {
 		if (!isFieldValidSectionField(field)) {
 			throw new InsightError("Dataset field for Section is invalid");
@@ -76,25 +79,23 @@ function validateDatasetNameAndFieldFormat(datasetNameAndField: string[]): void 
 }
 
 export async function getDatasetAndValidateQuery(query: any): Promise<Dataset> {
-
 	const { WHERE } = query as any;
 
 	// This looks at the entire query and gets the id/name of the dataset that we need to access, this also validates the WHERE object
-// To ensure that it is formatted correctly
-const datasetNameToQueryFromWhere = await validateDatasetRefsInWhereAndGetSingleDataset(WHERE);
+	// To ensure that it is formatted correctly
+	const datasetNameToQueryFromWhere = await validateDatasetRefsInWhereAndGetSingleDataset(WHERE);
 
-// This looks at the entire query and gets the id/name of the dataset that we need to access, this also validates the OPTIONS object
-// To ensure that it is formatted correctly
-const datasetNameToQueryFromOptions = validateOptionsAndGetSingleDataset(query.OPTIONS);
+	// This looks at the entire query and gets the id/name of the dataset that we need to access, this also validates the OPTIONS object
+	// To ensure that it is formatted correctly
+	const datasetNameToQueryFromOptions = validateOptionsAndGetSingleDataset(query.OPTIONS);
 
-const datasetName = datasetNameToQueryFromOptions;
+	const datasetName = datasetNameToQueryFromOptions;
 
-// This means that WHERE is an empty object ie: {} and does not have the datasetName within it, so we must now find it in the columns portion
-if (datasetNameToQueryFromWhere !== "" && datasetNameToQueryFromWhere !== datasetNameToQueryFromOptions) {
-throw new InsightError("WHERE and COLOUMNS does not reference the same dataset");
-}
+	// This means that WHERE is an empty object ie: {} and does not have the datasetName within it, so we must now find it in the columns portion
+	if (datasetNameToQueryFromWhere !== "" && datasetNameToQueryFromWhere !== datasetNameToQueryFromOptions) {
+		throw new InsightError("WHERE and COLOUMNS does not reference the same dataset");
+	}
 
-// Gets the dataset to query
-return await getDatasetFromId(datasetName);
-
+	// Gets the dataset to query
+	return await getDatasetFromId(datasetName);
 }

@@ -1,10 +1,7 @@
 import { InsightError, ResultTooLargeError } from "../controller/IInsightFacade";
 import Dataset from "../objects/Dataset";
 import Section from "../objects/Section";
-import {
-	entityMatchesQueryRequirements,
-	maxSections,
-} from "./QueryHandler";
+import { entityMatchesQueryRequirements, maxSections } from "./QueryHandler";
 
 export function filterSectionDataset(datasetToQuery: Dataset, operator: any, operatorParameter: any): Section[] {
 	// This will store all the sections that we should return to be processed
