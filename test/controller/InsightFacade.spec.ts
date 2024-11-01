@@ -854,7 +854,12 @@ describe("InsightFacade", function () {
 			}
 		}
 
-		function isInDescendingOrder(index: number, keysSortedAgainst: string[], result: InsightResult[], expected: InsightResult[]): boolean {
+		function isInDescendingOrder(
+			index: number,
+			keysSortedAgainst: string[],
+			result: InsightResult[],
+			expected: InsightResult[]
+		): boolean {
 			if (keysSortedAgainst.length === 0) {
 				return true;
 			}
@@ -881,7 +886,12 @@ describe("InsightFacade", function () {
 				return isInDescendingOrder(index, keysSortedAgainst.slice(1), result, expected);
 			}
 		}
-		function checkOrder(keysSortedAgainst: string[], isAscending: boolean, result: InsightResult[], expected: InsightResult[]): void {
+		function checkOrder(
+			keysSortedAgainst: string[],
+			isAscending: boolean,
+			result: InsightResult[],
+			expected: InsightResult[]
+		): void {
 			for (let i = 0; i < result.length - 1; i++) {
 				if (isAscending) {
 					if (!isInAscendingOrder(i, keysSortedAgainst, result)) {
@@ -1390,10 +1400,7 @@ describe("InsightFacade", function () {
 			await checkQuery.call(this, ["rooms_shortname"], false);
 		});
 		it("[valid/sortRoomsViaTwoFieldsOneCustomOneNot.json]", async function () {
-			await checkQuery.call(this, 		[
-				"countShortname",
-				"rooms_shortname"
-			], false);
+			await checkQuery.call(this, ["countShortname", "rooms_shortname"], false);
 		});
 		it("[invalid/errorCannotQueryMoreThankOneDatasetWhere.json]", checkQuery);
 		it("[invalid/referencedDatasetRoomssNotAddedYet.json]", checkQuery);
