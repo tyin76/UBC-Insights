@@ -1,0 +1,83 @@
+{
+	"title": "extremeRangeFilteringRooms",
+	"input": {
+		"WHERE": {
+			"OR": [
+				{
+					"AND": [
+						{
+							"GT": {
+								"rooms_lat": 49.27
+							}
+						},
+						{
+							"LT": {
+								"rooms_lon": -123.25
+							}
+						}
+					]
+				},
+				{
+					"AND": [
+						{
+							"LT": {
+								"rooms_lat": 49.24
+							}
+						},
+						{
+							"GT": {
+								"rooms_lon": -123.23
+							}
+						}
+					]
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"rooms_shortname",
+				"maxLat",
+				"minLat",
+				"maxLon",
+				"minLon"
+			]
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"rooms_shortname"
+			],
+			"APPLY": [
+				{
+					"maxLat": {
+						"MAX": "rooms_lat"
+					}
+				},
+				{
+					"minLat": {
+						"MIN": "rooms_lat"
+					}
+				},
+				{
+					"maxLon": {
+						"MAX": "rooms_lon"
+					}
+				},
+				{
+					"minLon": {
+						"MIN": "rooms_lon"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"rooms_shortname": "IONA",
+			"maxLat": 49.27106,
+			"minLat": 49.27106,
+			"maxLon": -123.25042,
+			"minLon": -123.25042
+		}
+	]
+}
