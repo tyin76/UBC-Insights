@@ -11,8 +11,6 @@ import { clearDisk, getContentFromArchives, loadTestQuery } from "../TestUtil";
 
 import { expect, use } from "chai";
 import chaiAsPromised from "chai-as-promised";
-import { getDatasetFromId } from "../../src/objects/FileManagement";
-import Dataset from "../../src/objects/Dataset";
 
 use(chaiAsPromised);
 
@@ -361,23 +359,6 @@ describe("InsightFacade", function () {
 				expect.fail("Should have thrown error");
 			} catch (err) {
 				expect(err).to.be.instanceOf(InsightError);
-			}
-		});
-
-		// TODO
-		it("should create dataset with empty room array when no campus folder exists", async function () {
-			try {
-				const withoutCampusRooms = await getContentFromArchives("withoutCampusFolder.zip");
-				await facade.addDataset("withoutCampusFolder", withoutCampusRooms, InsightDatasetKind.Rooms);
-				const result = await getDatasetFromId("withoutCampusFolder");
-
-				expect(result).to.be.instanceOf(Dataset); // Verify it's a Dataset
-				expect(result.getKind()).to.equal(InsightDatasetKind.Rooms); // Verify kind is Rooms
-				expect(result.getEntities()).to.be.an("array"); // Verify content is array
-				expect(result.getEntities()).to.have.lengthOf(0); // Verify array is empty
-			} catch (err) {
-				const errorMessage = (err as Error).message;
-				expect.fail(`Should not throw error, should return dataset with empty array. Error: ${errorMessage}`);
 			}
 		});
 	});
@@ -983,12 +964,14 @@ describe("InsightFacade", function () {
 
 			sections = await getContentFromArchives("pair.zip");
 			rooms = await getContentFromArchives("campus.zip");
+			const noCampusFolder = await getContentFromArchives("withoutCampusFolder.zip");
 
 			// Add the datasets to InsightFacade once.
 			// Will *fail* if there is a problem reading ANY dataset.
 			const loadDatasetPromises: Promise<string[]>[] = [
 				facade.addDataset("sections", sections, InsightDatasetKind.Sections),
 				facade.addDataset("rooms", rooms, InsightDatasetKind.Rooms),
+				facade.addDataset("noCampusFolder", noCampusFolder, InsightDatasetKind.Rooms),
 			];
 
 			try {
@@ -1407,5 +1390,6 @@ describe("InsightFacade", function () {
 		it("[invalid/referencedDatasetRoomssNotAddedYetInApply.json]", checkQuery);
 		it("[invalid/referencedDatasetRoomssNotAddedYetInGroup.json]", checkQuery);
 		it("[invalid/referencedDatasetRoomssNotAddedYetInOrder.json]", checkQuery);
+		it("[valid/queryNoCampusFolder.json]", checkQuery);
 	});
 });

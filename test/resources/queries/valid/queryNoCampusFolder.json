@@ -1,0 +1,59 @@
+{
+	"title": "ValidRoomsTransformationWildcardNotIsGt",
+	"input": {
+		"WHERE": {
+			"OR": [
+				{
+					"NOT": {
+						"IS": {
+							"rooms_shortname": "*SC"
+						}
+					}
+				},
+				{
+					"GT": {
+						"rooms_seats": 300
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"noCampusFolder_shortname",
+				"maxSeats",
+				"maxLat",
+				"minLat",
+				"minSeats"
+			]
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"noCampusFolder_shortname"
+			],
+			"APPLY": [
+				{
+					"maxSeats": {
+						"MAX": "noCampusFolder_seats"
+					}
+				},
+				{
+					"maxLat": {
+						"MAX": "noCampusFolder_lat"
+					}
+				},
+				{
+					"minLat": {
+						"MIN": "noCampusFolder_lat"
+					}
+				},
+				{
+					"minSeats": {
+						"MIN": "noCampusFolder_seats"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": false,
+	"expected": []
+}
