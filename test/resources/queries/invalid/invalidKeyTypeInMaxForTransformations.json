@@ -1,0 +1,48 @@
+{
+	"title": "invalidKeyTypeInMaxForTransformations",
+	"input": {
+		"WHERE": {},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_dept",
+				"sections_id",
+				"overallAvg",
+				"maxSectionAvg",
+				"minSectionAvg"
+			],
+			"ORDER": {
+				"keys": [
+					"sections_dept",
+					"overallAvg",
+					"maxSectionAvg"
+				],
+				"dir": "DOWN"
+			}
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"sections_dept",
+				"sections_id"
+			],
+			"APPLY": [
+				{
+					"overallAvg": {
+						"AVG": "sections_avg"
+					}
+				},
+				{
+					"maxSectionAvg": {
+						"MAX": "sections_id"
+					}
+				},
+				{
+					"minSectionAvg": {
+						"MIN": "sections_avg"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}

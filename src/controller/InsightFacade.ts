@@ -15,12 +15,17 @@ import {
 	removeDatasetFromDataCache,
 	saveDatasetToDataCache,
 } from "../objects/FileManagement";
-import { getAllValidSections, parseSectionsData } from "../helperFunctions/QueryHandler";
+import { getAllValidEntities } from "../helperFunctions/QueryHandler";
 import {
 	checkThatIdDoesNotAlreadyExistInCache,
 	validateDatasetParameters,
 	createDatasetFromContent,
 } from "../helperFunctions/AddDatasetHelper";
+import Room from "../objects/Room";
+import { parseSectionsData } from "../helperFunctions/SectionParseHelper";
+import { parseRoomsData } from "../helperFunctions/RoomParseHelper";
+import { doesQueryContainTransformations } from "../helperFunctions/TransformationsValidationHelper";
+import { transformEngine } from "../helperFunctions/TransformEngine";
 
 /**
  * This is the main programmatic entry point for the project.
@@ -63,10 +68,25 @@ export default class InsightFacade implements IInsightFacade {
 	// Reminder that query will use keys from the dataset
 	public async performQuery(query: unknown): Promise<InsightResult[]> {
 		// gets all sections
-		const sections: Section[] = await getAllValidSections(query);
-		const insightResults: InsightResult[] = parseSectionsData(sections, query);
+		const entities: Section[] | Room[] = await getAllValidEntities(query);
 
-		return insightResults;
+		if (entities.length === 0) {
+			return [];
+		}
+
+		if (entities[0] instanceof Section) {
+			let insightSectionResults: InsightResult[] = parseSectionsData(entities as Section[], query);
+			if (doesQueryContainTransformations(query)) {
+				insightSectionResults = transformEngine(insightSectionResults, query);
+			}
+			return insightSectionResults;
+		} else {
+			let insightRoomsResults: InsightResult[] = parseRoomsData(entities as Room[], query);
+			if (doesQueryContainTransformations(query)) {
+				insightRoomsResults = transformEngine(insightRoomsResults, query);
+			}
+			return insightRoomsResults;
+		}
 	}
 
 	public async listDatasets(): Promise<InsightDataset[]> {

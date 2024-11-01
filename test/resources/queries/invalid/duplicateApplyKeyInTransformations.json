@@ -1,0 +1,61 @@
+{
+	"title": "duplicateApplyKeyInTransformations",
+	"input": {
+		"WHERE": {},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_dept",
+				"overallAvg",
+				"maxSectionAvg",
+				"minSectionAvg",
+				"avgAudit",
+				"sumAudit",
+				"countInstructor"
+			]
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"sections_dept"
+			],
+			"APPLY": [
+				{
+					"overallAvg": {
+						"AVG": "sections_avg"
+					}
+				},
+				{
+					"maxSectionAvg": {
+						"MAX": "sections_avg"
+					}
+				},
+				{
+					"minSectionAvg": {
+						"MIN": "sections_avg"
+					}
+				},
+				{
+					"avgAudit": {
+						"AVG": "sections_audit"
+					}
+				},
+				{
+					"sumAudit": {
+						"SUM": "sections_audit"
+					}
+				},
+				{
+					"countInstructor": {
+						"COUNT": "sections_instructor"
+					}
+				},
+				{
+					"countInstructor": {
+						"COUNT": "sections_instructor"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}

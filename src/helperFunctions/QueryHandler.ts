@@ -1,86 +1,31 @@
-import { InsightError, InsightResult, ResultTooLargeError } from "../controller/IInsightFacade";
-import { getDatasetFromId } from "../objects/FileManagement";
+import { InsightDatasetKind, InsightError } from "../controller/IInsightFacade";
+import Room from "../objects/Room";
 import Section from "../objects/Section";
+import { validateAndExtractEntityFieldAndComparisonValue } from "./EntityValidationHelpers";
 import { extractAndValidateLogicalOperatorAndParameter } from "./LogicalOperatorExtractionAndValidation";
 import { validateQuery } from "./QueryValidation";
-import {
-	validateAndExtractSectionFieldAndComparisonValue,
-	validateOptionsAndGetSingleDataset,
-} from "./ValidationHelpers";
-import { validateDatasetRefsInWhereAndGetSingleDataset } from "./WhereDatasetExtractorAndRefsValidation";
+import { filterRoomDataset, getRoomValueFromConditionKey } from "./RoomsFilterHelper";
+import { filterSectionDataset, getSectionValueFromConditionKey } from "./SectionsFilterHelper";
+import { getDatasetAndValidateQuery } from "./WhereDatasetExtractorAndRefsValidation";
 import { checkAstericksPlacement } from "./WildcardValidation";
 
-const maxSections = 5000;
+export const maxSections = 5000;
 
-function sectionMatchesQueryRequirements(
-	operator: string,
-	operatorParameter: string,
-	sectionToCheck: Section
-): boolean {
-	switch (operator) {
-		case "AND":
-			return and(sectionToCheck, operatorParameter);
-		case "OR":
-			return or(sectionToCheck, operatorParameter);
-		case "GT":
-			return greaterThan(sectionToCheck, operatorParameter);
-		case "LT":
-			return lessThan(sectionToCheck, operatorParameter);
-		case "EQ":
-			return equalTo(sectionToCheck, operatorParameter);
-		case "IS":
-			return is(sectionToCheck, operatorParameter);
-		case "NOT":
-			return not(sectionToCheck, operatorParameter);
-		default:
-			return true;
+function getEntityValueFromConditionKey(conditionKey: string, enitityToUse: Room | Section): string | number {
+	if (enitityToUse instanceof Room) {
+		return getRoomValueFromConditionKey(conditionKey, enitityToUse);
 	}
-}
-
-// If you pass in an object which represents an operator, it will return the condition key and value in an array
-// if isStringOnlyValue is true then we check to make sure that condition value is a String and not a number vice versa
-// Index 0 stores the key, index 1 stores the value
-// For example if you pass in
-//                        "IS": {
-//							"sections_dept": "apsc"
-//  						}
-// It should return ["dept", "apsc"]
-
-function getSectionValueFromConditionKey(conditionKey: string, sectionToUse: Section): string | number {
-	switch (conditionKey) {
-		case "uuid":
-			return sectionToUse.getUuid();
-		case "id":
-			return sectionToUse.getId();
-		case "title":
-			return sectionToUse.getTitle();
-		case "instructor":
-			return sectionToUse.getInstructor();
-		case "dept":
-			return sectionToUse.getDept();
-		case "year":
-			return sectionToUse.getYear();
-		case "avg":
-			return sectionToUse.getAvg();
-		case "pass":
-			return sectionToUse.getPass();
-		case "fail":
-			return sectionToUse.getFail();
-		case "audit":
-			return sectionToUse.getAudit();
-		default:
-			throw new InsightError(`Unknown condition key: ${conditionKey}`);
-	}
+	return getSectionValueFromConditionKey(conditionKey, enitityToUse);
 }
 
 // operatorParameter is in the format "datasetName_value"
-function greaterThan(section: Section, operatorParameter: any): boolean {
-	const conditionKeyAndValue: any[] = validateAndExtractSectionFieldAndComparisonValue(operatorParameter, false);
+export function greaterThan(entity: Section | Room, operatorParameter: any, kind: InsightDatasetKind): boolean {
+	const conditionKeyAndValue: any[] = validateAndExtractEntityFieldAndComparisonValue(operatorParameter, false, kind);
 
 	const conditionKey = conditionKeyAndValue[0];
 	const conditionValue = conditionKeyAndValue[1];
 
-	const sectionValue = getSectionValueFromConditionKey(conditionKey, section);
+	const sectionValue = getEntityValueFromConditionKey(conditionKey, entity);
 
 	if (typeof sectionValue === "string") {
 		throw new InsightError("Wrong type for section value");
@@ -90,13 +35,13 @@ function greaterThan(section: Section, operatorParameter: any): boolean {
 }
 
 // operatorParameter is in the format "datasetName_value"
-function lessThan(section: Section, operatorParameter: any): boolean {
-	const conditionKeyAndValue: any[] = validateAndExtractSectionFieldAndComparisonValue(operatorParameter, false);
+export function lessThan(entity: Section | Room, operatorParameter: any, kind: InsightDatasetKind): boolean {
+	const conditionKeyAndValue: any[] = validateAndExtractEntityFieldAndComparisonValue(operatorParameter, false, kind);
 
 	const conditionKey = conditionKeyAndValue[0];
 	const conditionValue = conditionKeyAndValue[1];
 
-	const sectionValue = getSectionValueFromConditionKey(conditionKey, section);
+	const sectionValue = getEntityValueFromConditionKey(conditionKey, entity);
 
 	if (typeof sectionValue === "string") {
 		throw new InsightError("Wrong type for section value");
@@ -105,13 +50,13 @@ function lessThan(section: Section, operatorParameter: any): boolean {
 	return sectionValue < conditionValue;
 }
 
-function equalTo(section: Section, operatorParameter: any): boolean {
-	const conditionKeyAndValue: any[] = validateAndExtractSectionFieldAndComparisonValue(operatorParameter, false);
+export function equalTo(entity: Section | Room, operatorParameter: any, kind: InsightDatasetKind): boolean {
+	const conditionKeyAndValue: any[] = validateAndExtractEntityFieldAndComparisonValue(operatorParameter, false, kind);
 
 	const conditionKey = conditionKeyAndValue[0];
 	const conditionValue = conditionKeyAndValue[1];
 
-	const sectionValue = getSectionValueFromConditionKey(conditionKey, section);
+	const sectionValue = getEntityValueFromConditionKey(conditionKey, entity);
 
 	if (typeof sectionValue === "string") {
 		throw new InsightError("Wrong type for section value");
@@ -121,9 +66,9 @@ function equalTo(section: Section, operatorParameter: any): boolean {
 }
 
 // this is what is going to handle wildcards
-function is(section: Section, operatorParameter: any): boolean {
+export function is(entity: Section | Room, operatorParameter: any, kind: InsightDatasetKind): boolean {
 	// Index 0 will have the conditionKey, index 1 will have the index Value
-	const conditionKeyAndValue: any[] = validateAndExtractSectionFieldAndComparisonValue(operatorParameter, true);
+	const conditionKeyAndValue: any[] = validateAndExtractEntityFieldAndComparisonValue(operatorParameter, true, kind);
 
 	// Stores the conditionKey ie: id, uuid, avg, etc
 	const conditionKey = conditionKeyAndValue[0];
@@ -134,7 +79,7 @@ function is(section: Section, operatorParameter: any): boolean {
 
 	checkAstericksPlacement(conditionValue);
 
-	const sectionValue = getSectionValueFromConditionKey(conditionKey, section);
+	const sectionValue = getEntityValueFromConditionKey(conditionKey, entity);
 
 	if (typeof sectionValue === "number") {
 		throw new InsightError("Wrong type for section value");
@@ -155,16 +100,16 @@ function is(section: Section, operatorParameter: any): boolean {
 	}
 }
 
-function not(section: Section, operatorParameter: any): boolean {
+export function not(entity: Section | Room, operatorParameter: any, kind: InsightDatasetKind): boolean {
 	const operatorAndParam: any[] = extractAndValidateLogicalOperatorAndParameter(operatorParameter);
 
 	const operator = operatorAndParam[0];
 	const operatorParam = operatorAndParam[1];
 
-	return !sectionMatchesQueryRequirements(operator, operatorParam, section);
+	return !entityMatchesQueryRequirements(operator, operatorParam, entity, kind);
 }
 
-function and(section: Section, operatorParameter: any): boolean {
+export function and(entity: Section | Room, operatorParameter: any, kind: InsightDatasetKind): boolean {
 	// remember that AND takes in an array of operations and ANDs their results together, thus
 	// operatorParameter should already be an array!
 
@@ -179,7 +124,7 @@ function and(section: Section, operatorParameter: any): boolean {
 		const operatorParam = operatorAndParam[1];
 
 		// If it does not matach all of the operation requirments, then return false (because its an AND)
-		if (!sectionMatchesQueryRequirements(operator, operatorParam, section)) {
+		if (!entityMatchesQueryRequirements(operator, operatorParam, entity, kind)) {
 			return false;
 		}
 	}
@@ -187,7 +132,7 @@ function and(section: Section, operatorParameter: any): boolean {
 	return true;
 }
 
-function or(section: Section, operatorParameter: string): boolean {
+export function or(entity: Section | Room, operatorParameter: string, kind: InsightDatasetKind): boolean {
 	// remember that OR takes in an array of operations and ORs their results together, thus
 	// operatorParameter should already be an array!
 
@@ -202,7 +147,7 @@ function or(section: Section, operatorParameter: string): boolean {
 		const operatorParam = operatorAndParam[1];
 
 		// If matches at least of the operation requirements then return true (because its an OR)
-		if (sectionMatchesQueryRequirements(operator, operatorParam, section)) {
+		if (entityMatchesQueryRequirements(operator, operatorParam, entity, kind)) {
 			return true;
 		}
 	}
@@ -229,66 +174,7 @@ export function getKeysWithUnderscore(obj: Record<string, any>, result: string[]
 	return result;
 }
 
-function sortSectionUsingKey(conditionKey: string, sectionsToSort: Section[]): void {
-	switch (conditionKey) {
-		case "uuid":
-			sectionsToSort.sort((x, y) => x.getUuid().localeCompare(y.getUuid()));
-			break;
-		case "id":
-			sectionsToSort.sort((x, y) => x.getId().localeCompare(y.getId()));
-			break;
-		case "title":
-			sectionsToSort.sort((x, y) => x.getTitle().localeCompare(y.getTitle()));
-			break;
-		case "instructor":
-			sectionsToSort.sort((x, y) => x.getInstructor().localeCompare(y.getInstructor()));
-			break;
-		case "dept":
-			sectionsToSort.sort((x, y) => x.getDept().localeCompare(y.getDept()));
-			break;
-		case "year":
-			sectionsToSort.sort((x, y) => x.getYear() - y.getYear());
-			break;
-		case "avg":
-			sectionsToSort.sort((x, y) => x.getAvg() - y.getAvg());
-			break;
-		case "pass":
-			sectionsToSort.sort((x, y) => x.getPass() - y.getPass());
-			break;
-		case "fail":
-			sectionsToSort.sort((x, y) => x.getFail() - y.getFail());
-			break;
-		case "audit":
-			sectionsToSort.sort((x, y) => x.getAudit() - y.getAudit());
-			break;
-	}
-}
-
-export function parseSectionsData(sections: Section[], query: any): InsightResult[] {
-	const insightResultsToReturn: InsightResult[] = [];
-
-	// This sorts based on the parameter provided to ORDER
-	if (query.OPTIONS.ORDER !== null && query.OPTIONS.ORDER !== undefined) {
-		sortSectionUsingKey(query.OPTIONS.ORDER.split("_")[1], sections);
-	}
-
-	for (const section of sections) {
-		const insightResult: InsightResult = {};
-
-		for (const key of query.OPTIONS.COLUMNS) {
-			const datasetAndVariable: string[] = key.split("_");
-			const variable = datasetAndVariable[1];
-
-			insightResult[key] = getSectionValueFromConditionKey(variable, section);
-		}
-
-		insightResultsToReturn.push(insightResult);
-	}
-
-	return insightResultsToReturn;
-}
-
-export async function getAllValidSections(query: any): Promise<Section[]> {
+export async function getAllValidEntities(query: any): Promise<Section[] | Room[]> {
 	validateQuery(query);
 
 	const { WHERE } = query as any;
@@ -299,36 +185,46 @@ export async function getAllValidSections(query: any): Promise<Section[]> {
 	const operator = operatorAndParam[0];
 	const operatorParameter = operatorAndParam[1];
 
-	// This looks at the entire query and gets the id/name of the dataset that we need to access, this also validates the WHERE object
-	// To ensure that it is formatted correctly
-	const datasetNameToQueryFromWhere = validateDatasetRefsInWhereAndGetSingleDataset(WHERE);
-
-	// This looks at the entire query and gets the id/name of the dataset that we need to access, this also validates the OPTIONS object
-	// To ensure that it is formatted correctly
-	const datasetNameToQueryFromOptions = validateOptionsAndGetSingleDataset(query.OPTIONS);
-
-	const datasetName = datasetNameToQueryFromOptions;
-
-	// This means that WHERE is an empty object ie: {} and does not have the datasetName within it, so we must now find it in the columns portion
-	if (datasetNameToQueryFromWhere !== "" && datasetNameToQueryFromWhere !== datasetNameToQueryFromOptions) {
-		throw new InsightError("WHERE and COLOUMNS does not reference the same dataset");
-	}
-
 	// Gets the dataset to query
-	const datasetToQuery = await getDatasetFromId(datasetName);
+	const datasetToQuery = await getDatasetAndValidateQuery(query);
 
-	// This will store all the sections that we should return to be processed
-	const sectionsToReturn: Section[] = [];
-
-	for (const section of datasetToQuery.getEntities() as Section[]) {
-		if (sectionMatchesQueryRequirements(operator, operatorParameter, section)) {
-			sectionsToReturn.push(section);
-
-			if (sectionsToReturn.length > maxSections) {
-				throw new ResultTooLargeError("More than 5000 sections are going to be returned!");
-			}
-		}
+	if (datasetToQuery.getKind() === InsightDatasetKind.Sections) {
+		return filterSectionDataset(datasetToQuery, operator, operatorParameter, query);
 	}
 
-	return sectionsToReturn;
+	return filterRoomDataset(datasetToQuery, operator, operatorParameter);
+}
+
+// If you pass in an object which represents an operator, it will return the condition key and value in an array
+// if isStringOnlyValue is true then we check to make sure that condition value is a String and not a number vice versa
+// Index 0 stores the key, index 1 stores the value
+// For example if you pass in
+//                        "IS": {
+//							"sections_dept": "apsc"
+//  						}
+// It should return ["dept", "apsc"]
+export function entityMatchesQueryRequirements(
+	operator: string,
+	operatorParameter: string,
+	entityToCheck: Section | Room,
+	kind: InsightDatasetKind
+): boolean {
+	switch (operator) {
+		case "AND":
+			return and(entityToCheck, operatorParameter, kind);
+		case "OR":
+			return or(entityToCheck, operatorParameter, kind);
+		case "GT":
+			return greaterThan(entityToCheck, operatorParameter, kind);
+		case "LT":
+			return lessThan(entityToCheck, operatorParameter, kind);
+		case "EQ":
+			return equalTo(entityToCheck, operatorParameter, kind);
+		case "IS":
+			return is(entityToCheck, operatorParameter, kind);
+		case "NOT":
+			return not(entityToCheck, operatorParameter, kind);
+		default:
+			return true;
+	}
 }
