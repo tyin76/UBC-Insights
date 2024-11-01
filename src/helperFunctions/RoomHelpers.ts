@@ -34,9 +34,10 @@ function findBuildingLinks(indexHTM: any): string[] {
 					const href = findHrefInNode(child);
 					if (href?.includes(".htm")) {
 						links.add(href);
+					} else {
+						traverse(child);
 					}
 					// Continue traversing in case there are nested elements
-					//traverse(child);
 				});
 			}
 		} else if (node.childNodes) {
