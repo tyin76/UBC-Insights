@@ -1342,5 +1342,16 @@ describe("InsightFacade", function () {
 		it("[invalid/invalidKeyFakeInMax.json]", checkQuery);
 		it("[invalid/invalidKeyDeptInMax.json]", checkQuery);
 		it("[invalid/transformationQueryMoreThan5000Rows.json]", checkQuery);
+		it("[invalid/referencedDatasetNotAddedYet.json]", checkQuery);
+		it("[valid/averageOf340.json]", checkQuery);
+		it("[valid/onlyCustomKeyInColumn.json]", checkQuery);
+		it("[valid/validDuplicateMinAndMaxKeysInColumns.json]", checkQuery);
+		it("[invalid/keysInColsMustBeinGroupOrApply.json]", checkQuery);
+		it("[invalid/cannotHaveUnderscoreInApplyKey.json]", checkQuery);
+		it("[invalid/invalidKeyForQuery.json]", checkQuery);
+		it("[invalid/invalidKeyForQueryInColumnsUnderscore.json]", checkQuery);
+		it("[invalid/invalidKeyForQueryInIs.json]", checkQuery);
+		it("[invalid/invalidKeyForQueryInTransformationsOptionsUnderscore.json]", checkQuery);
+		it("[invalid/invalidKeyForQueryInTransformationsUnderscore.json]", checkQuery);
 	});
 });

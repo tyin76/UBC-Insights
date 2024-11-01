@@ -12,13 +12,20 @@ export function validateQuery(query: any): void {
 	if (doesQueryContainTransformations(query)) {
 		validateKeysInTransformations(query.TRANSFORMATIONS);
 		validateApplyInTransformations(query);
-		validateOrderInTransformations(query);
+		validateGroupInTransformations(query);
 	}
 }
 
-function validateOrderInTransformations(query: any): void {
+function validateGroupInTransformations(query: any): void {
 	if (!query.TRANSFORMATIONS.GROUP) {
 		throw new InsightError("TRANSFORMATIONS missing GROUP");
+	}
+	for (const field of query.TRANSFORMATIONS.GROUP) {
+		const numUnderscores = field.split("_").length - 1;
+
+		if (numUnderscores > 1) {
+			throw new InsightError("Cannot have more than one underscore in Transformation group");
+		}
 	}
 }
 

@@ -1,6 +1,5 @@
 import { InsightDatasetKind, InsightError } from "../controller/IInsightFacade";
-import Dataset from "../objects/Dataset";
-import { getDatasetFromId, getKindFromId } from "../objects/FileManagement";
+import { getKindFromId } from "../objects/FileManagement";
 import { getKeysWithUnderscore } from "./QueryHandler";
 import { validateOptionsAndGetSingleDataset } from "./EntityValidationHelpers";
 import { isFieldValidSectionField } from "./SectionValidationHelper";
@@ -82,15 +81,7 @@ function validateDatasetNameAndFieldFormat(datasetNameAndField: string[]): void 
 	}
 }
 
-export function dangerouslyGetDatasetNameFromQuery(query: any): string {
-	const datasetNameToQueryFromOptions = validateOptionsAndGetSingleDataset(query);
-
-	const datasetName = datasetNameToQueryFromOptions;
-
-	return datasetName;
-}
-
-export async function getDatasetAndValidateQuery(query: any): Promise<Dataset> {
+export async function getDatasetNameAndValidateQuery(query: any): Promise<string> {
 	const { WHERE } = query as any;
 
 	// This looks at the entire query and gets the id/name of the dataset that we need to access, this also validates the WHERE object
@@ -101,11 +92,17 @@ export async function getDatasetAndValidateQuery(query: any): Promise<Dataset> {
 	// To ensure that it is formatted correctly
 	const datasetNameToQueryFromOptions = validateOptionsAndGetSingleDataset(query);
 
-	const datasetName = datasetNameToQueryFromOptions;
+	let datasetName = datasetNameToQueryFromOptions;
 
 	// This means that WHERE is an empty object ie: {} and does not have the datasetName within it, so we must now find it in the columns portion
-	if (datasetNameToQueryFromWhere !== "" && datasetNameToQueryFromWhere !== datasetNameToQueryFromOptions) {
+	if (
+		datasetNameToQueryFromWhere !== "" &&
+		datasetNameToQueryFromWhere !== datasetNameToQueryFromOptions &&
+		!doesQueryContainTransformations(query)
+	) {
 		throw new InsightError("WHERE and COLOUMNS does not reference the same dataset");
+	} else if (datasetName === undefined || datasetName === null || datasetName === "") {
+		datasetName = datasetNameToQueryFromWhere;
 	}
 
 	let datasetNameToQueryFromTransformations = "";
@@ -124,5 +121,5 @@ export async function getDatasetAndValidateQuery(query: any): Promise<Dataset> {
 	}
 
 	// Gets the dataset to query
-	return await getDatasetFromId(datasetName);
+	return datasetName;
 }

@@ -3,9 +3,8 @@ import Room from "../objects/Room";
 import { getRoomValueFromConditionKey } from "./RoomsFilterHelper";
 import { recursiveStringNumCompare } from "./SortHelper";
 import { doesQueryContainTransformations } from "./TransformationsValidationHelper";
-import { dangerouslyGetDatasetNameFromQuery } from "./WhereDatasetExtractorAndRefsValidation";
 
-export function parseRoomsData(rooms: Room[], query: any): InsightResult[] {
+export async function parseRoomsData(rooms: Room[], query: any, datasetName: string): Promise<InsightResult[]> {
 	const insightResultsToReturn: InsightResult[] = [];
 
 	// This sorts based on the parameter provided to ORDER
@@ -21,13 +20,13 @@ export function parseRoomsData(rooms: Room[], query: any): InsightResult[] {
 		}
 	}
 
-	for (const room of rooms) {
+	const promises = rooms.map(async (room) => {
 		const insightResult: InsightResult = {};
 
 		let keysToKeep = query.OPTIONS.COLUMNS;
 
 		if (doesQueryContainTransformations(query)) {
-			keysToKeep = getAllRoomKeys(query);
+			keysToKeep = await getAllRoomKeys(datasetName);
 		}
 
 		for (const key of keysToKeep) {
@@ -43,7 +42,9 @@ export function parseRoomsData(rooms: Room[], query: any): InsightResult[] {
 		}
 
 		insightResultsToReturn.push(insightResult);
-	}
+	});
+
+	await Promise.all(promises);
 
 	return insightResultsToReturn;
 }
@@ -58,8 +59,7 @@ function sortRoomUsingKey(conditionKeys: string[], roomsToSort: Room[], directio
 	}
 }
 
-function getAllRoomKeys(query: any): string[] {
-	const datasetName = dangerouslyGetDatasetNameFromQuery(query);
+async function getAllRoomKeys(datasetName: string): Promise<string[]> {
 	return [
 		`${datasetName}_fullname`,
 		`${datasetName}_shortname`,
