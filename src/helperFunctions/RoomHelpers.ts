@@ -80,6 +80,8 @@ async function createAllRoomObjects(validTable: any, roomAndAddress: any): Promi
 	const fullName = roomAndAddress.name;
 
 	const { lat, lon } = await geoLocationRequest(address);
+	//console.log(lat);
+	//console.log(lon);
 
 	for (const row of allRows) {
 		const roomNumber = findRoomNumber(row);
@@ -336,6 +338,10 @@ export async function createRoomsDataSetFromContent(content: string): Promise<Da
 
 	rooms = checkDuplicates(tempRooms);
 	//console.log(rooms);
+	const dataset = new Dataset(rooms, InsightDatasetKind.Rooms);
+	const stringified = JSON.stringify(dataset);
+	//console.log(stringified);
+
 	return new Dataset(rooms, InsightDatasetKind.Rooms);
 }
 
