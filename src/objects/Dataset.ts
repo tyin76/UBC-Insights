@@ -24,6 +24,10 @@ class Dataset {
 		}
 	}
 
+	public getKind(): InsightDatasetKind {
+		return this.kind;
+	}
+
 	public toJSON(): object {
 		if (this.kind === InsightDatasetKind.Sections) {
 			const sections = this.sections as Section[];
@@ -35,7 +39,7 @@ class Dataset {
 			const rooms = this.rooms as Room[];
 			return {
 				kind: this.kind,
-				sections: rooms.map((room) => room.toJSON()), // Converts each Room to JSON
+				rooms: rooms.map((room) => room.toJSON()), // Converts each Room to JSON
 			};
 		}
 	}

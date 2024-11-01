@@ -1,4 +1,5 @@
 import { InsightError } from "../controller/IInsightFacade";
+import { doesQueryContainTransformations } from "./TransformationsValidationHelper";
 
 export function validateQuery(query: any): void {
 	validateQueryExistence(query);
@@ -8,6 +9,35 @@ export function validateQuery(query: any): void {
 	validateOrderInOptions(query.OPTIONS);
 	validateKeysInOptions(query.OPTIONS);
 	validateKeysInQuery(query);
+	if (doesQueryContainTransformations(query)) {
+		validateKeysInTransformations(query.TRANSFORMATIONS);
+		validateApplyInTransformations(query);
+		validateOrderInTransformations(query);
+	}
+}
+
+function validateOrderInTransformations(query: any): void {
+	if (!query.TRANSFORMATIONS.GROUP) {
+		throw new InsightError("TRANSFORMATIONS missing GROUP");
+	}
+}
+
+function validateApplyInTransformations(query: any): void {
+	if (!query.TRANSFORMATIONS.APPLY) {
+		throw new InsightError("TRANSFORMATIONS missing APPLY");
+	}
+}
+
+function validateKeysInTransformations(transformations: any): void {
+	for (const key of Object.keys(transformations)) {
+		if (!isValidTransformationsKey(key)) {
+			throw new InsightError("TRANSFORMATIONS has an invalid key");
+		}
+	}
+}
+
+function isValidTransformationsKey(key: string): boolean {
+	return ["GROUP", "APPLY"].includes(key);
 }
 
 function isValidOptionsKey(key: string): boolean {
@@ -15,7 +45,7 @@ function isValidOptionsKey(key: string): boolean {
 }
 
 function isValidQueryKey(key: string): boolean {
-	return ["WHERE", "OPTIONS"].includes(key);
+	return ["WHERE", "OPTIONS", "TRANSFORMATIONS"].includes(key);
 }
 
 function validateQueryExistence(query: any): void {
@@ -58,15 +88,34 @@ function validateOptionsColumns(columns: any): void {
 	}
 }
 
+function isDirValid(dir: any): boolean {
+	return ["UP", "DOWN"].includes(dir);
+}
+
+function isOrderKeyInColumns(keys: any, options: any): boolean {
+	for (const key of keys) {
+		if (!options.COLUMNS.includes(key)) {
+			return false;
+		}
+	}
+	return true;
+}
+
 function validateOrderInOptions(options: any): void {
 	if (options.ORDER !== null && options.ORDER !== undefined) {
-		if (typeof options.ORDER !== "string") {
-			throw new InsightError("ORDER key is of the wrong type");
+		if (typeof options.ORDER === "string" && isOrderKeyInColumns([options.ORDER], options)) {
+			return;
 		}
 
-		if (!options.COLUMNS.includes(options.ORDER)) {
-			throw new InsightError("ORDER key must be in COLUMNS array.");
+		if (
+			isDirValid(options.ORDER.dir) &&
+			isOrderKeyInColumns(options.ORDER.keys, options) &&
+			options.ORDER.keys.length > 0
+		) {
+			return;
 		}
+
+		throw new InsightError("ORDER section is of an invalid format");
 	}
 }
 

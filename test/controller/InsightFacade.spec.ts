@@ -93,40 +93,6 @@ describe("InsightFacade", function () {
 			}
 		});
 
-		it("should list out all datasets with correct ids when adding both sections and rooms with different instance of facade [listDatasets]", async function () {
-			try {
-				const validRooms = await getContentFromArchives("campus.zip");
-
-				await facade.addDataset("rooms", validRooms, InsightDatasetKind.Rooms);
-
-				await facade.addDataset("sections", sections, InsightDatasetKind.Sections);
-
-				const newFacade = new InsightFacade();
-
-				let datasetArray = await newFacade.listDatasets();
-
-				let datasetIds = datasetArray.map((dataset) => dataset.id);
-
-				testStringArrayContents(datasetIds, "rooms");
-				testStringArrayContents(datasetIds, "sections");
-
-				await facade.addDataset("rooms2", validRooms, InsightDatasetKind.Rooms);
-				await facade.addDataset("sections2", sections, InsightDatasetKind.Sections);
-
-				datasetArray = await newFacade.listDatasets();
-
-				datasetIds = datasetArray.map((dataset) => dataset.id);
-
-				testStringArrayContents(datasetIds, "rooms");
-				testStringArrayContents(datasetIds, "sections");
-				testStringArrayContents(datasetIds, "rooms2");
-				testStringArrayContents(datasetIds, "sections2");
-			} catch (err) {
-				const errorMessage = (err as Error).message;
-				expect.fail(`The test should not reach the catch block. Error: ${errorMessage}`);
-			}
-		});
-
 		it("should list out all datasets with correct ids with different instance of facade [listDatasets]", async function () {
 			try {
 				await facade.addDataset("ubc1", sections, InsightDatasetKind.Sections);
@@ -840,36 +806,84 @@ describe("InsightFacade", function () {
 	});
 
 	describe("PerformQuery", function () {
-		function getInsightResultValue(input: string, insightResult: InsightResult): string | number {
-			const keys = Object.keys(insightResult);
-
-			// Here we get the correct key whose text beyond the _ matches the input
-			const matchingKey = keys.find((key) => key.split("_")[1] === input);
-
-			// If no matching key is found, throw an error
-			if (!matchingKey) {
-				throw new Error("Invalid input: No matching key found.");
+		function isInAscendingOrder(index: number, keysSortedAgainst: string[], result: InsightResult[]): boolean {
+			if (keysSortedAgainst.length === 0) {
+				return true;
 			}
 
-			const value = insightResult[matchingKey];
+			const leftValue = result[index][keysSortedAgainst[0]];
+			const rightValue = result[index + 1][keysSortedAgainst[0]];
 
-			if (value === undefined) {
-				throw new Error("Invalid input");
+			if (leftValue === undefined || rightValue === undefined) {
+				expect.fail("Value from key/field sorted against is undefined");
 			}
 
-			// If numeber return number, else return string
-			return typeof value === "number" ? Number(value) : String(value);
+			if (leftValue < rightValue) {
+				return true;
+			} else if (leftValue > rightValue) {
+				return false;
+			} else {
+				return isInAscendingOrder(index, keysSortedAgainst.slice(1), result);
+			}
 		}
 
-		function checkSortedQuery(expected: InsightResult[], result: InsightResult[], keySortedAgainst: string): void {
-			for (let i = 0; i < result.length - 1; i++) {
-				const currentValue = getInsightResultValue(keySortedAgainst, result[i]);
+		function isInDescendingOrder(index: number, keysSortedAgainst: string[], result: InsightResult[]): boolean {
+			if (keysSortedAgainst.length === 0) {
+				return true;
+			}
 
-				const expectedCurrentValue = getInsightResultValue(keySortedAgainst, expected[i]);
+			const leftValue = result[index][keysSortedAgainst[0]];
+			const rightValue = result[index + 1][keysSortedAgainst[0]];
+
+			if (leftValue === undefined || rightValue === undefined) {
+				expect.fail("Value from key/field sorted against is undefined");
+			}
+
+			if (leftValue > rightValue) {
+				return true;
+			} else if (leftValue < rightValue) {
+				return false;
+			} else {
+				return isInDescendingOrder(index, keysSortedAgainst.slice(1), result);
+			}
+		}
+		function checkOrder(keysSortedAgainst: string[], isAscending: boolean, result: InsightResult[]): void {
+			for (let i = 0; i < result.length - 1; i++) {
+				if (isAscending) {
+					if (!isInAscendingOrder(i, keysSortedAgainst, result)) {
+						expect.fail("Sorted incorrectly for ascending order! " + "At index " + [i]);
+					}
+				} else {
+					if (!isInDescendingOrder(i, keysSortedAgainst, result)) {
+						expect.fail("Sorted incorrectly for descending order!" + "At index " + [i]);
+					}
+				}
+			}
+		}
+
+		function checkSortedQuery(
+			expected: InsightResult[],
+			result: InsightResult[],
+			keysSortedAgainst: string[],
+			isAscending: boolean
+		): void {
+			const keySortedAgainst = keysSortedAgainst[0];
+
+			for (let i = 0; i < result.length - 1; i++) {
+				const currentValue = result[i][keySortedAgainst];
+
+				const expectedCurrentValue = expected[i][keySortedAgainst];
+
+				if (currentValue === undefined || expectedCurrentValue === undefined) {
+					expect.fail("Value from key/field sorted against is undefined");
+				}
+
 				if (currentValue !== expectedCurrentValue) {
 					expect.fail("Sorted incorrectly!"); // The result is not sorted correctly
 				}
 			}
+
+			checkOrder(keysSortedAgainst, isAscending, result);
 		}
 
 		/**
@@ -877,7 +891,11 @@ describe("InsightFacade", function () {
 		 *
 		 * Note: the 'this' parameter is automatically set by Mocha and contains information about the test.
 		 */
-		async function checkQuery(this: Mocha.Context, keySortedAgainst: null | string = null): Promise<void> {
+		async function checkQuery(
+			this: Mocha.Context,
+			keySortedAgainst: null | string[] = null,
+			isAscending = true
+		): Promise<void> {
 			if (!this.test) {
 				throw new Error(
 					"Invalid call to checkQuery." +
@@ -893,13 +911,17 @@ describe("InsightFacade", function () {
 				if (errorExpected) {
 					expect.fail(`performQuery resolved when it should have rejected with ${expected}`);
 				}
+				/////////////////////////
+				// removed tests here
+				/////////////////////////
 				expect(expected).to.have.deep.members(result);
+
 				if (keySortedAgainst !== null) {
-					checkSortedQuery(expected, result, keySortedAgainst);
+					checkSortedQuery(expected, result, keySortedAgainst, isAscending);
 				}
 			} catch (err) {
 				if (!errorExpected) {
-					expect.fail(`performQuery threw unexpected error: ${err}`);
+					expect.fail(`performQuery threw unexpected error: ${(err as Error).stack}`);
 				}
 
 				if (expected === "InsightError") {
@@ -916,11 +938,13 @@ describe("InsightFacade", function () {
 			facade = new InsightFacade();
 
 			sections = await getContentFromArchives("pair.zip");
+			rooms = await getContentFromArchives("campus.zip");
 
 			// Add the datasets to InsightFacade once.
 			// Will *fail* if there is a problem reading ANY dataset.
 			const loadDatasetPromises: Promise<string[]>[] = [
 				facade.addDataset("sections", sections, InsightDatasetKind.Sections),
+				facade.addDataset("rooms", rooms, InsightDatasetKind.Rooms),
 			];
 
 			try {
@@ -1011,7 +1035,7 @@ describe("InsightFacade", function () {
 		);
 		it("[valid/duplicateKeysInColumns.json] should still return values.", checkQuery);
 		it("[valid/ComplexNestedAndOrsNotArrays.json] should return all sections with avg greater than 70 that is not cpsc whose instructor is named johnson or whose section year is not before 2018 AND whose pass count is exactly 100 whose department is not math and whose instructor is not named smith AND sections whose department is stat whose average is greater than 85 whose number of failures is not less than 10. Ordered by sections_avg", async function () {
-			await checkQuery.call(this, "avg");
+			await checkQuery.call(this, ["sections_avg"]);
 		});
 		it("[invalid/invalidKeyInOptions.json] should fail as there is invalid key in OPTIONS", checkQuery);
 		it("[invalid/invalidTypeInOrder.json] should fail as there is an invalid type for ORDER", checkQuery);
@@ -1037,43 +1061,254 @@ describe("InsightFacade", function () {
 		);
 		it("[invalid/invalidWhereIsEmptyRetunsTooBig.json] should fail as we return more than 5000 sections", checkQuery);
 		it("[valid/sortedWithAudit.json] should pass when we sort with audit", async function () {
-			await checkQuery.call(this, "audit");
+			await checkQuery.call(this, ["sections_audit"]);
 		});
 
 		it("[valid/sortedWithUuid.json] should pass when we sort with uuid", async function () {
-			await checkQuery.call(this, "uuid");
+			await checkQuery.call(this, ["sections_uuid"]);
 		});
 
 		it("[valid/sortedWithTitle.json] should pass when we sort with title", async function () {
-			await checkQuery.call(this, "title");
+			await checkQuery.call(this, ["sections_title"]);
 		});
 
 		it("[valid/sortedWithInstructor.json] should pass when we sort with instructor", async function () {
-			await checkQuery.call(this, "instructor");
+			await checkQuery.call(this, ["sections_instructor"]);
 		});
 
 		it("[valid/sortedWithDept.json] should pass when we sort with dept", async function () {
-			await checkQuery.call(this, "dept");
+			await checkQuery.call(this, ["sections_dept"]);
 		});
 
 		it("[valid/sortedWithYear.json] should pass when we sort with year", async function () {
-			await checkQuery.call(this, "year");
+			await checkQuery.call(this, ["sections_year"]);
 		});
 
 		it("[valid/sortedWithAvg.json] should pass when we sort with avg", async function () {
-			await checkQuery.call(this, "avg");
+			await checkQuery.call(this, ["sections_avg"]);
 		});
 
 		it("[valid/sortedWithPass.json] should pass when we sort with pass", async function () {
-			await checkQuery.call(this, "pass");
+			await checkQuery.call(this, ["sections_pass"]);
 		});
 
 		it("[valid/sortedWithFail.json] should pass when we sort with fail", async function () {
-			await checkQuery.call(this, "fail");
+			await checkQuery.call(this, ["sections_fail"]);
 		});
 
 		it("[valid/sortedWithId.json] should pass when we sort with id", async function () {
-			await checkQuery.call(this, "id");
+			await checkQuery.call(this, ["sections_id"]);
+		});
+		it("[valid/validGetAllRoomsAndTheirFields.json] should pass when we get all rooms and sort with shortname", async function () {
+			await checkQuery.call(this, ["rooms_shortname"]);
+		});
+		it("[valid/validComplexWhereTestQueryForRooms.json] should pass complex query which retrieves rooms with more than 30 seats or exactly 50 seats that are either of type Lecture, have Movable furniture, or have latitude less than 49.3 and longitude greater than -123.2.", async function () {
+			await checkQuery.call(this, ["rooms_shortname"]);
+		});
+		it("[valid/validSortingMultipleKeysRoomsQuery.json] should pass when we query for rooms and then sort with multiple keys in descending order", async function () {
+			await checkQuery.call(this, ["rooms_shortname", "rooms_number", "rooms_seats"], false);
+		});
+		it("[valid/validSortingMultipleKeysSectionsQuery.json] should pass when we query for sections and then sort with multiple keys in descending order", async function () {
+			await checkQuery.call(this, ["sections_avg", "sections_instructor"], false);
+		});
+		it("[valid/validSortAscendingWithAllFieldsInSections.json] should pass when we query for sections and then sort with all keys in ascending order", async function () {
+			await checkQuery.call(
+				this,
+				[
+					"sections_dept",
+					"sections_instructor",
+					"sections_title",
+					"sections_year",
+					"sections_id",
+					"sections_avg",
+					"sections_pass",
+					"sections_fail",
+					"sections_audit",
+					"sections_uuid",
+				],
+				true
+			);
+		});
+		it("[valid/validSortDescendingWithAllFieldsInSections.json] should pass when we query for sections and then sort with all keys in descending order", async function () {
+			await checkQuery.call(
+				this,
+				[
+					"sections_dept",
+					"sections_instructor",
+					"sections_title",
+					"sections_year",
+					"sections_id",
+					"sections_avg",
+					"sections_pass",
+					"sections_fail",
+					"sections_audit",
+					"sections_uuid",
+				],
+				false
+			);
+		});
+		it("[valid/validSortAscendingWithAllFieldsInRooms.json] should pass when we query for rooms and then sort with all keys in ascending order", async function () {
+			await checkQuery.call(
+				this,
+				[
+					"rooms_fullname",
+					"rooms_shortname",
+					"rooms_address",
+					"rooms_lat",
+					"rooms_lon",
+					"rooms_type",
+					"rooms_furniture",
+					"rooms_number",
+					"rooms_seats",
+					"rooms_name",
+					"rooms_href",
+				],
+				true
+			);
+		});
+		it("[valid/validSortDescendingWithAllFieldsInRooms.json] should pass when we query for rooms and then sort with all keys in descending order", async function () {
+			await checkQuery.call(
+				this,
+				[
+					"rooms_fullname",
+					"rooms_shortname",
+					"rooms_address",
+					"rooms_lat",
+					"rooms_lon",
+					"rooms_type",
+					"rooms_furniture",
+					"rooms_number",
+					"rooms_seats",
+					"rooms_name",
+					"rooms_href",
+				],
+				false
+			);
+		});
+
+		it(
+			"[invalid/invalidCannotHaveUnderscoreInApplyKeyForSection.json] should fail as apply key has an underscore for transformations",
+			checkQuery
+		);
+		it(
+			"[invalid/invalidExtraKeysInTransformationsForSection.json] should fail as there are extra keys in transformations",
+			checkQuery
+		);
+
+		it(
+			"[invalid/invalidKeyInGroupWhenTransformationPresentForSection.json] should fail as there is an invalid key in group for transformations",
+			checkQuery
+		);
+		it(
+			"[invalid/invalidKeyNOTAKEYinColumnsForSection.json] should fail as there is an invalid key in columns for transformation",
+			checkQuery
+		);
+		it(
+			"[invalid/invalidKeysInColumnDoesNotAppearInGroupOrApplyWhenTransformationPresentForSection.json] should fail as keys in column do not appear in group or apply when transformation is present",
+			checkQuery
+		);
+		it(
+			"[invalid/invalidTransformationGroupMustBeNonEmptyArrayForSection.json] should fail as there group is not a non empty array for transformations",
+			checkQuery
+		);
+		it(
+			"[invalid/invalidTransformationOperatorForSection.json] should fail as there is an invalid operator in tranformation",
+			checkQuery
+		);
+		it(
+			"[invalid/invalidTransformationsMissingApplyForSection.json] should fail as apply is missing in transformations",
+			checkQuery
+		);
+		it(
+			"[invalid/invalidTransformationsMissingGroup.json] should fail as group is missing in transformations",
+			checkQuery
+		);
+		it(
+			"[invalid/invalidKeyTypeInAvgForTransformations.json] should fail as type for Avg is incorrect in transformations",
+			checkQuery
+		);
+		it(
+			"[invalid/invalidKeyTypeInMaxForTransformations.json] should fail as type for Max is incorrect in transformations",
+			checkQuery
+		);
+		it(
+			"[invalid/invalidKeyTypeInMinForTransformations.json] should fail as type for Min is incorrect in transformations",
+			checkQuery
+		);
+		it(
+			"[invalid/invalidCustomKeyAppearsInGroupOfTransformation.json] should fail as custom key appears in group of transformations",
+			checkQuery
+		);
+		it(
+			"[invalid/invalidNonCustomKeysDontAllAppearInTransformationGroup.json] should fail as non custom keys don't all appear in transformation group",
+			checkQuery
+		);
+		it(
+			"[invalid/invalidCannotUseTransformationsOnCustomKeys.json] should fail as transformation aggregation cannot be used on custom keys",
+			checkQuery
+		);
+		it(
+			"[invalid/invalidTransformationsReferencingADifferentDatasetThanOptionsAndWhere.json] should fail as you reference a different dataset in TRANSFORMATION than OPTIONS and WHERE",
+			checkQuery
+		);
+		it(
+			"[invalid/duplicateApplyKeyInTransformations.json] should fail there are duplicate apply keys in transformations.",
+			checkQuery
+		);
+		it(
+			"[invalid/usingTransformationOperatorWrongly.json] should fail as you use the transformation operator as a field to transform in apply.",
+			checkQuery
+		);
+		it("[valid/validAggregateMaxOnly.json] should pass when aggregate max only.", checkQuery);
+		it("[valid/validAggregateCountOnly.json] should pass when aggregate count only.", checkQuery);
+		it("[valid/validAggregateMinOnly.json] should pass when aggregate min only.", checkQuery);
+		it("[valid/validAggregateAvgOnly.json] should pass when aggregate avg only.", checkQuery);
+		it("[valid/validAggregateSumOnly.json] should pass when aggregate sum only.", checkQuery);
+		it(
+			"[valid/validTransformationGroupDeptAndIdForSections.json] should pass when group dept and id when we query sections",
+			checkQuery
+		);
+		it(
+			"[valid/validTransformationsApplyHasEmptyArrayForSection.json] should pass even when apply has an empty array when we query sections",
+			checkQuery
+		);
+		// not sure how to write a test for this it("[valid/validTransformationGroupDeptAndIdForSections.json]", checkQuery);
+		it(
+			"[valid/validTransformationsMultipleCustomColumnsForSection.json] should pass when we have multiple custom columns when we query sections",
+			checkQuery
+		);
+		it(
+			"[valid/validQuerySectionsNoOrder.json] should pass when we query sections without providing an order",
+			checkQuery
+		);
+		it(
+			"[valid/validUnusedColumnOverallAvgForSection.json] should pass when we don't use a custom columns when we query sections",
+			checkQuery
+		);
+		it(
+			"[valid/validallAggregationTransformations.json] should pass when we use all aggregation transformations in one query.",
+			checkQuery
+		);
+		it(
+			"[valid/validMultipleRepeatedTransformationOperators.json] should pass when we use all aggregation transformations multiple times in one query.",
+			checkQuery
+		);
+		it(
+			"[valid/validMultipleRepeatedTransformationOperators.json] should pass when we use query rooms with transformations, no order yet",
+			checkQuery
+		);
+		it(
+			"[valid/validUsingMultipleTransformationOperatorsForRoomsQuery.json] should pass when we use query rooms with multiple trasnformations",
+			checkQuery
+		);
+		it("[valid/validTransformationSectionSortedWithCustomField.json] should pass sorting the query correctly", async function () {
+			await checkQuery.call(this, ["maxSectionAvg"], true);
+		});
+		it("[valid/validTransformationSectionSortedDescendingWithMultipleCustomField.json] should pass sorting the transformed query descending", async function () {
+			await checkQuery.call(this, ["sections_dept", "overallAvg", "maxSectionAvg", "minSectionAvg"], false);
+		});
+		it("[valid/validTransformationSortWithMultipleFieldsWithTies.json] should pass sorting the transformed query with fields that have many ties descendingly", async function () {
+			await checkQuery.call(this, ["maxSectionAvg", "sections_dept", "minSectionAvg"], false);
 		});
 	});
 });

@@ -1,0 +1,43 @@
+{
+	"title": "invalidTransformationsMissingGroup",
+	"input": {
+		"WHERE": {},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_dept",
+				"overallAvg",
+				"maxSectionAvg",
+				"minSectionAvg"
+			],
+			"ORDER": {
+				"keys": [
+					"sections_dept",
+					"overallAvg",
+					"maxSectionAvg"
+				],
+				"dir": "DOWN"
+			}
+		},
+		"TRANSFORMATIONS": {
+			"APPLY": [
+				{
+					"overallAvg": {
+						"AVG": "sections_avg"
+					}
+				},
+				{
+					"maxSectionAvg": {
+						"MAX": "sections_avg"
+					}
+				},
+				{
+					"minSectionAvg": {
+						"MIN": "sections_avg"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}
