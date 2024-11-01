@@ -1,0 +1,133 @@
+{
+	"title": "aggregationOfSectionYear",
+	"input": {
+		"WHERE": {
+			"OR": [
+				{
+					"EQ": {
+						"sections_year": 1900
+					}
+				},
+				{
+					"EQ": {
+						"sections_year": 2023
+					}
+				},
+				{
+					"EQ": {
+						"sections_year": 2022
+					}
+				},
+				{
+					"EQ": {
+						"sections_year": 2024
+					}
+				},
+				{
+					"GT": {
+						"sections_year": 2000
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_year",
+				"maxAvg",
+				"minAvg",
+				"yearCount"
+			]
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"sections_year"
+			],
+			"APPLY": [
+				{
+					"maxAvg": {
+						"MAX": "sections_avg"
+					}
+				},
+				{
+					"minAvg": {
+						"MIN": "sections_avg"
+					}
+				},
+				{
+					"yearCount": {
+						"COUNT": "sections_year"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"sections_year": 1900,
+			"maxAvg": 99.78,
+			"minAvg": 0,
+			"yearCount": 1
+		},
+		{
+			"sections_year": 2007,
+			"maxAvg": 97.67,
+			"minAvg": 46.5,
+			"yearCount": 1
+		},
+		{
+			"sections_year": 2008,
+			"maxAvg": 96.94,
+			"minAvg": 33.2,
+			"yearCount": 1
+		},
+		{
+			"sections_year": 2009,
+			"maxAvg": 99.78,
+			"minAvg": 0,
+			"yearCount": 1
+		},
+		{
+			"sections_year": 2010,
+			"maxAvg": 98.58,
+			"minAvg": 33,
+			"yearCount": 1
+		},
+		{
+			"sections_year": 2011,
+			"maxAvg": 98.71,
+			"minAvg": 42,
+			"yearCount": 1
+		},
+		{
+			"sections_year": 2012,
+			"maxAvg": 99.19,
+			"minAvg": 50,
+			"yearCount": 1
+		},
+		{
+			"sections_year": 2013,
+			"maxAvg": 98.5,
+			"minAvg": 4.5,
+			"yearCount": 1
+		},
+		{
+			"sections_year": 2014,
+			"maxAvg": 98.8,
+			"minAvg": 48.9,
+			"yearCount": 1
+		},
+		{
+			"sections_year": 2015,
+			"maxAvg": 98.98,
+			"minAvg": 39.03,
+			"yearCount": 1
+		},
+		{
+			"sections_year": 2016,
+			"maxAvg": 97.25,
+			"minAvg": 4,
+			"yearCount": 1
+		}
+	]
+}

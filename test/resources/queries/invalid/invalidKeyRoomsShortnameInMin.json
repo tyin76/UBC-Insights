@@ -1,0 +1,66 @@
+{
+	"title": "invalidKeyRoomsShortnameInMin",
+	"input": {
+		"WHERE": {
+			"OR": [
+				{
+					"EQ": {
+						"sections_year": 1900
+					}
+				},
+				{
+					"EQ": {
+						"sections_year": 2023
+					}
+				},
+				{
+					"EQ": {
+						"sections_year": 2022
+					}
+				},
+				{
+					"EQ": {
+						"sections_year": 2024
+					}
+				},
+				{
+					"GT": {
+						"sections_year": 2000
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_year",
+				"maxAvg",
+				"minAvg",
+				"yearCount"
+			]
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"sections_year"
+			],
+			"APPLY": [
+				{
+					"maxAvg": {
+						"MAX": "sections_avg"
+					}
+				},
+				{
+					"minAvg": {
+						"MIN": "rooms_shortname"
+					}
+				},
+				{
+					"yearCount": {
+						"COUNT": "sections_year"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}

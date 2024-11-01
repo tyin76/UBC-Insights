@@ -228,11 +228,13 @@ function getMinForGroup(
 			transformationInsightResults[currGroupId] = insightResult;
 		}
 		if (transformationInsightResults[currGroupId][customField] !== undefined) {
-			const min = transformationInsightResults[currGroupId][customField];
-			const potentialMin = result[fieldToFindMin];
-			transformationInsightResults[currGroupId][customField] = Math.min(min as number, potentialMin as number);
+			const min = Number(transformationInsightResults[currGroupId][customField]);
+			const potentialMin = Number(result[fieldToFindMin]);
+			if (potentialMin < min) {
+				transformationInsightResults[currGroupId][customField] = potentialMin
+			}
 		} else if (transformationInsightResults[currGroupId][customField] === undefined) {
-			transformationInsightResults[currGroupId][customField] = result[fieldToFindMin] as number;
+			transformationInsightResults[currGroupId][customField] = Number(result[fieldToFindMin]);
 		}
 	}
 
@@ -272,11 +274,13 @@ function getMaxForGroup(
 			transformationInsightResults[currGroupId] = insightResult;
 		}
 		if (transformationInsightResults[currGroupId][customField] !== undefined) {
-			const max = transformationInsightResults[currGroupId][customField];
-			const potentialMax = result[fieldToFindMax];
-			transformationInsightResults[currGroupId][customField] = Math.max(max as number, potentialMax as number);
+			const max = Number(transformationInsightResults[currGroupId][customField]);
+			const potentialMax = Number(result[fieldToFindMax]);
+			if (potentialMax > max) {
+				transformationInsightResults[currGroupId][customField] = potentialMax;
+			}
 		} else if (transformationInsightResults[currGroupId][customField] === undefined) {
-			transformationInsightResults[currGroupId][customField] = result[fieldToFindMax] as number;
+			transformationInsightResults[currGroupId][customField] = Number(result[fieldToFindMax]);
 		}
 	}
 

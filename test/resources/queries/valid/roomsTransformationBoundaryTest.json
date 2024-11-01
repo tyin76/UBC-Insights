@@ -1,0 +1,51 @@
+{
+	"title": "roomsTransformationBoundaryTest",
+	"input": {
+		"WHERE": {
+			"OR": [
+				{
+					"EQ": {
+						"rooms_seats": 0
+					}
+				},
+				{
+					"GT": {
+						"rooms_seats": 500
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"rooms_shortname",
+				"maxSeats",
+				"minSeats"
+			]
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"rooms_shortname"
+			],
+			"APPLY": [
+				{
+					"maxSeats": {
+						"MAX": "rooms_seats"
+					}
+				},
+				{
+					"minSeats": {
+						"MIN": "rooms_seats"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"rooms_shortname": "WOOD",
+			"maxSeats": 503,
+			"minSeats": 503
+		}
+	]
+}

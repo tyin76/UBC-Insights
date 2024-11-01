@@ -1,0 +1,353 @@
+{
+	"title": "multipleMaxAndMinOnSameFieldForRooms",
+	"input": {
+		"WHERE": {},
+		"OPTIONS": {
+			"COLUMNS": [
+				"rooms_shortname",
+				"maxSeats1",
+				"maxSeats2",
+				"minSeats1",
+				"minSeats2"
+			]
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"rooms_shortname"
+			],
+			"APPLY": [
+				{
+					"maxSeats1": {
+						"MAX": "rooms_seats"
+					}
+				},
+				{
+					"maxSeats2": {
+						"MAX": "rooms_seats"
+					}
+				},
+				{
+					"minSeats1": {
+						"MIN": "rooms_seats"
+					}
+				},
+				{
+					"minSeats2": {
+						"MIN": "rooms_seats"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"rooms_shortname": "ALRD",
+			"maxSeats1": 94,
+			"maxSeats2": 94,
+			"minSeats1": 20,
+			"minSeats2": 20
+		},
+		{
+			"rooms_shortname": "ANSO",
+			"maxSeats1": 90,
+			"maxSeats2": 90,
+			"minSeats1": 26,
+			"minSeats2": 26
+		},
+		{
+			"rooms_shortname": "AERL",
+			"maxSeats1": 144,
+			"maxSeats2": 144,
+			"minSeats1": 144,
+			"minSeats2": 144
+		},
+		{
+			"rooms_shortname": "AUDX",
+			"maxSeats1": 21,
+			"maxSeats2": 21,
+			"minSeats1": 20,
+			"minSeats2": 20
+		},
+		{
+			"rooms_shortname": "BIOL",
+			"maxSeats1": 228,
+			"maxSeats2": 228,
+			"minSeats1": 16,
+			"minSeats2": 16
+		},
+		{
+			"rooms_shortname": "BRKX",
+			"maxSeats1": 70,
+			"maxSeats2": 70,
+			"minSeats1": 24,
+			"minSeats2": 24
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"maxSeats1": 275,
+			"maxSeats2": 275,
+			"minSeats1": 18,
+			"minSeats2": 18
+		},
+		{
+			"rooms_shortname": "CIRS",
+			"maxSeats1": 426,
+			"maxSeats2": 426,
+			"minSeats1": 426,
+			"minSeats2": 426
+		},
+		{
+			"rooms_shortname": "CHBE",
+			"maxSeats1": 200,
+			"maxSeats2": 200,
+			"minSeats1": 60,
+			"minSeats2": 60
+		},
+		{
+			"rooms_shortname": "CHEM",
+			"maxSeats1": 265,
+			"maxSeats2": 265,
+			"minSeats1": 90,
+			"minSeats2": 90
+		},
+		{
+			"rooms_shortname": "CEME",
+			"maxSeats1": 100,
+			"maxSeats2": 100,
+			"minSeats1": 22,
+			"minSeats2": 22
+		},
+		{
+			"rooms_shortname": "EOSM",
+			"maxSeats1": 50,
+			"maxSeats2": 50,
+			"minSeats1": 50,
+			"minSeats2": 50
+		},
+		{
+			"rooms_shortname": "ESB",
+			"maxSeats1": 350,
+			"maxSeats2": 350,
+			"minSeats1": 80,
+			"minSeats2": 80
+		},
+		{
+			"rooms_shortname": "FNH",
+			"maxSeats1": 99,
+			"maxSeats2": 99,
+			"minSeats1": 12,
+			"minSeats2": 12
+		},
+		{
+			"rooms_shortname": "FSC",
+			"maxSeats1": 250,
+			"maxSeats2": 250,
+			"minSeats1": 18,
+			"minSeats2": 18
+		},
+		{
+			"rooms_shortname": "FORW",
+			"maxSeats1": 63,
+			"maxSeats2": 63,
+			"minSeats1": 35,
+			"minSeats2": 35
+		},
+		{
+			"rooms_shortname": "LASR",
+			"maxSeats1": 94,
+			"maxSeats2": 94,
+			"minSeats1": 20,
+			"minSeats2": 20
+		},
+		{
+			"rooms_shortname": "FRDM",
+			"maxSeats1": 160,
+			"maxSeats2": 160,
+			"minSeats1": 160,
+			"minSeats2": 160
+		},
+		{
+			"rooms_shortname": "GEOG",
+			"maxSeats1": 225,
+			"maxSeats2": 225,
+			"minSeats1": 21,
+			"minSeats2": 21
+		},
+		{
+			"rooms_shortname": "HEBB",
+			"maxSeats1": 375,
+			"maxSeats2": 375,
+			"minSeats1": 54,
+			"minSeats2": 54
+		},
+		{
+			"rooms_shortname": "HENN",
+			"maxSeats1": 257,
+			"maxSeats2": 257,
+			"minSeats1": 30,
+			"minSeats2": 30
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"maxSeats1": 260,
+			"maxSeats2": 260,
+			"minSeats1": 16,
+			"minSeats2": 16
+		},
+		{
+			"rooms_shortname": "DMP",
+			"maxSeats1": 160,
+			"maxSeats2": 160,
+			"minSeats1": 40,
+			"minSeats2": 40
+		},
+		{
+			"rooms_shortname": "IONA",
+			"maxSeats1": 100,
+			"maxSeats2": 100,
+			"minSeats1": 50,
+			"minSeats2": 50
+		},
+		{
+			"rooms_shortname": "IBLC",
+			"maxSeats1": 154,
+			"maxSeats2": 154,
+			"minSeats1": 8,
+			"minSeats2": 8
+		},
+		{
+			"rooms_shortname": "SOWK",
+			"maxSeats1": 68,
+			"maxSeats2": 68,
+			"minSeats1": 12,
+			"minSeats2": 12
+		},
+		{
+			"rooms_shortname": "LSK",
+			"maxSeats1": 205,
+			"maxSeats2": 205,
+			"minSeats1": 42,
+			"minSeats2": 42
+		},
+		{
+			"rooms_shortname": "LSC",
+			"maxSeats1": 350,
+			"maxSeats2": 350,
+			"minSeats1": 125,
+			"minSeats2": 125
+		},
+		{
+			"rooms_shortname": "MCLD",
+			"maxSeats1": 136,
+			"maxSeats2": 136,
+			"minSeats1": 40,
+			"minSeats2": 40
+		},
+		{
+			"rooms_shortname": "MCML",
+			"maxSeats1": 200,
+			"maxSeats2": 200,
+			"minSeats1": 6,
+			"minSeats2": 6
+		},
+		{
+			"rooms_shortname": "MATH",
+			"maxSeats1": 224,
+			"maxSeats2": 224,
+			"minSeats1": 25,
+			"minSeats2": 25
+		},
+		{
+			"rooms_shortname": "MATX",
+			"maxSeats1": 106,
+			"maxSeats2": 106,
+			"minSeats1": 106,
+			"minSeats2": 106
+		},
+		{
+			"rooms_shortname": "SCRF",
+			"maxSeats1": 280,
+			"maxSeats2": 280,
+			"minSeats1": 20,
+			"minSeats2": 20
+		},
+		{
+			"rooms_shortname": "ORCH",
+			"maxSeats1": 72,
+			"maxSeats2": 72,
+			"minSeats1": 16,
+			"minSeats2": 16
+		},
+		{
+			"rooms_shortname": "PHRM",
+			"maxSeats1": 236,
+			"maxSeats2": 236,
+			"minSeats1": 7,
+			"minSeats2": 7
+		},
+		{
+			"rooms_shortname": "PCOH",
+			"maxSeats1": 40,
+			"maxSeats2": 40,
+			"minSeats1": 24,
+			"minSeats2": 24
+		},
+		{
+			"rooms_shortname": "OSBO",
+			"maxSeats1": 442,
+			"maxSeats2": 442,
+			"minSeats1": 39,
+			"minSeats2": 39
+		},
+		{
+			"rooms_shortname": "SPPH",
+			"maxSeats1": 66,
+			"maxSeats2": 66,
+			"minSeats1": 12,
+			"minSeats2": 12
+		},
+		{
+			"rooms_shortname": "SRC",
+			"maxSeats1": 299,
+			"maxSeats2": 299,
+			"minSeats1": 299,
+			"minSeats2": 299
+		},
+		{
+			"rooms_shortname": "UCLL",
+			"maxSeats1": 55,
+			"maxSeats2": 55,
+			"minSeats1": 30,
+			"minSeats2": 30
+		},
+		{
+			"rooms_shortname": "MGYM",
+			"maxSeats1": 40,
+			"maxSeats2": 40,
+			"minSeats1": 25,
+			"minSeats2": 25
+		},
+		{
+			"rooms_shortname": "WESB",
+			"maxSeats1": 325,
+			"maxSeats2": 325,
+			"minSeats1": 102,
+			"minSeats2": 102
+		},
+		{
+			"rooms_shortname": "SWNG",
+			"maxSeats1": 190,
+			"maxSeats2": 190,
+			"minSeats1": 27,
+			"minSeats2": 27
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"maxSeats1": 503,
+			"maxSeats2": 503,
+			"minSeats1": 10,
+			"minSeats2": 10
+		}
+	]
+}
