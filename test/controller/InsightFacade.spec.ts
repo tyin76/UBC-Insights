@@ -1341,5 +1341,6 @@ describe("InsightFacade", function () {
 		it("[invalid/invalidKeyIdInMax.json]", checkQuery);
 		it("[invalid/invalidKeyFakeInMax.json]", checkQuery);
 		it("[invalid/invalidKeyDeptInMax.json]", checkQuery);
+		it("[invalid/transformationQueryMoreThan5000Rows.json]", checkQuery);
 	});
 });

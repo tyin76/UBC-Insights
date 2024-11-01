@@ -1,5 +1,5 @@
 import Decimal from "decimal.js";
-import { InsightError, InsightResult } from "../controller/IInsightFacade";
+import { InsightError, InsightResult, ResultTooLargeError } from "../controller/IInsightFacade";
 import { isFieldValidRoomNumberField, isFieldValidRoomStringField } from "./RoomValidationHelper";
 import { isFieldValidSectionNumberField, isFieldValidSectionStringField } from "./SectionValidationHelper";
 import { avgForGroupHelper } from "./TransformationEngineHelpers";
@@ -32,6 +32,10 @@ export function transformEngine(insightResults: InsightResult[], query: any): In
 			instruction[indexOfTransformOperator],
 			instruction[indexOfFieldToTransform]
 		);
+		const maxQueries = 5000;
+		if (Object.values(transformationInsightResults).length > maxQueries) {
+			throw new ResultTooLargeError("The result is too big, a max of 5000 results are supported.");
+		}
 	}
 
 	const filteredInsightResults = columnFilteredInsightResults(query, Object.values(transformationInsightResults));
