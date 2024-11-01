@@ -1,12 +1,11 @@
 import { InsightDatasetKind, InsightError } from "../controller/IInsightFacade";
+import { getDatasetFromId } from "../objects/FileManagement";
 import Room from "../objects/Room";
 import Section from "../objects/Section";
 import { validateAndExtractEntityFieldAndComparisonValue } from "./EntityValidationHelpers";
 import { extractAndValidateLogicalOperatorAndParameter } from "./LogicalOperatorExtractionAndValidation";
-import { validateQuery } from "./QueryValidation";
 import { filterRoomDataset, getRoomValueFromConditionKey } from "./RoomsFilterHelper";
 import { filterSectionDataset, getSectionValueFromConditionKey } from "./SectionsFilterHelper";
-import { getDatasetAndValidateQuery } from "./WhereDatasetExtractorAndRefsValidation";
 import { checkAstericksPlacement } from "./WildcardValidation";
 
 export const maxSections = 5000;
@@ -174,9 +173,7 @@ export function getKeysWithUnderscore(obj: Record<string, any>, result: string[]
 	return result;
 }
 
-export async function getAllValidEntities(query: any): Promise<Section[] | Room[]> {
-	validateQuery(query);
-
+export async function getAllValidEntities(query: any, datasetNameToQuery: string): Promise<Section[] | Room[]> {
 	const { WHERE } = query as any;
 
 	// This will get the operator and operater parameter and store it in an array, where index 0 is the operator, and index 1 is the parameter
@@ -186,7 +183,7 @@ export async function getAllValidEntities(query: any): Promise<Section[] | Room[
 	const operatorParameter = operatorAndParam[1];
 
 	// Gets the dataset to query
-	const datasetToQuery = await getDatasetAndValidateQuery(query);
+	const datasetToQuery = await getDatasetFromId(datasetNameToQuery);
 
 	if (datasetToQuery.getKind() === InsightDatasetKind.Sections) {
 		return filterSectionDataset(datasetToQuery, operator, operatorParameter, query);

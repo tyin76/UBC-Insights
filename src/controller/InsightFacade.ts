@@ -26,6 +26,8 @@ import { parseSectionsData } from "../helperFunctions/SectionParseHelper";
 import { parseRoomsData } from "../helperFunctions/RoomParseHelper";
 import { doesQueryContainTransformations } from "../helperFunctions/TransformationsValidationHelper";
 import { transformEngine } from "../helperFunctions/TransformEngine";
+import { getDatasetNameAndValidateQuery } from "../helperFunctions/WhereDatasetExtractorAndRefsValidation";
+import { validateQuery } from "../helperFunctions/QueryValidation";
 
 /**
  * This is the main programmatic entry point for the project.
@@ -68,24 +70,30 @@ export default class InsightFacade implements IInsightFacade {
 	// Reminder that query will use keys from the dataset
 	public async performQuery(query: unknown): Promise<InsightResult[]> {
 		// gets all sections
-		const entities: Section[] | Room[] = await getAllValidEntities(query);
+		validateQuery(query);
+		const datasetNameToQuery = await getDatasetNameAndValidateQuery(query);
+		const entities: Section[] | Room[] = await getAllValidEntities(query, datasetNameToQuery);
 
 		if (entities.length === 0) {
 			return [];
 		}
 
 		if (entities[0] instanceof Section) {
-			let insightSectionResults: InsightResult[] = parseSectionsData(entities as Section[], query);
+			let insightSectionResults: InsightResult[] = await parseSectionsData(
+				entities as Section[],
+				query,
+				datasetNameToQuery
+			);
 			if (doesQueryContainTransformations(query)) {
 				insightSectionResults = transformEngine(insightSectionResults, query);
 			}
 			return insightSectionResults;
 		} else {
-			let insightRoomsResults: InsightResult[] = parseRoomsData(entities as Room[], query);
+			let insightRoomsRes: InsightResult[] = await parseRoomsData(entities as Room[], query, datasetNameToQuery);
 			if (doesQueryContainTransformations(query)) {
-				insightRoomsResults = transformEngine(insightRoomsResults, query);
+				insightRoomsRes = transformEngine(insightRoomsRes, query);
 			}
-			return insightRoomsResults;
+			return insightRoomsRes;
 		}
 	}
 
