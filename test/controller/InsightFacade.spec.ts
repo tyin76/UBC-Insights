@@ -11,6 +11,8 @@ import { clearDisk, getContentFromArchives, loadTestQuery } from "../TestUtil";
 
 import { expect, use } from "chai";
 import chaiAsPromised from "chai-as-promised";
+import { getDatasetFromId } from "../../src/objects/FileManagement";
+import Dataset from "../../src/objects/Dataset";
 
 use(chaiAsPromised);
 
@@ -359,6 +361,23 @@ describe("InsightFacade", function () {
 				expect.fail("Should have thrown error");
 			} catch (err) {
 				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
+
+		// TODO
+		it("should create dataset with empty room array when no campus folder exists", async function () {
+			try {
+				const withoutCampusRooms = await getContentFromArchives("withoutCampusFolder.zip");
+				await facade.addDataset("withoutCampusFolder", withoutCampusRooms, InsightDatasetKind.Rooms);
+				const result = await getDatasetFromId("withoutCampusFolder");
+
+				expect(result).to.be.instanceOf(Dataset); // Verify it's a Dataset
+				expect(result.getKind()).to.equal(InsightDatasetKind.Rooms); // Verify kind is Rooms
+				expect(result.getEntities()).to.be.an("array"); // Verify content is array
+				expect(result.getEntities()).to.have.lengthOf(0); // Verify array is empty
+			} catch (err) {
+				const errorMessage = (err as Error).message;
+				expect.fail(`Should not throw error, should return dataset with empty array. Error: ${errorMessage}`);
 			}
 		});
 	});
