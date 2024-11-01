@@ -11,52 +11,87 @@ import { findRoomType } from "./FindRoomAttributeHelpers";
 
 const parse5 = require("parse5");
 
-function findBuildingLinks(indexHTM: any): string[] {
-	const links = new Set<string>();
-	// Helper function to check if node is a td with views-field class
-	function isViewsFieldTd(node: any): boolean {
-		return (
-			node.nodeName === "td" &&
-			node.attrs?.some((attr: any) => attr.name === "class" && attr.value.includes("views-field"))
-		);
-	}
-
-	// Recursive function to traverse the node tree
-	function traverse(node: any): any {
-		if (!node) {
-			return;
-		}
-
-		if (isViewsFieldTd(node)) {
-			// If found a td with views-field class, look for anchor tags within it
-			if (node.childNodes) {
-				node.childNodes.forEach((child: any) => {
-					const href = findHrefInNode(child);
-					if (href?.includes(".htm")) {
-						links.add(href);
-					} else {
-						traverse(child);
-					}
-					// Continue traversing in case there are nested elements
-				});
-			}
-		} else if (node.childNodes) {
-			node.childNodes.forEach((child: any) => traverse(child));
-		}
-	}
-
-	traverse(indexHTM);
-	const setToArray = Array.from(links);
-	return setToArray;
+function getFirstHtmTagInTable(table: string): string {
+	const start = table.indexOf("<");
+	const end = table.indexOf(">") + ">".length;
+	return table.substring(start, end);
 }
 
-// Helper function to find href in anchor tags
-function findHrefInNode(node: any): string | null {
-	if (node.nodeName === "a" && node.attrs) {
-		const hrefAttr = node.attrs.find((attr: any) => attr.name === "href");
-		return hrefAttr?.value || null;
+function doesTagHaveBuildingLink(htmTag: string): boolean {
+	const start = htmTag.indexOf("./campus/discover/buildings-and-classrooms");
+	const end = htmTag.indexOf(".htm");
+
+	return !(start === -1 || end === -1);
+}
+
+function getFirstBuildingLinkInTag(htmTag: string): string {
+	const start = htmTag.indexOf("./campus/discover/buildings-and-classrooms");
+	const end = htmTag.indexOf(".htm") + ".htm".length;
+	return htmTag.substring(start, end);
+}
+
+function removeFirstHtmTagFromTable(table: string): string {
+	const end = table.indexOf(">") + ">".length;
+	return table.substring(end, table.length);
+}
+
+function doesTableHaveHtmTag(htm: string): boolean {
+	const start = htm.indexOf("<");
+	const end = htm.indexOf(">");
+
+	if (start === -1 || end === -1) {
+		return false;
 	}
-	return null;
+	return true;
+}
+
+function getFirstTableInHTM(htm: string): string {
+	const start = htm.indexOf("<tbody>");
+	const end = htm.indexOf("</tbody>") + "</tbody>".length;
+	return htm.substring(start, end);
+}
+
+function removeFirstTableFromHTM(htm: string): string {
+	const end = htm.indexOf("</tbody>") + "</tbody>".length;
+	return htm.substring(end, htm.length + 1);
+}
+
+function doesHTMHaveTable(htm: string): boolean {
+	const start = htm.indexOf("<tbody>");
+	const end = htm.indexOf("</tbody>");
+
+	if (start === -1 || end === -1) {
+		return false;
+	}
+	return true;
+}
+
+function findBuildingLinks(indexHtm: string): string[] {
+	const buildingLinks = new Set<string>();
+
+	const tables: string[] = [];
+
+	const htmTags: string[] = [];
+
+	while (doesHTMHaveTable(indexHtm)) {
+		tables.push(getFirstTableInHTM(indexHtm));
+		indexHtm = removeFirstTableFromHTM(indexHtm);
+	}
+
+	for (let table of tables) {
+		while (doesTableHaveHtmTag(table)) {
+			htmTags.push(getFirstHtmTagInTable(table));
+			table = removeFirstHtmTagFromTable(table);
+		}
+	}
+
+	for (const htmTag of htmTags) {
+		if (doesTagHaveBuildingLink(htmTag)) {
+			buildingLinks.add(getFirstBuildingLinkInTag(htmTag));
+		}
+	}
+
+	return [...buildingLinks];
 }
 
 function extractRoomNumber(url: string): any {
@@ -302,10 +337,8 @@ export async function createRoomsDataSetFromContent(content: string): Promise<Da
 	checkforIndexHTMAndCampusFolder(zipData);
 
 	const fileData = await zipData.file("index.htm")?.async("string");
-	const parsedFileData = parse5.parse(fileData);
-	//console.log(parsedFileData);
 	// Find all the building links
-	const buildingLinks = findBuildingLinks(parsedFileData);
+	const buildingLinks = findBuildingLinks(fileData as string);
 	//console.log(buildingLinks);
 
 	// Gather promises for each building link instead of awaiting inside the loop
