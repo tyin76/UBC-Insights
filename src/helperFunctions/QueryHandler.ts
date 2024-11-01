@@ -185,6 +185,10 @@ export async function getAllValidEntities(query: any, datasetNameToQuery: string
 	// Gets the dataset to query
 	const datasetToQuery = await getDatasetFromId(datasetNameToQuery);
 
+	if (datasetToQuery.getEntities().length === 0) {
+		return [];
+	}
+
 	if (datasetToQuery.getKind() === InsightDatasetKind.Sections) {
 		return filterSectionDataset(datasetToQuery, operator, operatorParameter, query);
 	}

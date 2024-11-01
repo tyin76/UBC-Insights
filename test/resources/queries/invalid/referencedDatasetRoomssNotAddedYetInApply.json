@@ -1,0 +1,84 @@
+{
+	"title": "referencedDatasetRoomssNotAddedYetInApply",
+	"input": {
+		"WHERE": {
+			"NOT": {
+				"OR": [
+					{
+						"IS": {
+							"rooms_shortname": "UCLL"
+						}
+					},
+					{
+						"IS": {
+							"rooms_shortname": "WESB"
+						}
+					}
+				]
+			}
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"rooms_shortname",
+				"countRooms",
+				"maxRoomType",
+				"minRoomType",
+				"countFurniture",
+				"maxFurnitureType",
+				"minFurnitureType",
+				"countShortname"
+			],
+			"ORDER": {
+				"dir": "DOWN",
+				"keys": [
+					"countShortname",
+					"rooms_shortname"
+				]
+			}
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"rooms_shortname"
+			],
+			"APPLY": [
+				{
+					"countRooms": {
+						"COUNT": "roomss_seats"
+					}
+				},
+				{
+					"maxRoomType": {
+						"MAX": "roomss_seats"
+					}
+				},
+				{
+					"minRoomType": {
+						"MIN": "roomss_lon"
+					}
+				},
+				{
+					"countFurniture": {
+						"COUNT": "roomss_furniture"
+					}
+				},
+				{
+					"maxFurnitureType": {
+						"AVG": "roomss_lon"
+					}
+				},
+				{
+					"minFurnitureType": {
+						"MIN": "roomss_lat"
+					}
+				},
+				{
+					"countShortname": {
+						"COUNT": "roomss_shortname"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}

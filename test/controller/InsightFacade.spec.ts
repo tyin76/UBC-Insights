@@ -11,8 +11,6 @@ import { clearDisk, getContentFromArchives, loadTestQuery } from "../TestUtil";
 
 import { expect, use } from "chai";
 import chaiAsPromised from "chai-as-promised";
-import { getDatasetFromId } from "../../src/objects/FileManagement";
-import Dataset from "../../src/objects/Dataset";
 
 use(chaiAsPromised);
 
@@ -361,23 +359,6 @@ describe("InsightFacade", function () {
 				expect.fail("Should have thrown error");
 			} catch (err) {
 				expect(err).to.be.instanceOf(InsightError);
-			}
-		});
-
-		// TODO
-		it("should create dataset with empty room array when no campus folder exists", async function () {
-			try {
-				const withoutCampusRooms = await getContentFromArchives("withoutCampusFolder.zip");
-				await facade.addDataset("withoutCampusFolder", withoutCampusRooms, InsightDatasetKind.Rooms);
-				const result = await getDatasetFromId("withoutCampusFolder");
-
-				expect(result).to.be.instanceOf(Dataset); // Verify it's a Dataset
-				expect(result.getKind()).to.equal(InsightDatasetKind.Rooms); // Verify kind is Rooms
-				expect(result.getEntities()).to.be.an("array"); // Verify content is array
-				expect(result.getEntities()).to.have.lengthOf(0); // Verify array is empty
-			} catch (err) {
-				const errorMessage = (err as Error).message;
-				expect.fail(`Should not throw error, should return dataset with empty array. Error: ${errorMessage}`);
 			}
 		});
 	});
@@ -834,6 +815,13 @@ describe("InsightFacade", function () {
 			const leftValue = result[index][keysSortedAgainst[0]];
 			const rightValue = result[index + 1][keysSortedAgainst[0]];
 
+			const expectedLeftValue = result[index][keysSortedAgainst[0]];
+			const expectedRightValue = result[index + 1][keysSortedAgainst[0]];
+
+			if (rightValue !== expectedRightValue || leftValue !== expectedLeftValue) {
+				expect.fail(rightValue + " should equal " + expectedRightValue);
+			}
+
 			if (leftValue === undefined || rightValue === undefined) {
 				expect.fail("Value from key/field sorted against is undefined");
 			}
@@ -847,13 +835,25 @@ describe("InsightFacade", function () {
 			}
 		}
 
-		function isInDescendingOrder(index: number, keysSortedAgainst: string[], result: InsightResult[]): boolean {
+		function isInDescendingOrder(
+			index: number,
+			keysSortedAgainst: string[],
+			result: InsightResult[],
+			expected: InsightResult[]
+		): boolean {
 			if (keysSortedAgainst.length === 0) {
 				return true;
 			}
 
 			const leftValue = result[index][keysSortedAgainst[0]];
 			const rightValue = result[index + 1][keysSortedAgainst[0]];
+
+			const expectedLeftValue = result[index][keysSortedAgainst[0]];
+			const expectedRightValue = result[index + 1][keysSortedAgainst[0]];
+
+			if (rightValue !== expectedRightValue || leftValue !== expectedLeftValue) {
+				expect.fail(rightValue + " should equal " + expectedRightValue);
+			}
 
 			if (leftValue === undefined || rightValue === undefined) {
 				expect.fail("Value from key/field sorted against is undefined");
@@ -864,17 +864,22 @@ describe("InsightFacade", function () {
 			} else if (leftValue < rightValue) {
 				return false;
 			} else {
-				return isInDescendingOrder(index, keysSortedAgainst.slice(1), result);
+				return isInDescendingOrder(index, keysSortedAgainst.slice(1), result, expected);
 			}
 		}
-		function checkOrder(keysSortedAgainst: string[], isAscending: boolean, result: InsightResult[]): void {
+		function checkOrder(
+			keysSortedAgainst: string[],
+			isAscending: boolean,
+			result: InsightResult[],
+			expected: InsightResult[]
+		): void {
 			for (let i = 0; i < result.length - 1; i++) {
 				if (isAscending) {
 					if (!isInAscendingOrder(i, keysSortedAgainst, result)) {
 						expect.fail("Sorted incorrectly for ascending order! " + "At index " + [i]);
 					}
 				} else {
-					if (!isInDescendingOrder(i, keysSortedAgainst, result)) {
+					if (!isInDescendingOrder(i, keysSortedAgainst, result, expected)) {
 						expect.fail("Sorted incorrectly for descending order!" + "At index " + [i]);
 					}
 				}
@@ -903,7 +908,7 @@ describe("InsightFacade", function () {
 				}
 			}
 
-			checkOrder(keysSortedAgainst, isAscending, result);
+			checkOrder(keysSortedAgainst, isAscending, result, expected);
 		}
 
 		/**
@@ -959,12 +964,14 @@ describe("InsightFacade", function () {
 
 			sections = await getContentFromArchives("pair.zip");
 			rooms = await getContentFromArchives("campus.zip");
+			const noCampusFolder = await getContentFromArchives("withoutCampusFolder.zip");
 
 			// Add the datasets to InsightFacade once.
 			// Will *fail* if there is a problem reading ANY dataset.
 			const loadDatasetPromises: Promise<string[]>[] = [
 				facade.addDataset("sections", sections, InsightDatasetKind.Sections),
 				facade.addDataset("rooms", rooms, InsightDatasetKind.Rooms),
+				facade.addDataset("noCampusFolder", noCampusFolder, InsightDatasetKind.Rooms),
 			];
 
 			try {
@@ -1372,5 +1379,17 @@ describe("InsightFacade", function () {
 		it("[invalid/invalidKeyForQueryInIs.json]", checkQuery);
 		it("[invalid/invalidKeyForQueryInTransformationsOptionsUnderscore.json]", checkQuery);
 		it("[invalid/invalidKeyForQueryInTransformationsUnderscore.json]", checkQuery);
+		it("[valid/sortingRoomsByShortname.json]", async function () {
+			await checkQuery.call(this, ["rooms_shortname"], false);
+		});
+		it("[valid/sortRoomsViaTwoFieldsOneCustomOneNot.json]", async function () {
+			await checkQuery.call(this, ["countShortname", "rooms_shortname"], false);
+		});
+		it("[invalid/errorCannotQueryMoreThankOneDatasetWhere.json]", checkQuery);
+		it("[invalid/referencedDatasetRoomssNotAddedYet.json]", checkQuery);
+		it("[invalid/referencedDatasetRoomssNotAddedYetInApply.json]", checkQuery);
+		it("[invalid/referencedDatasetRoomssNotAddedYetInGroup.json]", checkQuery);
+		it("[invalid/referencedDatasetRoomssNotAddedYetInOrder.json]", checkQuery);
+		it("[valid/queryNoCampusFolder.json]", checkQuery);
 	});
 });
