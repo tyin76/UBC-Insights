@@ -12,7 +12,7 @@ import { findRoomType } from "./FindRoomAttributeHelpers";
 const parse5 = require("parse5");
 
 function findBuildingLinks(indexHTM: any): string[] {
-	const links: string[] = [];
+	const links = new Set<string>();
 	// Helper function to check if node is a td with views-field class
 	function isViewsFieldTd(node: any): boolean {
 		return (
@@ -33,10 +33,10 @@ function findBuildingLinks(indexHTM: any): string[] {
 				node.childNodes.forEach((child: any) => {
 					const href = findHrefInNode(child);
 					if (href?.includes(".htm")) {
-						links.push(href);
+						links.add(href);
 					}
 					// Continue traversing in case there are nested elements
-					traverse(child);
+					//traverse(child);
 				});
 			}
 		} else if (node.childNodes) {
@@ -45,7 +45,8 @@ function findBuildingLinks(indexHTM: any): string[] {
 	}
 
 	traverse(indexHTM);
-	return links;
+	const setToArray = Array.from(links);
+	return setToArray;
 }
 
 // Helper function to find href in anchor tags
@@ -294,7 +295,6 @@ function checkforIndexHTMAndCampusFolder(zipData: any): void {
 export async function createRoomsDataSetFromContent(content: string): Promise<Dataset> {
 	const zip = new JSZip();
 	let rooms: Room[] = [];
-	let tempRooms: Room[] = [];
 
 	const zipData = await zip.loadAsync(content, { base64: true });
 
@@ -324,7 +324,7 @@ export async function createRoomsDataSetFromContent(content: string): Promise<Da
 
 			if (validTable) {
 				const fullNameAndAddress = extractBuildingInfo(parsedRoomData);
-				return createAllRoomObjects(validTable, fullNameAndAddress);
+				return await createAllRoomObjects(validTable, fullNameAndAddress);
 			}
 		}
 		return []; // Return an empty array if no valid table found or file not found
@@ -334,26 +334,15 @@ export async function createRoomsDataSetFromContent(content: string): Promise<Da
 	const roomResults = await Promise.all(roomPromises);
 
 	// Flatten the results from each promise and concatenate to tempRooms
-	tempRooms = roomResults.flat();
+	rooms = roomResults.flat();
+	//console.log(tempRooms);
 
-	rooms = checkDuplicates(tempRooms);
+	//rooms = checkDuplicates(tempRooms);
 	//console.log(rooms);
-	const dataset = new Dataset(rooms, InsightDatasetKind.Rooms);
-	const stringified = JSON.stringify(dataset);
+	// const dataset = new Dataset(rooms, InsightDatasetKind.Rooms);
+	// const stringified = JSON.stringify(dataset);
 	//console.log(stringified);
 
+	// TODO: change back to rooms
 	return new Dataset(rooms, InsightDatasetKind.Rooms);
-}
-
-function checkDuplicates(roomObjects: Room[]): Room[] {
-	const roomNames = new Set<string>();
-	const tempRooms: Room[] = [];
-	for (const room of roomObjects) {
-		const uniqueRoomName = room.getShortName() + room.getNumber();
-		if (!roomNames.has(uniqueRoomName)) {
-			roomNames.add(uniqueRoomName);
-			tempRooms.push(room);
-		}
-	}
-	return tempRooms;
 }

@@ -564,6 +564,7 @@ describe("InsightFacade", function () {
 			}
 		});
 
+		// TODO: MIGHT HAVE RACE CONDITION
 		it("should successfully delete everything (mix of rooms and sections data)", async function () {
 			try {
 				await facade.addDataset("section1", sections, InsightDatasetKind.Sections);
