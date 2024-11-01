@@ -361,6 +361,17 @@ describe("InsightFacade", function () {
 				expect(err).to.be.instanceOf(InsightError);
 			}
 		});
+
+		// TODO
+		it("should reject adding a rooms dataset without a campus folder", async function () {
+			try {
+				const withoutCampusRooms = await getContentFromArchives("withoutCampusFolder.zip");
+				await facade.addDataset("withoutCampusFolder", withoutCampusRooms, InsightDatasetKind.Rooms);
+				expect.fail("Should have thrown error");
+			} catch (err) {
+				expect(err).to.be.instanceOf(InsightError);
+			}
+		});
 	});
 
 	describe("removeDataset", function () {
