@@ -340,7 +340,7 @@ export async function createRoomsDataSetFromContent(content: string): Promise<Da
 	//console.log(rooms);
 	const dataset = new Dataset(rooms, InsightDatasetKind.Rooms);
 	const stringified = JSON.stringify(dataset);
-	console.log(stringified);
+	//console.log(stringified);
 
 	return new Dataset(rooms, InsightDatasetKind.Rooms);
 }
