@@ -24,7 +24,15 @@ export async function validateDatasetRefsInWhereAndGetSingleDataset(where: any):
 
 		const field = getDatasetField(datasetNameAndField);
 
-		validateDatasetField(field, await getKindFromId(datasetName));
+		async function getValidateAndGetKindFromId(datasetName: string): Promise<InsightDatasetKind> {
+			try {
+				return await getKindFromId(datasetName);
+			} catch (err) {
+				throw new InsightError((err as Error).stack);
+			}
+		}
+
+		validateDatasetField(field, await getValidateAndGetKindFromId(datasetName));
 		assertSingleDatasetReference(datasetName, datasetNameSet);
 	});
 
