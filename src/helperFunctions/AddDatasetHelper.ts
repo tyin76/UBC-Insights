@@ -112,9 +112,9 @@ export async function createSectionsDatasetFromContent(content: string, kind: In
 
 export async function createDatasetFromContent(content: string, kind: InsightDatasetKind): Promise<Dataset> {
 	if (kind === InsightDatasetKind.Rooms) {
-		return createRoomsDataSetFromContent(content);
+		return await createRoomsDataSetFromContent(content);
 	} else if (kind === InsightDatasetKind.Sections) {
-		return createSectionsDatasetFromContent(content, kind);
+		return await createSectionsDatasetFromContent(content, kind);
 	} else {
 		throw new InsightError();
 	}
