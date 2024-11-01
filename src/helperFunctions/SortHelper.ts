@@ -1,5 +1,7 @@
+import { InsightError, InsightResult } from "../controller/IInsightFacade";
 import Room from "../objects/Room";
 import Section from "../objects/Section";
+import { recursiveInsightResultCompare } from "./InsightResultSortHelper";
 import { getRoomValueFromConditionKey } from "./RoomsFilterHelper";
 import { getSectionValueFromConditionKey } from "./SectionsFilterHelper";
 
@@ -34,4 +36,29 @@ export function recursiveStringNumCompare(conditionKeys: string[], x: Room | Sec
 	}
 
 	return recursiveStringNumCompare(conditionKeys.slice(1), x, y);
+}
+
+export function sortInsightResults(query: any, insightResults: InsightResult[]): InsightResult[] {
+	if (query.OPTIONS.ORDER !== null && query.OPTIONS.ORDER !== undefined) {
+		if (typeof query.OPTIONS.ORDER === "string") {
+			sortInsightResultsUsingKey([query.OPTIONS.ORDER], insightResults);
+		} else {
+			sortInsightResultsUsingKey(query.OPTIONS.ORDER.keys, insightResults, query.OPTIONS.ORDER.dir);
+		}
+	}
+	return insightResults;
+}
+
+function sortInsightResultsUsingKey(
+	conditionKeys: string[],
+	insightResultsToSort: InsightResult[],
+	direction = "UP"
+): void {
+	insightResultsToSort.sort((x, y) => recursiveInsightResultCompare(conditionKeys, x, y));
+
+	if (direction === "DOWN") {
+		insightResultsToSort.reverse();
+	} else if (direction !== "UP") {
+		throw new InsightError("Invalid dir key");
+	}
 }

@@ -1314,7 +1314,10 @@ describe("InsightFacade", function () {
 		it("[valid/validmaxMinLonLat.json] should pass when we use max min on lat and lon", checkQuery);
 		it("[valid/validMaxMinAvgYear.json] should pass when we use max min avg on section year", checkQuery);
 		it("[valid/possibleEdgeCaseMaxMin.json] should pass when we use  max min as a possible edge case", checkQuery);
-		it("[valid/validRoomsTransformationWildcardNotIsGt.json] should pass when we combine wildcards, not, is, gt, and transformation, min, max", checkQuery);
+		it(
+			"[valid/validRoomsTransformationWildcardNotIsGt.json] should pass when we combine wildcards, not, is, gt, and transformation, min, max",
+			checkQuery
+		);
 		it("[valid/wildCardMaxMinWithRoomsNumber.json]", checkQuery);
 		it("[valid/validCalculateMaxMinforSeatsDontShowcol.json]", checkQuery);
 		it("[valid/strNumMixedGroupingRooms.json]", checkQuery);
