@@ -1311,5 +1311,17 @@ describe("InsightFacade", function () {
 		it("[valid/validTransformationSortWithMultipleFieldsWithTies.json] should pass sorting the transformed query with fields that have many ties descendingly", async function () {
 			await checkQuery.call(this, ["maxSectionAvg", "sections_dept", "minSectionAvg"], false);
 		});
+		it(
+			"[valid/validmaxMinLonLat.json] should pass when we use max min on lat and lon",
+			checkQuery
+		);
+		it(
+			"[valid/validMaxMinAvgYear.json] should pass when we use max min avg on section year",
+			checkQuery
+		);
+		it(
+			"[valid/possibleEdgeCaseMaxMin.json] should pass when we use  max min as a possible edge case",
+			checkQuery
+		);
 	});
 });

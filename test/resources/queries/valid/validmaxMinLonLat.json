@@ -1,0 +1,353 @@
+{
+	"title": "ValidmaxMinLonLat",
+	"input": {
+		"WHERE": {},
+		"OPTIONS": {
+			"COLUMNS": [
+				"rooms_shortname",
+				"maxlat",
+				"maxlon",
+				"minlat",
+				"minlon"
+			]
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"rooms_shortname"
+			],
+			"APPLY": [
+				{
+					"maxlat": {
+						"MAX": "rooms_lat"
+					}
+				},
+				{
+					"maxlon": {
+						"MAX": "rooms_lon"
+					}
+				},
+				{
+					"minlat": {
+						"MIN": "rooms_lat"
+					}
+				},
+				{
+					"minlon": {
+						"MIN": "rooms_lon"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"rooms_shortname": "ALRD",
+			"maxlat": 49.2699,
+			"maxlon": -123.25318,
+			"minlat": 49.2699,
+			"minlon": -123.25318
+		},
+		{
+			"rooms_shortname": "ANSO",
+			"maxlat": 49.26958,
+			"maxlon": -123.25741,
+			"minlat": 49.26958,
+			"minlon": -123.25741
+		},
+		{
+			"rooms_shortname": "AERL",
+			"maxlat": 49.26372,
+			"maxlon": -123.25099,
+			"minlat": 49.26372,
+			"minlon": -123.25099
+		},
+		{
+			"rooms_shortname": "AUDX",
+			"maxlat": 49.2666,
+			"maxlon": -123.25655,
+			"minlat": 49.2666,
+			"minlon": -123.25655
+		},
+		{
+			"rooms_shortname": "BIOL",
+			"maxlat": 49.26479,
+			"maxlon": -123.25249,
+			"minlat": 49.26479,
+			"minlon": -123.25249
+		},
+		{
+			"rooms_shortname": "BRKX",
+			"maxlat": 49.26862,
+			"maxlon": -123.25237,
+			"minlat": 49.26862,
+			"minlon": -123.25237
+		},
+		{
+			"rooms_shortname": "BUCH",
+			"maxlat": 49.26826,
+			"maxlon": -123.25468,
+			"minlat": 49.26826,
+			"minlon": -123.25468
+		},
+		{
+			"rooms_shortname": "CIRS",
+			"maxlat": 49.26207,
+			"maxlon": -123.25314,
+			"minlat": 49.26207,
+			"minlon": -123.25314
+		},
+		{
+			"rooms_shortname": "CHBE",
+			"maxlat": 49.26228,
+			"maxlon": -123.24718,
+			"minlat": 49.26228,
+			"minlon": -123.24718
+		},
+		{
+			"rooms_shortname": "CHEM",
+			"maxlat": 49.2659,
+			"maxlon": -123.25308,
+			"minlat": 49.2659,
+			"minlon": -123.25308
+		},
+		{
+			"rooms_shortname": "CEME",
+			"maxlat": 49.26273,
+			"maxlon": -123.24894,
+			"minlat": 49.26273,
+			"minlon": -123.24894
+		},
+		{
+			"rooms_shortname": "EOSM",
+			"maxlat": 49.26228,
+			"maxlon": -123.25198,
+			"minlat": 49.26228,
+			"minlon": -123.25198
+		},
+		{
+			"rooms_shortname": "ESB",
+			"maxlat": 49.26274,
+			"maxlon": -123.25224,
+			"minlat": 49.26274,
+			"minlon": -123.25224
+		},
+		{
+			"rooms_shortname": "FNH",
+			"maxlat": 49.26414,
+			"maxlon": -123.24959,
+			"minlat": 49.26414,
+			"minlon": -123.24959
+		},
+		{
+			"rooms_shortname": "FSC",
+			"maxlat": 49.26044,
+			"maxlon": -123.24886,
+			"minlat": 49.26044,
+			"minlon": -123.24886
+		},
+		{
+			"rooms_shortname": "FORW",
+			"maxlat": 49.26176,
+			"maxlon": -123.25179,
+			"minlat": 49.26176,
+			"minlon": -123.25179
+		},
+		{
+			"rooms_shortname": "LASR",
+			"maxlat": 49.26767,
+			"maxlon": -123.25583,
+			"minlat": 49.26767,
+			"minlon": -123.25583
+		},
+		{
+			"rooms_shortname": "FRDM",
+			"maxlat": 49.26541,
+			"maxlon": -123.24608,
+			"minlat": 49.26541,
+			"minlon": -123.24608
+		},
+		{
+			"rooms_shortname": "GEOG",
+			"maxlat": 49.26605,
+			"maxlon": -123.25623,
+			"minlat": 49.26605,
+			"minlon": -123.25623
+		},
+		{
+			"rooms_shortname": "HEBB",
+			"maxlat": 49.2661,
+			"maxlon": -123.25165,
+			"minlat": 49.2661,
+			"minlon": -123.25165
+		},
+		{
+			"rooms_shortname": "HENN",
+			"maxlat": 49.26627,
+			"maxlon": -123.25374,
+			"minlat": 49.26627,
+			"minlon": -123.25374
+		},
+		{
+			"rooms_shortname": "ANGU",
+			"maxlat": 49.26486,
+			"maxlon": -123.25364,
+			"minlat": 49.26486,
+			"minlon": -123.25364
+		},
+		{
+			"rooms_shortname": "DMP",
+			"maxlat": 49.26125,
+			"maxlon": -123.24807,
+			"minlat": 49.26125,
+			"minlon": -123.24807
+		},
+		{
+			"rooms_shortname": "IONA",
+			"maxlat": 49.27106,
+			"maxlon": -123.25042,
+			"minlat": 49.27106,
+			"minlon": -123.25042
+		},
+		{
+			"rooms_shortname": "IBLC",
+			"maxlat": 49.26766,
+			"maxlon": -123.2521,
+			"minlat": 49.26766,
+			"minlon": -123.2521
+		},
+		{
+			"rooms_shortname": "SOWK",
+			"maxlat": 49.2643,
+			"maxlon": -123.25505,
+			"minlat": 49.2643,
+			"minlon": -123.25505
+		},
+		{
+			"rooms_shortname": "LSK",
+			"maxlat": 49.26545,
+			"maxlon": -123.25533,
+			"minlat": 49.26545,
+			"minlon": -123.25533
+		},
+		{
+			"rooms_shortname": "LSC",
+			"maxlat": 49.26236,
+			"maxlon": -123.24494,
+			"minlat": 49.26236,
+			"minlon": -123.24494
+		},
+		{
+			"rooms_shortname": "MCLD",
+			"maxlat": 49.26176,
+			"maxlon": -123.24935,
+			"minlat": 49.26176,
+			"minlon": -123.24935
+		},
+		{
+			"rooms_shortname": "MCML",
+			"maxlat": 49.26114,
+			"maxlon": -123.25027,
+			"minlat": 49.26114,
+			"minlon": -123.25027
+		},
+		{
+			"rooms_shortname": "MATH",
+			"maxlat": 49.266463,
+			"maxlon": -123.255534,
+			"minlat": 49.266463,
+			"minlon": -123.255534
+		},
+		{
+			"rooms_shortname": "MATX",
+			"maxlat": 49.266089,
+			"maxlon": -123.254816,
+			"minlat": 49.266089,
+			"minlon": -123.254816
+		},
+		{
+			"rooms_shortname": "SCRF",
+			"maxlat": 49.26398,
+			"maxlon": -123.2531,
+			"minlat": 49.26398,
+			"minlon": -123.2531
+		},
+		{
+			"rooms_shortname": "ORCH",
+			"maxlat": 49.26048,
+			"maxlon": -123.24944,
+			"minlat": 49.26048,
+			"minlon": -123.24944
+		},
+		{
+			"rooms_shortname": "PHRM",
+			"maxlat": 49.26229,
+			"maxlon": -123.24342,
+			"minlat": 49.26229,
+			"minlon": -123.24342
+		},
+		{
+			"rooms_shortname": "PCOH",
+			"maxlat": 49.264,
+			"maxlon": -123.2559,
+			"minlat": 49.264,
+			"minlon": -123.2559
+		},
+		{
+			"rooms_shortname": "OSBO",
+			"maxlat": 49.26047,
+			"maxlon": -123.24467,
+			"minlat": 49.26047,
+			"minlon": -123.24467
+		},
+		{
+			"rooms_shortname": "SPPH",
+			"maxlat": 49.2642,
+			"maxlon": -123.24842,
+			"minlat": 49.2642,
+			"minlon": -123.24842
+		},
+		{
+			"rooms_shortname": "SRC",
+			"maxlat": 49.2683,
+			"maxlon": -123.24894,
+			"minlat": 49.2683,
+			"minlon": -123.24894
+		},
+		{
+			"rooms_shortname": "UCLL",
+			"maxlat": 49.26867,
+			"maxlon": -123.25692,
+			"minlat": 49.26867,
+			"minlon": -123.25692
+		},
+		{
+			"rooms_shortname": "MGYM",
+			"maxlat": 49.2663,
+			"maxlon": -123.2466,
+			"minlat": 49.2663,
+			"minlon": -123.2466
+		},
+		{
+			"rooms_shortname": "WESB",
+			"maxlat": 49.26517,
+			"maxlon": -123.24937,
+			"minlat": 49.26517,
+			"minlon": -123.24937
+		},
+		{
+			"rooms_shortname": "SWNG",
+			"maxlat": 49.26293,
+			"maxlon": -123.25431,
+			"minlat": 49.26293,
+			"minlon": -123.25431
+		},
+		{
+			"rooms_shortname": "WOOD",
+			"maxlat": 49.26478,
+			"maxlon": -123.24673,
+			"minlat": 49.26478,
+			"minlon": -123.24673
+		}
+	]
+}

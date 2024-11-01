@@ -274,7 +274,7 @@ function getMaxForGroup(
 		if (transformationInsightResults[currGroupId][customField] !== undefined) {
 			const max = transformationInsightResults[currGroupId][customField];
 			const potentialMax = result[fieldToFindMax];
-			transformationInsightResults[currGroupId][customField] = Math.max(max as number, potentialMax as number);
+			transformationInsightResults[currGroupId][customField] =  Math.max(max as number, potentialMax as number);
 		} else if (transformationInsightResults[currGroupId][customField] === undefined) {
 			transformationInsightResults[currGroupId][customField] = result[fieldToFindMax] as number;
 		}

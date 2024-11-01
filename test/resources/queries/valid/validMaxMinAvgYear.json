@@ -1,0 +1,1173 @@
+{
+	"title": "validMaxMinAvgYear",
+	"input": {
+		"WHERE": {},
+		"OPTIONS": {
+			"COLUMNS": [
+				"sections_dept",
+				"maxYear",
+				"minYear",
+				"avgYear"
+			]
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"sections_dept"
+			],
+			"APPLY": [
+				{
+					"maxYear": {
+						"MAX": "sections_year"
+					}
+				},
+				{
+					"minYear": {
+						"MIN": "sections_year"
+					}
+				},
+				{
+					"avgYear": {
+						"AVG": "sections_year"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": false,
+	"expected": [
+		{
+			"sections_dept": "aanb",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1957.5
+		},
+		{
+			"sections_dept": "adhe",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1980.3
+		},
+		{
+			"sections_dept": "anat",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1956.17
+		},
+		{
+			"sections_dept": "anth",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1958.17
+		},
+		{
+			"sections_dept": "apbi",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1958.57
+		},
+		{
+			"sections_dept": "appp",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1957.63
+		},
+		{
+			"sections_dept": "apsc",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1991.47
+		},
+		{
+			"sections_dept": "arbc",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1957.25
+		},
+		{
+			"sections_dept": "arch",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1967.27
+		},
+		{
+			"sections_dept": "arcl",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1960.96
+		},
+		{
+			"sections_dept": "arst",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1956.15
+		},
+		{
+			"sections_dept": "arth",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1958.84
+		},
+		{
+			"sections_dept": "asia",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1957.01
+		},
+		{
+			"sections_dept": "asic",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1959.06
+		},
+		{
+			"sections_dept": "astr",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1959.05
+		},
+		{
+			"sections_dept": "astu",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1960.02
+		},
+		{
+			"sections_dept": "atsc",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1954.81
+		},
+		{
+			"sections_dept": "audi",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1958.79
+		},
+		{
+			"sections_dept": "ba",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1980.12
+		},
+		{
+			"sections_dept": "baac",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1973.54
+		},
+		{
+			"sections_dept": "babs",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1962.81
+		},
+		{
+			"sections_dept": "baen",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1959.41
+		},
+		{
+			"sections_dept": "bafi",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1975.48
+		},
+		{
+			"sections_dept": "bahr",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1977.27
+		},
+		{
+			"sections_dept": "bait",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1966.01
+		},
+		{
+			"sections_dept": "bala",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1959
+		},
+		{
+			"sections_dept": "bama",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1973.21
+		},
+		{
+			"sections_dept": "bams",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1957.65
+		},
+		{
+			"sections_dept": "bapa",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1968.98
+		},
+		{
+			"sections_dept": "basc",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1977.43
+		},
+		{
+			"sections_dept": "basm",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1975.06
+		},
+		{
+			"sections_dept": "baul",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1955.72
+		},
+		{
+			"sections_dept": "bioc",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1962.02
+		},
+		{
+			"sections_dept": "biof",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1953.52
+		},
+		{
+			"sections_dept": "biol",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1966.59
+		},
+		{
+			"sections_dept": "bmeg",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1957.19
+		},
+		{
+			"sections_dept": "bota",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1955.6
+		},
+		{
+			"sections_dept": "busi",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1975.71
+		},
+		{
+			"sections_dept": "caps",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1958.31
+		},
+		{
+			"sections_dept": "ccst",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1954.37
+		},
+		{
+			"sections_dept": "ceen",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1962.41
+		},
+		{
+			"sections_dept": "cell",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1955.6
+		},
+		{
+			"sections_dept": "cens",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1977.74
+		},
+		{
+			"sections_dept": "chbe",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1956.39
+		},
+		{
+			"sections_dept": "chem",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1975.41
+		},
+		{
+			"sections_dept": "chil",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1953.7
+		},
+		{
+			"sections_dept": "chin",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1972.82
+		},
+		{
+			"sections_dept": "cics",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1955.71
+		},
+		{
+			"sections_dept": "civl",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1957.19
+		},
+		{
+			"sections_dept": "clch",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1957.36
+		},
+		{
+			"sections_dept": "clst",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1963.44
+		},
+		{
+			"sections_dept": "cnps",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1974.66
+		},
+		{
+			"sections_dept": "cnrs",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1953.97
+		},
+		{
+			"sections_dept": "cnto",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1969
+		},
+		{
+			"sections_dept": "coec",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1974.53
+		},
+		{
+			"sections_dept": "cogs",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1972.21
+		},
+		{
+			"sections_dept": "cohr",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1955.72
+		},
+		{
+			"sections_dept": "comm",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1987.71
+		},
+		{
+			"sections_dept": "cons",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1956.42
+		},
+		{
+			"sections_dept": "cpen",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1965.36
+		},
+		{
+			"sections_dept": "cpsc",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1965.45
+		},
+		{
+			"sections_dept": "crwr",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1976.48
+		},
+		{
+			"sections_dept": "dani",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1957.19
+		},
+		{
+			"sections_dept": "dent",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1956.82
+		},
+		{
+			"sections_dept": "dhyg",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1967.03
+		},
+		{
+			"sections_dept": "eced",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1963.29
+		},
+		{
+			"sections_dept": "econ",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1969.28
+		},
+		{
+			"sections_dept": "edcp",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1963.8
+		},
+		{
+			"sections_dept": "edst",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1962.11
+		},
+		{
+			"sections_dept": "educ",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1984.32
+		},
+		{
+			"sections_dept": "eece",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1957.38
+		},
+		{
+			"sections_dept": "elec",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1965.85
+		},
+		{
+			"sections_dept": "ends",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1955.72
+		},
+		{
+			"sections_dept": "engl",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1996.32
+		},
+		{
+			"sections_dept": "enph",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1968.48
+		},
+		{
+			"sections_dept": "envr",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1960.66
+		},
+		{
+			"sections_dept": "eosc",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1964.49
+		},
+		{
+			"sections_dept": "epse",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1964
+		},
+		{
+			"sections_dept": "etec",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1979.46
+		},
+		{
+			"sections_dept": "fhis",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1957.25
+		},
+		{
+			"sections_dept": "fipr",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1958.81
+		},
+		{
+			"sections_dept": "fish",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1955.89
+		},
+		{
+			"sections_dept": "fist",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1961.22
+		},
+		{
+			"sections_dept": "fmst",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1977.75
+		},
+		{
+			"sections_dept": "fnel",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1957.55
+		},
+		{
+			"sections_dept": "fnh",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1967.18
+		},
+		{
+			"sections_dept": "fnis",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1963.89
+		},
+		{
+			"sections_dept": "food",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1955.9
+		},
+		{
+			"sections_dept": "fopr",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1957.79
+		},
+		{
+			"sections_dept": "fre",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1959.51
+		},
+		{
+			"sections_dept": "fren",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1985.11
+		},
+		{
+			"sections_dept": "frst",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1958.95
+		},
+		{
+			"sections_dept": "gbpr",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1957.5
+		},
+		{
+			"sections_dept": "geob",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1961.67
+		},
+		{
+			"sections_dept": "geog",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1960.38
+		},
+		{
+			"sections_dept": "germ",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1983.84
+		},
+		{
+			"sections_dept": "gpp",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1957.58
+		},
+		{
+			"sections_dept": "grek",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1957.36
+		},
+		{
+			"sections_dept": "grsj",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1963.81
+		},
+		{
+			"sections_dept": "gsat",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1956.32
+		},
+		{
+			"sections_dept": "hebr",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1957.33
+		},
+		{
+			"sections_dept": "hgse",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1957.14
+		},
+		{
+			"sections_dept": "hinu",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1962.44
+		},
+		{
+			"sections_dept": "hist",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1960.68
+		},
+		{
+			"sections_dept": "hunu",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1955.65
+		},
+		{
+			"sections_dept": "iar",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1923
+		},
+		{
+			"sections_dept": "igen",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1956.77
+		},
+		{
+			"sections_dept": "info",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1957.5
+		},
+		{
+			"sections_dept": "isci",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1956.75
+		},
+		{
+			"sections_dept": "ital",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1977.8
+		},
+		{
+			"sections_dept": "itst",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1956.05
+		},
+		{
+			"sections_dept": "iwme",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1957.5
+		},
+		{
+			"sections_dept": "japn",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1978.23
+		},
+		{
+			"sections_dept": "jrnl",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1963.4
+		},
+		{
+			"sections_dept": "kin",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1976.24
+		},
+		{
+			"sections_dept": "korn",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1966.46
+		},
+		{
+			"sections_dept": "lais",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1957.75
+		},
+		{
+			"sections_dept": "larc",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1959.52
+		},
+		{
+			"sections_dept": "laso",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1956
+		},
+		{
+			"sections_dept": "last",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1955.63
+		},
+		{
+			"sections_dept": "latn",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1980.53
+		},
+		{
+			"sections_dept": "law",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1964.77
+		},
+		{
+			"sections_dept": "lfs",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1970.56
+		},
+		{
+			"sections_dept": "libe",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1962.53
+		},
+		{
+			"sections_dept": "libr",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1959.91
+		},
+		{
+			"sections_dept": "ling",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1957.79
+		},
+		{
+			"sections_dept": "lled",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1975.34
+		},
+		{
+			"sections_dept": "math",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1977.13
+		},
+		{
+			"sections_dept": "mdvl",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1955.7
+		},
+		{
+			"sections_dept": "mech",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1958.73
+		},
+		{
+			"sections_dept": "medg",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1955.5
+		},
+		{
+			"sections_dept": "medi",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1957.41
+		},
+		{
+			"sections_dept": "micb",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1958.95
+		},
+		{
+			"sections_dept": "midw",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1957.08
+		},
+		{
+			"sections_dept": "mine",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1958.27
+		},
+		{
+			"sections_dept": "mrne",
+			"maxYear": 2014,
+			"minYear": 1900,
+			"avgYear": 1955.7
+		},
+		{
+			"sections_dept": "mtrl",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1956.88
+		},
+		{
+			"sections_dept": "musc",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1960.43
+		},
+		{
+			"sections_dept": "name",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1957
+		},
+		{
+			"sections_dept": "nest",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1959.71
+		},
+		{
+			"sections_dept": "nrsc",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1961.39
+		},
+		{
+			"sections_dept": "nurs",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1965.39
+		},
+		{
+			"sections_dept": "obst",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1953.13
+		},
+		{
+			"sections_dept": "onco",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1955.5
+		},
+		{
+			"sections_dept": "path",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1956.61
+		},
+		{
+			"sections_dept": "pcth",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1954.66
+		},
+		{
+			"sections_dept": "pers",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1959.94
+		},
+		{
+			"sections_dept": "phar",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1963.49
+		},
+		{
+			"sections_dept": "phil",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1973.98
+		},
+		{
+			"sections_dept": "phrm",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1962.73
+		},
+		{
+			"sections_dept": "phth",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1956.84
+		},
+		{
+			"sections_dept": "phys",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1966.76
+		},
+		{
+			"sections_dept": "plan",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1956.43
+		},
+		{
+			"sections_dept": "poli",
+			"maxYear": 2016,
+			"minYear": 1900,
+			"avgYear": 1970.37
+		},
+		{
+			"sections_dept": "pols",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1955.86
+		},
+		{
+			"sections_dept": "port",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1956.52
+		},
+		{
+			"sections_dept": "psyc",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1975.61
+		},
+		{
+			"sections_dept": "punj",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1962.12
+		},
+		{
+			"sections_dept": "relg",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1957.24
+		},
+		{
+			"sections_dept": "rgla",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1955.75
+		},
+		{
+			"sections_dept": "rhsc",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1968.81
+		},
+		{
+			"sections_dept": "rmes",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1956.9
+		},
+		{
+			"sections_dept": "rmst",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1955.8
+		},
+		{
+			"sections_dept": "rsot",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1955.28
+		},
+		{
+			"sections_dept": "russ",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1964.44
+		},
+		{
+			"sections_dept": "sans",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1955.9
+		},
+		{
+			"sections_dept": "scan",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1956.32
+		},
+		{
+			"sections_dept": "scie",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 2003.25
+		},
+		{
+			"sections_dept": "soci",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1968.33
+		},
+		{
+			"sections_dept": "soil",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1956.55
+		},
+		{
+			"sections_dept": "sowk",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1964.39
+		},
+		{
+			"sections_dept": "span",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1986.79
+		},
+		{
+			"sections_dept": "spha",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1955.79
+		},
+		{
+			"sections_dept": "spph",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1962.35
+		},
+		{
+			"sections_dept": "stat",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1965.5
+		},
+		{
+			"sections_dept": "sts",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1956.67
+		},
+		{
+			"sections_dept": "surg",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1959.84
+		},
+		{
+			"sections_dept": "swed",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1963.33
+		},
+		{
+			"sections_dept": "test",
+			"maxYear": 1900,
+			"minYear": 1900,
+			"avgYear": 1900
+		},
+		{
+			"sections_dept": "thtr",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1956.48
+		},
+		{
+			"sections_dept": "udes",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1957.25
+		},
+		{
+			"sections_dept": "ufor",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1957.5
+		},
+		{
+			"sections_dept": "urst",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1955.75
+		},
+		{
+			"sections_dept": "ursy",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1957.5
+		},
+		{
+			"sections_dept": "vant",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1997.5
+		},
+		{
+			"sections_dept": "visa",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1971.75
+		},
+		{
+			"sections_dept": "wood",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1955.87
+		},
+		{
+			"sections_dept": "wrds",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 2012.87
+		},
+		{
+			"sections_dept": "zool",
+			"maxYear": 2015,
+			"minYear": 1900,
+			"avgYear": 1964.31
+		}
+	]
+}
