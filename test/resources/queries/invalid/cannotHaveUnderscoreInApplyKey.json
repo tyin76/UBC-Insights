@@ -1,0 +1,49 @@
+{
+	"title": "cannotHaveUnderscoreInApplyKey",
+	"input": {
+		"WHERE": {
+			"OR": [
+				{
+					"IS": {
+						"sections_id": "340"
+					}
+				},
+				{
+					"IS": {
+						"sections_dept": "cpsc"
+					}
+				}
+			]
+		},
+		"OPTIONS": {
+			"COLUMNS": [
+				"MAX",
+				"MIN"
+			]
+		},
+		"TRANSFORMATIONS": {
+			"GROUP": [
+				"sections_id"
+			],
+			"APPLY": [
+				{
+					"MAX": {
+						"MAX": "sections_avg"
+					}
+				},
+				{
+					"MIN": {
+						"MIN": "sections_avg"
+					}
+				},
+				{
+					"sections_id_avg": {
+						"AVG": "sections_id"
+					}
+				}
+			]
+		}
+	},
+	"errorExpected": true,
+	"expected": "InsightError"
+}

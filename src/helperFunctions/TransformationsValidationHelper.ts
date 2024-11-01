@@ -21,6 +21,7 @@ export function validateTransformationsAndGetSingleDataset(query: any): string {
 
 	checkDoesEveryNonCustomKeyAppearInGroup(query, nonCustomKeysInColumn);
 	checkAreTransformationOperatorsValid(query);
+	checkAreTransformationOperatorsParamsValid(query);
 	checkNoCustomKeysAppearInGroup(query, customKeysInColumn);
 	const datasetName = getAndCheckTransformationReferencesSingleDataset(query);
 	checkDoesEveryCustomKeyAppearInApply(query, customKeysInColumn);
@@ -151,6 +152,36 @@ function checkAreTransformationOperatorsValid(query: any): void {
 
 	for (const operator of transformationOperatorsInApply) {
 		validateTranformationOperator(operator);
+	}
+}
+
+function checkAreTransformationOperatorsParamsValid(query: any): void {
+	const objects = query.TRANSFORMATIONS.APPLY;
+
+	const objectsInApply: Object[] = [];
+
+	const objectValuesInApply: Object[] = [];
+
+	const params: string[] = [];
+
+	for (const obj of objects as Object[]) {
+		objectsInApply.push(obj);
+	}
+
+	for (const obj of objectsInApply) {
+		objectValuesInApply.push(Object.values(obj)[0]);
+	}
+
+	for (const obj of objectValuesInApply) {
+		params.push(Object.values(obj)[0]);
+	}
+
+	for (const param of params) {
+		const numUnderscores = param.split("_").length - 1;
+
+		if (numUnderscores > 1) {
+			throw new InsightError("Cannot have more than one underscore in Transformation params");
+		}
 	}
 }
 
