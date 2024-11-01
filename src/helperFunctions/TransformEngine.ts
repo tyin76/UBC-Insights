@@ -3,6 +3,7 @@ import { InsightError, InsightResult } from "../controller/IInsightFacade";
 import { isFieldValidRoomNumberField, isFieldValidRoomStringField } from "./RoomValidationHelper";
 import { isFieldValidSectionNumberField, isFieldValidSectionStringField } from "./SectionValidationHelper";
 import { recursiveInsightResultCompare } from "./InsightResultSortHelper";
+import { avgForGroupHelper } from "./TransformationEngineHelpers";
 
 export function transformEngine(insightResults: InsightResult[], query: any): InsightResult[] {
 	if (insightResults.length === 0) {
@@ -11,14 +12,26 @@ export function transformEngine(insightResults: InsightResult[], query: any): In
 
 	const transformInstructions = getTransformInstructions(query);
 
-	const transformationInsightResults: { [key: string]: InsightResult } = {};
+	// { [key: string]: InsightResult }
+	const transformationInsightResults: Record<string, InsightResult> = {};
 
 	if (transformInstructions.length === 0) {
 		return groupOnly(transformationInsightResults, insightResults, query);
 	}
 
+	const indexOfCustomFieldName = 0;
+	const indexOfTransformOperator = 1;
+	const indexOfFieldToTransform = 2;
+
 	for (const instruction of transformInstructions) {
-		transform(transformationInsightResults, insightResults, query, instruction[0], instruction[1], instruction[2]);
+		transform(
+			transformationInsightResults,
+			insightResults,
+			query,
+			instruction[indexOfCustomFieldName],
+			instruction[indexOfTransformOperator],
+			instruction[indexOfFieldToTransform]
+		);
 	}
 
 	const filteredInsightResults = columnFilteredInsightResults(query, Object.values(transformationInsightResults));
@@ -69,37 +82,39 @@ function columnFilteredInsightResults(query: any, insightResults: InsightResult[
 }
 
 function transform(
-	transformationInsightResults: { [key: string]: InsightResult },
+	//{ [key: string]: InsightResult }
+	transformationInsightResults: Record<string, InsightResult>,
 	insightResults: InsightResult[],
 	query: any,
-	customFieldName: string,
+	customField: string,
 	transformationOperator: string,
 	fieldToTransform: string
 ): InsightResult[] {
 	switch (transformationOperator) {
 		case "MAX":
-			return getMaxForGroup(transformationInsightResults, insightResults, query, customFieldName, fieldToTransform);
+			return getMaxForGroup(transformationInsightResults, insightResults, query, customField, fieldToTransform);
 		case "MIN":
-			return getMinForGroup(transformationInsightResults, insightResults, query, customFieldName, fieldToTransform);
+			return getMinForGroup(transformationInsightResults, insightResults, query, customField, fieldToTransform);
 		case "AVG":
-			return getAvgForGroup(transformationInsightResults, insightResults, query, customFieldName, fieldToTransform);
+			return getAvgForGroup(transformationInsightResults, insightResults, query, customField, fieldToTransform);
 		case "SUM":
-			return getSumForGroup(transformationInsightResults, insightResults, query, customFieldName, fieldToTransform);
+			return getSumForGroup(transformationInsightResults, insightResults, query, customField, fieldToTransform);
 		case "COUNT":
-			return getCountForGroup(transformationInsightResults, insightResults, query, customFieldName, fieldToTransform);
+			return getCountForGroup(transformationInsightResults, insightResults, query, customField, fieldToTransform);
 	}
 	throw new InsightError("Invalid transformation operator");
 }
 
 function groupOnly(
-	transformationInsightResults: { [key: string]: InsightResult },
+	//{ [key: string]: InsightResult }
+	transformationInsightResults: Record<string, InsightResult>,
 	insightResults: InsightResult[],
 	query: any
 ): InsightResult[] {
 	const fieldsToGroupBy: string[] = getFieldsToGroupBy(query);
 
 	for (const result of insightResults) {
-		let currGroupId: string = "";
+		let currGroupId = "";
 		const insightResult: InsightResult = {};
 		for (const field of fieldsToGroupBy) {
 			currGroupId += result[field];
@@ -119,8 +134,8 @@ function getTransformInstructions(query: any): string[][] {
 	const apply = query.TRANSFORMATIONS.APPLY;
 
 	// Use a for loop to iterate over each object in the data array
-	for (let i = 0; i < apply.length; i++) {
-		const item = apply[i]; // Get the current object
+	for (const key of apply) {
+		const item = key; // Get the current object
 
 		const customFieldName = Object.keys(item)[0];
 		const transformationOperator = Object.keys(item[customFieldName])[0];
@@ -132,15 +147,8 @@ function getTransformInstructions(query: any): string[][] {
 	return toTransform;
 }
 
-function getCountForGroup(
-	transformationInsightResults: { [key: string]: InsightResult },
-	insightResults: InsightResult[],
-	query: any,
-	customFieldName: string,
-	fieldToCount: string
-): InsightResult[] {
+function validateFieldIsStringOrNumberType(fieldToCount: string): void {
 	const parsedField = fieldToCount.split("_")[1];
-
 	if (
 		!(
 			isFieldValidRoomNumberField(parsedField) ||
@@ -151,13 +159,25 @@ function getCountForGroup(
 	) {
 		throw new InsightError("Field provided is of the wrong type for transformation");
 	}
+}
+
+function getCountForGroup(
+	//{ [key: string]: InsightResult }
+	transformationInsightResults: Record<string, InsightResult>,
+	insightResults: InsightResult[],
+	query: any,
+	customFieldName: string,
+	fieldToCount: string
+): InsightResult[] {
+	validateFieldIsStringOrNumberType(fieldToCount);
 
 	const fieldsToGroupBy: string[] = getFieldsToGroupBy(query);
 
-	const countMap: { [key: string]: Set<number | string> } = {};
+	//{ [key: string]: Set<number | string> }
+	const countMap: Record<string, Set<number | string>> = {};
 
 	for (const result of insightResults) {
-		let currGroupId: string = "";
+		let currGroupId = "";
 		const insightResult: InsightResult = {};
 		for (const field of fieldsToGroupBy) {
 			currGroupId += result[field];
@@ -185,10 +205,11 @@ function getCountForGroup(
 }
 
 function getMinForGroup(
-	transformationInsightResults: { [key: string]: InsightResult },
+	//{ [key: string]: InsightResult }
+	transformationInsightResults: Record<string, InsightResult>,
 	insightResults: InsightResult[],
 	query: any,
-	customFieldName: string,
+	customField: string,
 	fieldToFindMin: string
 ): InsightResult[] {
 	checkIfFieldTypeOfNumber(fieldToFindMin);
@@ -196,7 +217,7 @@ function getMinForGroup(
 	const fieldsToGroupBy: string[] = getFieldsToGroupBy(query);
 
 	for (const result of insightResults) {
-		let currGroupId: string = "";
+		let currGroupId = "";
 		const insightResult: InsightResult = {};
 		for (const field of fieldsToGroupBy) {
 			currGroupId += result[field];
@@ -206,12 +227,12 @@ function getMinForGroup(
 		if (transformationInsightResults[currGroupId] === undefined) {
 			transformationInsightResults[currGroupId] = insightResult;
 		}
-		if (transformationInsightResults[currGroupId][customFieldName] !== undefined) {
-			const min = transformationInsightResults[currGroupId][customFieldName];
+		if (transformationInsightResults[currGroupId][customField] !== undefined) {
+			const min = transformationInsightResults[currGroupId][customField];
 			const potentialMin = result[fieldToFindMin];
-			transformationInsightResults[currGroupId][customFieldName] = Math.min(min as number, potentialMin as number);
-		} else if (transformationInsightResults[currGroupId][customFieldName] === undefined) {
-			transformationInsightResults[currGroupId][customFieldName] = result[fieldToFindMin] as number;
+			transformationInsightResults[currGroupId][customField] = Math.min(min as number, potentialMin as number);
+		} else if (transformationInsightResults[currGroupId][customField] === undefined) {
+			transformationInsightResults[currGroupId][customField] = result[fieldToFindMin] as number;
 		}
 	}
 
@@ -229,10 +250,11 @@ function checkIfFieldTypeOfNumber(field: string): void {
 }
 
 function getMaxForGroup(
-	transformationInsightResults: { [key: string]: InsightResult },
+	//{ [key: string]: InsightResult }
+	transformationInsightResults: Record<string, InsightResult>,
 	insightResults: InsightResult[],
 	query: any,
-	customFieldName: string,
+	customField: string,
 	fieldToFindMax: string
 ): InsightResult[] {
 	checkIfFieldTypeOfNumber(fieldToFindMax);
@@ -240,7 +262,7 @@ function getMaxForGroup(
 	const fieldsToGroupBy: string[] = getFieldsToGroupBy(query);
 
 	for (const result of insightResults) {
-		let currGroupId: string = "";
+		let currGroupId = "";
 		const insightResult: InsightResult = {};
 		for (const field of fieldsToGroupBy) {
 			currGroupId += result[field];
@@ -249,12 +271,12 @@ function getMaxForGroup(
 		if (transformationInsightResults[currGroupId] === undefined) {
 			transformationInsightResults[currGroupId] = insightResult;
 		}
-		if (transformationInsightResults[currGroupId][customFieldName] !== undefined) {
-			const max = transformationInsightResults[currGroupId][customFieldName];
+		if (transformationInsightResults[currGroupId][customField] !== undefined) {
+			const max = transformationInsightResults[currGroupId][customField];
 			const potentialMax = result[fieldToFindMax];
-			transformationInsightResults[currGroupId][customFieldName] = Math.max(max as number, potentialMax as number);
-		} else if (transformationInsightResults[currGroupId][customFieldName] === undefined) {
-			transformationInsightResults[currGroupId][customFieldName] = result[fieldToFindMax] as number;
+			transformationInsightResults[currGroupId][customField] = Math.max(max as number, potentialMax as number);
+		} else if (transformationInsightResults[currGroupId][customField] === undefined) {
+			transformationInsightResults[currGroupId][customField] = result[fieldToFindMax] as number;
 		}
 	}
 
@@ -262,20 +284,22 @@ function getMaxForGroup(
 }
 
 function getSumForGroup(
-	transformationInsightResults: { [key: string]: InsightResult },
+	//{ [key: string]: InsightResult }
+	transformationInsightResults: Record<string, InsightResult>,
 	insightResults: InsightResult[],
 	query: any,
-	customFieldName: string,
+	customField: string,
 	fieldToSum: string
 ): InsightResult[] {
 	checkIfFieldTypeOfNumber(fieldToSum);
 
 	const fieldsToGroupBy: string[] = getFieldsToGroupBy(query);
 
-	const sumMap: { [key: string]: Decimal } = {};
+	// { [key: string]: Decimal }
+	const sumMap: Record<string, Decimal> = {};
 
 	for (const result of insightResults) {
-		let currGroupId: string = "";
+		let currGroupId = "";
 		const insightResult: InsightResult = {};
 		for (const field of fieldsToGroupBy) {
 			currGroupId += result[field];
@@ -291,84 +315,53 @@ function getSumForGroup(
 		}
 	}
 
+	const fixedAmt = 2;
+
 	for (const key of Object.keys(sumMap)) {
-		transformationInsightResults[key][customFieldName] = Number(sumMap[key].toFixed(2));
+		transformationInsightResults[key][customField] = Number(sumMap[key].toFixed(fixedAmt));
 	}
 
 	return Object.values(transformationInsightResults);
 }
 
 function getAvgForGroup(
-	transformationInsightResults: { [key: string]: InsightResult },
+	//{ [key: string]: InsightResult }
+	transformationInsightResults: Record<string, InsightResult>,
 	insightResults: InsightResult[],
 	query: any,
-	customFieldName: string,
+	customField: string,
 	fieldToAvg: string
 ): InsightResult[] {
 	checkIfFieldTypeOfNumber(fieldToAvg);
 
 	const fieldsToGroupBy: string[] = getFieldsToGroupBy(query);
 
-	const avgMap: { [key: string]: { [x: string]: Decimal | number } } = {};
+	// { [key: string]: { [x: string]: Decimal | number } }
+	const avgMap: Record<string, Record<string, Decimal | number>> = {};
 
 	const rowsKeyword = "rows";
 	const totalKeyword = "total";
 
-	for (const result of insightResults) {
-		let currGroupId: string = "";
-		const insightResult: InsightResult = {};
-		for (const field of fieldsToGroupBy) {
-			currGroupId += result[field];
-			insightResult[field] = result[field];
-		}
-		if (transformationInsightResults[currGroupId] === undefined) {
-			transformationInsightResults[currGroupId] = insightResult;
-		}
+	avgForGroupHelper(
+		insightResults,
+		fieldsToGroupBy,
+		transformationInsightResults,
+		avgMap,
+		totalKeyword,
+		rowsKeyword,
+		fieldToAvg
+	);
 
-		if (avgMap[currGroupId] !== undefined) {
-			avgMap[currGroupId][totalKeyword] = (avgMap[currGroupId][totalKeyword] as Decimal).add(
-				new Decimal(result[fieldToAvg])
-			);
-			avgMap[currGroupId][rowsKeyword] = (avgMap[currGroupId][rowsKeyword] as number) + 1;
-		} else if (avgMap[currGroupId] === undefined) {
-			avgMap[currGroupId] = {};
-			avgMap[currGroupId][rowsKeyword] = 1;
-			avgMap[currGroupId][totalKeyword] = new Decimal(result[fieldToAvg]);
-		}
-	}
+	const fixedAmt = 2;
 
 	for (const key of Object.keys(avgMap)) {
 		const total = (avgMap[key][totalKeyword] as Decimal).toNumber();
 		const rows = avgMap[key][rowsKeyword] as number;
 		const avg = total / rows;
-		transformationInsightResults[key][customFieldName] = Number(avg.toFixed(2));
+		transformationInsightResults[key][customField] = Number(avg.toFixed(fixedAmt));
 	}
 
 	return Object.values(transformationInsightResults);
-}
-
-// each group name will represent one object
-function getGroups(insightResults: InsightResult[], query: any): (string | number)[][] {
-	const fieldsToGroupBy: string[] = getFieldsToGroupBy(query);
-	const groups: Set<string> = new Set();
-
-	for (const result of insightResults) {
-		const group: (string | number)[] = []; // Use an array to build the group
-
-		for (const field of fieldsToGroupBy) {
-			group.push(result[field]); // Push values into the group array
-		}
-
-		// Convert the array to a string to ensure uniqueness in the Set
-		groups.add(JSON.stringify(group)); // Add the stringified array to the Set
-	}
-
-	// Convert the Set back to an array of arrays
-	return Array.from(groups).map((item) => convertJsonToGroup(item));
-}
-
-function convertJsonToGroup(json: any): (string | number)[] {
-	return JSON.parse(json) as (string | number)[];
 }
 
 function getFieldsToGroupBy(query: any): string[] {

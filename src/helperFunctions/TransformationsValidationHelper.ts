@@ -35,7 +35,7 @@ function checkIfDuplicateApplyKeysInTransformation(query: any): void {
 
 	const keysInApply: string[] = [];
 
-	const keySet: { [x: string]: boolean } = {};
+	const keySet: Record<string, boolean> = {};
 
 	for (const obj of objects as Object[]) {
 		keysInApply.push(Object.keys(obj)[0]);
@@ -51,7 +51,7 @@ function checkIfDuplicateApplyKeysInTransformation(query: any): void {
 }
 
 function getAndCheckTransformationReferencesSingleDataset(query: any): string {
-	const datasetNameSet: Set<string> = new Set();
+	const datasetNameSet = new Set<string>();
 
 	const objects = query.TRANSFORMATIONS.APPLY;
 
