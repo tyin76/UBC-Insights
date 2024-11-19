@@ -33,7 +33,7 @@ module.exports = {
 			//const response = performEcho(req.params.msg);
 			res.status(StatusCodes.OK).json({ result: arrayOfID });
 		} catch (err) {
-			res.status(StatusCodes.BAD_REQUEST).json({ error: err });
+			res.status(StatusCodes.BAD_REQUEST).json({ error: "Zip file unsuccessfully added" });
 		}
 	},
 };
