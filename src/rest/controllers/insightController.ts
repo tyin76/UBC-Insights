@@ -22,24 +22,13 @@ module.exports = {
 	},
 	addDataset: async (req: any, res: any) => {
 		try {
-			const { id, kind } = req.params; // Fixed typo: params instead of parms
+			const { id, kind } = req.params;
 
 			// Handle the ZIP content
 			const content = req.body;
-			//let contentBase64: string;
-
-			// Convert to base64 if it isn't already
-			console.log(Buffer.isBuffer(content));
-			//if (Buffer.isBuffer(content)) {
-			//	contentBase64 = content.toString("base64");
-			//} else if (typeof content === "string") {
-			//	contentBase64 = content;
-			//} else {
-			//	throw new Error("Invalid content format");
-			//}
 
 			const facade = new InsightFacade();
-			const arrayOfID = await facade.addDataset(id, content.toString("base64"), kind); // Added await
+			const arrayOfID = await facade.addDataset(id, content.toString("base64"), kind);
 
 			res.status(StatusCodes.OK).json({ result: arrayOfID });
 		} catch (err) {

@@ -33,12 +33,12 @@ describe("Facade C3", function () {
 	});
 
 	// Sample on how to format PUT requests
-	it("PUT test for adding sections dataset", function () {
+	it("PUT test for adding sections dataset", async function () {
 		const SERVER_URL = "http://localhost:4321";
 		const id = "valid123";
 		const kind = InsightDatasetKind.Sections;
 		const ENDPOINT_URL = `/dataset/${id}/${kind}`;
-		const ZIP_FILE_DATA = buffer;
+		const ZIP_FILE_DATA = await getContent("validSmall.zip");
 
 		try {
 			return request(SERVER_URL)
