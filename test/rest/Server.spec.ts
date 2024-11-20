@@ -2,14 +2,17 @@ import { expect } from "chai";
 import request, { Response } from "supertest";
 import { StatusCodes } from "http-status-codes";
 import Log from "@ubccpsc310/folder-test/build/Log";
+import { startApp, stopApp } from "../../src/App";
 
 describe("Facade C3", function () {
 	before(function () {
 		// TODO: start server here once and handle errors properly
+		startApp();
 	});
 
 	after(function () {
 		// TODO: stop server here once!
+		stopApp();
 	});
 
 	beforeEach(function () {
