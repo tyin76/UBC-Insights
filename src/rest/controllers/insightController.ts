@@ -22,18 +22,32 @@ module.exports = {
 	},
 	addDataset: async (req: any, res: any) => {
 		try {
-			// Log.info(`Server::echo(..) - params: ${JSON.stringify(req.params)}`);
-			const { id, kind } = req.parms;
+			const { id, kind } = req.params; // Fixed typo: params instead of parms
+
+			// Handle the ZIP content
 			const content = req.body;
-			// assuming that the zip content is already base64
-			// IF NOT, uncomment the below line
-			// const contentToBase64 = content.toString("base64");
+			let contentBase64: string;
+
+			// Convert to base64 if it isn't already
+			if (Buffer.isBuffer(content)) {
+				contentBase64 = content.toString("base64");
+			} else if (typeof content === "string") {
+				contentBase64 = content;
+			} else {
+				throw new Error("Invalid content format");
+			}
+
 			const facade = new InsightFacade();
-			const arrayOfID = facade.addDataset(id, content, kind);
-			//const response = performEcho(req.params.msg);
+			const arrayOfID = await facade.addDataset(id, contentBase64, kind); // Added await
+
 			res.status(StatusCodes.OK).json({ result: arrayOfID });
 		} catch (err) {
-			res.status(StatusCodes.BAD_REQUEST).json({ error: "Zip file unsuccessfully added" });
+			// More detailed error handling
+			Log.error("Error in addDataset:", err);
+			const errorMessage = err instanceof Error ? err.message : "Unknown error occurred";
+			res.status(StatusCodes.BAD_REQUEST).json({
+				error: `Failed to add dataset: ${errorMessage}`,
+			});
 		}
 	},
 };
