@@ -69,50 +69,50 @@ describe("Facade C3", function () {
 					// some logging here please!
 					expect(res.status).to.be.equal(StatusCodes.OK);
 				});
-			} catch (err) {
-				Log.error(err);
-				expect.fail();
-				// and some more logging here!
-			}
-		});
-		it("DELETE test for delete sections dataset again (not found)", async function () {
-			const SERVER_URL = "http://localhost:4321";
-			const id = "valid123";
-			const ENDPOINT_URL = `/dataset/${id}`;
-	
-			try {
-				return await request(SERVER_URL)
-					.delete(ENDPOINT_URL)
-					.set("Content-Type", "application/x-zip-compressed")
-					.then(function (res: Response) {
-						// some logging here please!
-						expect(res.status).to.be.equal(StatusCodes.NOT_FOUND);
-					});
-				} catch (err) {
-					Log.error(err);
-					expect.fail();
-					// and some more logging here!
-				}
-			});
-			it("DELETE invalid id", async function () {
-				const SERVER_URL = "http://localhost:4321";
-				const id = "vali___d123";
-				const ENDPOINT_URL = `/dataset/${id}`;
-		
-				try {
-					return await request(SERVER_URL)
-						.delete(ENDPOINT_URL)
-						.set("Content-Type", "application/x-zip-compressed")
-						.then(function (res: Response) {
-							// some logging here please!
-							expect(res.status).to.be.equal(StatusCodes.BAD_REQUEST);
-						});
-					} catch (err) {
-						Log.error(err);
-						expect.fail();
-						// and some more logging here!
-					}
+		} catch (err) {
+			Log.error(err);
+			expect.fail();
+			// and some more logging here!
+		}
+	});
+	it("DELETE test for delete sections dataset again (not found)", async function () {
+		const SERVER_URL = "http://localhost:4321";
+		const id = "valid123";
+		const ENDPOINT_URL = `/dataset/${id}`;
+
+		try {
+			return await request(SERVER_URL)
+				.delete(ENDPOINT_URL)
+				.set("Content-Type", "application/x-zip-compressed")
+				.then(function (res: Response) {
+					// some logging here please!
+					expect(res.status).to.be.equal(StatusCodes.NOT_FOUND);
 				});
+		} catch (err) {
+			Log.error(err);
+			expect.fail();
+			// and some more logging here!
+		}
+	});
+	it("DELETE invalid id", async function () {
+		const SERVER_URL = "http://localhost:4321";
+		const id = "vali___d123";
+		const ENDPOINT_URL = `/dataset/${id}`;
+
+		try {
+			return await request(SERVER_URL)
+				.delete(ENDPOINT_URL)
+				.set("Content-Type", "application/x-zip-compressed")
+				.then(function (res: Response) {
+					// some logging here please!
+					expect(res.status).to.be.equal(StatusCodes.BAD_REQUEST);
+				});
+		} catch (err) {
+			Log.error(err);
+			expect.fail();
+			// and some more logging here!
+		}
+	});
 	it("PUT test for adding invalid sections dataset", async function () {
 		const SERVER_URL = "http://localhost:4321";
 		const id = "valid123";
@@ -156,6 +156,25 @@ describe("Facade C3", function () {
 			Log.error(err);
 			expect.fail();
 			// and some more logging here!
+		}
+	});
+
+	it("GET test for retrieving dataset list", async function () {
+		const SERVER_URL = "http://localhost:4321";
+		const ENDPOINT_URL = "/datasets";
+
+		try {
+			return await request(SERVER_URL)
+				.get(ENDPOINT_URL)
+				.set("Accept", "application/json")
+				.then(function (res: Response) {
+					expect(res.status).to.be.equal(StatusCodes.OK);
+					expect(res.body).to.be.an("object"); // Ensure it's an object
+					expect(res.body.result).to.be.an("array"); // Check the "result" field contains an array
+				});
+		} catch (err) {
+			Log.error("Error during GET request:", err);
+			expect.fail();
 		}
 	});
 
