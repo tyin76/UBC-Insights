@@ -1,6 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import Log from "@ubccpsc310/folder-test/build/Log";
 import InsightFacade from "../../controller/InsightFacade";
+import { NotFoundError } from "../../controller/IInsightFacade";
 
 function performEcho(msg: string): string {
 	if (typeof msg !== "undefined" && msg !== null) {
@@ -36,6 +37,37 @@ module.exports = {
 			Log.error("Error in addDataset:", err);
 			const errorMessage = err instanceof Error ? err.message : "Unknown error occurred";
 			res.status(StatusCodes.BAD_REQUEST).json({
+				error: `Failed to add dataset: ${errorMessage}`,
+			});
+		}
+	},
+    removeDataset: async (req: any, res: any) => {
+		try {
+			const { id } = req.params;
+
+			const facade = new InsightFacade();
+			const idOfDatasetRemoved = await facade.removeDataset(id);
+
+			res.status(StatusCodes.OK).json({ result: idOfDatasetRemoved });
+		} catch (err) {
+			// More detailed error handling
+
+			Log.error("Error in addDataset:", err);
+			const errorMessage = err instanceof Error ? err.message : "Unknown error occurred";
+            
+            if (err instanceof NotFoundError) {
+                res.status(StatusCodes.NOT_FOUND).json({
+                    error: `Failed to add dataset: ${errorMessage}`,
+                });
+            }
+
+            if (err instanceof NotFoundError) {
+                res.status(StatusCodes.BAD_REQUEST).json({
+                    error: `Failed to add dataset: ${errorMessage}`,
+                });
+            }
+
+            res.status(StatusCodes.BAD_REQUEST).json({
 				error: `Failed to add dataset: ${errorMessage}`,
 			});
 		}
