@@ -3,6 +3,15 @@ import request, { Response } from "supertest";
 import { StatusCodes } from "http-status-codes";
 import Log from "@ubccpsc310/folder-test/build/Log";
 import { startApp, stopApp } from "../../src/App";
+import { InsightDatasetKind } from "../../src/controller/IInsightFacade";
+import { getContentFromArchives } from "../TestUtil";
+import * as fs from "fs-extra";
+import { buffer } from "stream/consumers";
+
+async function getContent(name: string): Promise<Buffer> {
+	const buffer = await fs.readFile("test/resources/archives/" + name);
+	return buffer;
+}
 
 describe("Facade C3", function () {
 	before(function () {
@@ -24,10 +33,12 @@ describe("Facade C3", function () {
 	});
 
 	// Sample on how to format PUT requests
-	it("PUT test for courses dataset", function () {
-		const SERVER_URL = "TBD";
-		const ENDPOINT_URL = "TBD";
-		const ZIP_FILE_DATA = "TBD";
+	it("PUT test for adding sections dataset", async function () {
+		const SERVER_URL = "http://localhost:4321";
+		const id = "valid123";
+		const kind = InsightDatasetKind.Sections;
+		const ENDPOINT_URL = `/dataset/${id}/${kind}`;
+		const ZIP_FILE_DATA = await getContent("validSmall.zip");
 
 		try {
 			return request(SERVER_URL)
@@ -37,13 +48,10 @@ describe("Facade C3", function () {
 				.then(function (res: Response) {
 					// some logging here please!
 					expect(res.status).to.be.equal(StatusCodes.OK);
-				})
-				.catch(function () {
-					// some logging here please!
-					expect.fail();
 				});
 		} catch (err) {
 			Log.error(err);
+			expect.fail();
 			// and some more logging here!
 		}
 	});
