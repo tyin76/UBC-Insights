@@ -1,6 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import Log from "@ubccpsc310/folder-test/build/Log";
 import InsightFacade from "../../controller/InsightFacade";
+import { NotFoundError } from "../../controller/IInsightFacade";
 
 function performEcho(msg: string): string {
 	if (typeof msg !== "undefined" && msg !== null) {
@@ -22,27 +23,13 @@ module.exports = {
 	},
 	addDataset: async (req: any, res: any) => {
 		try {
-
-            console.log("didnt reach here");
-
-			const { id, kind } = req.params; // Fixed typo: params instead of parms
+			const { id, kind } = req.params;
 
 			// Handle the ZIP content
 			const content = req.body;
-			//let contentBase64: string;
-
-			// Convert to base64 if it isn't already
-			console.log(Buffer.isBuffer(content));
-			//if (Buffer.isBuffer(content)) {
-			//	contentBase64 = content.toString("base64");
-			//} else if (typeof content === "string") {
-			//	contentBase64 = content;
-			//} else {
-			//	throw new Error("Invalid content format");
-			//}
 
 			const facade = new InsightFacade();
-			const arrayOfID = await facade.addDataset(id, content.toString("base64"), kind); // Added await
+			const arrayOfID = await facade.addDataset(id, content.toString("base64"), kind);
 
 			res.status(StatusCodes.OK).json({ result: arrayOfID });
 		} catch (err) {
@@ -50,6 +37,37 @@ module.exports = {
 			Log.error("Error in addDataset:", err);
 			const errorMessage = err instanceof Error ? err.message : "Unknown error occurred";
 			res.status(StatusCodes.BAD_REQUEST).json({
+				error: `Failed to add dataset: ${errorMessage}`,
+			});
+		}
+	},
+    removeDataset: async (req: any, res: any) => {
+		try {
+			const { id } = req.params;
+
+			const facade = new InsightFacade();
+			const idOfDatasetRemoved = await facade.removeDataset(id);
+
+			res.status(StatusCodes.OK).json({ result: idOfDatasetRemoved });
+		} catch (err) {
+			// More detailed error handling
+
+			Log.error("Error in addDataset:", err);
+			const errorMessage = err instanceof Error ? err.message : "Unknown error occurred";
+            
+            if (err instanceof NotFoundError) {
+                res.status(StatusCodes.NOT_FOUND).json({
+                    error: `Failed to add dataset: ${errorMessage}`,
+                });
+            }
+
+            if (err instanceof NotFoundError) {
+                res.status(StatusCodes.BAD_REQUEST).json({
+                    error: `Failed to add dataset: ${errorMessage}`,
+                });
+            }
+
+            res.status(StatusCodes.BAD_REQUEST).json({
 				error: `Failed to add dataset: ${errorMessage}`,
 			});
 		}
