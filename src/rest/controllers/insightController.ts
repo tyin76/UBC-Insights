@@ -18,14 +18,5 @@ module.exports = {
 		} catch (err) {
 			res.status(StatusCodes.BAD_REQUEST).json({ error: err });
 		}
-    },
-    addDataset: async (req: any, res: any) => {
-		try {
-			Log.info(`Server::echo(..) - params: ${JSON.stringify(req.params)}`);
-			const response = performEcho(req.params.msg);
-			res.status(StatusCodes.OK).json({ result: response });
-		} catch (err) {
-			res.status(StatusCodes.BAD_REQUEST).json({ error: err });
-		}
     }
 }
