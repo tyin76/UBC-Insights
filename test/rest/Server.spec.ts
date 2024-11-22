@@ -2,24 +2,53 @@ import { expect } from "chai";
 import request, { Response } from "supertest";
 import { StatusCodes } from "http-status-codes";
 import Log from "@ubccpsc310/folder-test/build/Log";
-import { stopApp } from "../../src/App";
 import { InsightDatasetKind } from "../../src/controller/IInsightFacade";
 import * as fs from "fs-extra";
+import Server from "../../src/rest/Server";
 
 async function getContent(name: string): Promise<Buffer> {
 	const buffer = await fs.readFile("test/resources/archives/" + name);
 	return buffer;
 }
 
+class App {
+
+	private server: Server | undefined;
+
+	public async stopServer(): Promise<void> {
+		this.server?.stop();		
+	}
+
+	public async initServer(port: number): Promise<void> {
+		Log.info(`App::initServer( ${port} ) - start`);
+
+		this.server = new Server(port);
+		return this.server
+			.start()
+			.then(() => {
+				Log.info("App::initServer() - started");
+			})
+			.catch((err: Error) => {
+				Log.error(`App::initServer() - ERROR: ${err.message}`);
+			});
+	}
+}
+
+const app: App = new App();
+
 describe("Facade C3", function () {
 	before(function () {
 		// TODO: start server here once and handle errors properly
-		//startApp();
+		Log.info("App - starting");
+const port = 4321;
+(async (): Promise<void> => {
+	await app.initServer(port);
+})();
 	});
 
 	after(async function () {
 		// TODO: stop server here once!
-		await stopApp();
+		app.stopServer();
 	});
 
 	beforeEach(function () {
