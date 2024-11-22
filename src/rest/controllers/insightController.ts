@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import Log from "@ubccpsc310/folder-test/build/Log";
 import InsightFacade from "../../controller/InsightFacade";
-import { InsightError, NotFoundError } from "../../controller/IInsightFacade";
+import { NotFoundError } from "../../controller/IInsightFacade";
 
 function performEcho(msg: string): string {
 	if (typeof msg !== "undefined" && msg !== null) {
@@ -79,7 +79,7 @@ module.exports = {
 				});
 			}
 
-			if (err instanceof InsightError) {
+			if (err instanceof NotFoundError) {
 				res.status(StatusCodes.BAD_REQUEST).json({
 					error: `Failed to add dataset: ${errorMessage}`,
 				});
@@ -88,17 +88,6 @@ module.exports = {
 			res.status(StatusCodes.BAD_REQUEST).json({
 				error: `Failed to add dataset: ${errorMessage}`,
 			});
-		}
-	},
-	listDatasets: async (req: any, res: any) => {
-		try {
-			const facade = new InsightFacade();
-			const returnValue = await facade.listDatasets();
-
-			res.status(StatusCodes.OK).json({ result: returnValue });
-		} catch (err) {
-			// More detailed error handling
-			Log.error("Error in listDatasets:", err);
 		}
 	},
 };
