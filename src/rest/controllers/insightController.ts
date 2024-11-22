@@ -41,6 +41,24 @@ module.exports = {
 			});
 		}
 	},
+	query: async (req: any, res: any) => {
+		try {
+			// Handle the query
+			const query = req.body;
+
+			const facade = new InsightFacade();
+			const insightResults = await facade.performQuery(query);
+
+			res.status(StatusCodes.OK).json({ result: insightResults });
+		} catch (err) {
+			// More detailed error handling
+			Log.error("Error in query:", err);
+			const errorMessage = err instanceof Error ? err.message : "Unknown error occurred";
+			res.status(StatusCodes.BAD_REQUEST).json({
+				error: `Failed to add dataset: ${errorMessage}`,
+			});
+		}
+	},
 	removeDataset: async (req: any, res: any) => {
 		try {
 			const { id } = req.params;
@@ -52,12 +70,12 @@ module.exports = {
 		} catch (err) {
 			// More detailed error handling
 
-			Log.error("Error in addDataset:", err);
+			Log.error("Error in removeDataset:", err);
 			const errorMessage = err instanceof Error ? err.message : "Unknown error occurred";
 
 			if (err instanceof NotFoundError) {
 				res.status(StatusCodes.NOT_FOUND).json({
-					error: `Failed to add dataset: ${errorMessage}`,
+					error: `Failed to remove dataset: ${errorMessage}`,
 				});
 			}
 
