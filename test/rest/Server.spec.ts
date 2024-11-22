@@ -12,11 +12,10 @@ async function getContent(name: string): Promise<Buffer> {
 }
 
 class App {
-
 	private server: Server | undefined;
 
 	public async stopServer(): Promise<void> {
-		this.server?.stop();		
+		await this.server?.stop();
 	}
 
 	public async initServer(port: number): Promise<void> {
@@ -40,15 +39,15 @@ describe("Facade C3", function () {
 	before(function () {
 		// TODO: start server here once and handle errors properly
 		Log.info("App - starting");
-const port = 4321;
-(async (): Promise<void> => {
-	await app.initServer(port);
-})();
+		const port = 4321;
+		(async (): Promise<void> => {
+			await app.initServer(port);
+		})();
 	});
 
 	after(async function () {
 		// TODO: stop server here once!
-		app.stopServer();
+		await app.stopServer();
 	});
 
 	beforeEach(function () {
