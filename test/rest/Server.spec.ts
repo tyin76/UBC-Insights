@@ -2,11 +2,9 @@ import { expect } from "chai";
 import request, { Response } from "supertest";
 import { StatusCodes } from "http-status-codes";
 import Log from "@ubccpsc310/folder-test/build/Log";
-import { startApp, stopApp } from "../../src/App";
+import { stopApp } from "../../src/App";
 import { InsightDatasetKind } from "../../src/controller/IInsightFacade";
-import { getContentFromArchives } from "../TestUtil";
 import * as fs from "fs-extra";
-import { buffer } from "stream/consumers";
 
 async function getContent(name: string): Promise<Buffer> {
 	const buffer = await fs.readFile("test/resources/archives/" + name);
@@ -19,9 +17,9 @@ describe("Facade C3", function () {
 		//startApp();
 	});
 
-	after(function () {
+	after(async function () {
 		// TODO: stop server here once!
-		stopApp();
+		await stopApp();
 	});
 
 	beforeEach(function () {
@@ -94,7 +92,7 @@ describe("Facade C3", function () {
 				Log.error("addDataset error:", err);
 				expect.fail();
 			});
-		const insightResults = await request(SERVER_URL)
+		await request(SERVER_URL)
 			.post(QUERY_ENDPOINT_URL)
 			.send(query)
 			.set("Content-Type", "application/json")

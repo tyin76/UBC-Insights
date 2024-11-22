@@ -5,7 +5,6 @@ import Server from "./rest/Server";
  * Main app class that is run with the node command. Starts the server.
  */
 export class App {
-
 	private serverInstance: Server | null = null;
 
 	public async initServer(port: number): Promise<void> {
@@ -23,21 +22,20 @@ export class App {
 	}
 
 	public async stopServer(): Promise<void> {
-
 		if (!this.serverInstance) {
 			Log.warn("App::stopServer() - No server instance to stop");
 			return Promise.resolve(); // Nothing to stop
 		}
 
-		return this.serverInstance	
-		.stop() // Assuming the `Server` class has a `stop` method
-		.then(() => {
-			Log.info("App::stopServer() - stopped");
-			this.serverInstance = null; // Clear the server instance
-		})
-		.catch((err: Error) => {
-			Log.error(`App::stopServer() - ERROR: ${err.message}`);
-		});
+		return this.serverInstance
+			.stop() // Assuming the `Server` class has a `stop` method
+			.then(() => {
+				Log.info("App::stopServer() - stopped");
+				this.serverInstance = null; // Clear the server instance
+			})
+			.catch((err: Error) => {
+				Log.error(`App::stopServer() - ERROR: ${err.message}`);
+			});
 	}
 }
 
@@ -52,8 +50,8 @@ export function startApp(): void {
 	})();
 }
 
-export function stopApp(): void {
-	app.stopServer();
+export async function stopApp(): Promise<void> {
+	await app.stopServer();
 }
 
 startApp();

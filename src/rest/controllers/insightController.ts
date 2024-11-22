@@ -12,7 +12,7 @@ function performEcho(msg: string): string {
 }
 
 module.exports = {
-	echo: async (req: any, res: any) => {
+	echo: async (req: any, res: any): Promise<void> => {
 		try {
 			Log.info(`Server::echo(..) - params: ${JSON.stringify(req.params)}`);
 			const response = performEcho(req.params.msg);
@@ -21,7 +21,7 @@ module.exports = {
 			res.status(StatusCodes.BAD_REQUEST).json({ error: err });
 		}
 	},
-	addDataset: async (req: any, res: any) => {
+	addDataset: async (req: any, res: any): Promise<void> => {
 		try {
 			const { id, kind } = req.params;
 
@@ -41,7 +41,7 @@ module.exports = {
 			});
 		}
 	},
-	query: async (req: any, res: any) => {
+	query: async (req: any, res: any): Promise<void> => {
 		try {
 			// Handle the query
 			const query = req.body;
@@ -59,7 +59,7 @@ module.exports = {
 			});
 		}
 	},
-	removeDataset: async (req: any, res: any) => {
+	removeDataset: async (req: any, res: any): Promise<void> => {
 		try {
 			const { id } = req.params;
 
