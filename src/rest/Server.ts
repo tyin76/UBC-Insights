@@ -3,7 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import Log from "@ubccpsc310/folder-test/build/Log";
 import * as http from "http";
 import cors from "cors";
-import insightRouter from './routes/insightRouter';
+import insightRouter from "./routes/insightRouter";
 
 export default class Server {
 	private readonly port: number;

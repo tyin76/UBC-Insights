@@ -12,7 +12,7 @@ function performEcho(msg: string): string {
 }
 
 module.exports = {
-	echo: async (req: any, res: any) => {
+	echo: async (req: any, res: any): Promise<void> => {
 		try {
 			Log.info(`Server::echo(..) - params: ${JSON.stringify(req.params)}`);
 			const response = performEcho(req.params.msg);
@@ -21,7 +21,7 @@ module.exports = {
 			res.status(StatusCodes.BAD_REQUEST).json({ error: err });
 		}
 	},
-	addDataset: async (req: any, res: any) => {
+	addDataset: async (req: any, res: any): Promise<void> => {
 		try {
 			const { id, kind } = req.params;
 
@@ -41,9 +41,8 @@ module.exports = {
 			});
 		}
 	},
-    query: async (req: any, res: any) => {
+	query: async (req: any, res: any): Promise<void> => {
 		try {
-
 			// Handle the query
 			const query = req.body;
 
@@ -60,7 +59,7 @@ module.exports = {
 			});
 		}
 	},
-    removeDataset: async (req: any, res: any) => {
+	removeDataset: async (req: any, res: any): Promise<void> => {
 		try {
 			const { id } = req.params;
 
@@ -73,20 +72,20 @@ module.exports = {
 
 			Log.error("Error in removeDataset:", err);
 			const errorMessage = err instanceof Error ? err.message : "Unknown error occurred";
-            
-            if (err instanceof NotFoundError) {
-                res.status(StatusCodes.NOT_FOUND).json({
-                    error: `Failed to remove dataset: ${errorMessage}`,
-                });
-            }
 
-            if (err instanceof NotFoundError) {
-                res.status(StatusCodes.BAD_REQUEST).json({
-                    error: `Failed to add dataset: ${errorMessage}`,
-                });
-            }
+			if (err instanceof NotFoundError) {
+				res.status(StatusCodes.NOT_FOUND).json({
+					error: `Failed to remove dataset: ${errorMessage}`,
+				});
+			}
 
-            res.status(StatusCodes.BAD_REQUEST).json({
+			if (err instanceof NotFoundError) {
+				res.status(StatusCodes.BAD_REQUEST).json({
+					error: `Failed to add dataset: ${errorMessage}`,
+				});
+			}
+
+			res.status(StatusCodes.BAD_REQUEST).json({
 				error: `Failed to add dataset: ${errorMessage}`,
 			});
 		}

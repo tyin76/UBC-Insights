@@ -2,26 +2,52 @@ import { expect } from "chai";
 import request, { Response } from "supertest";
 import { StatusCodes } from "http-status-codes";
 import Log from "@ubccpsc310/folder-test/build/Log";
-import { startApp, stopApp } from "../../src/App";
 import { InsightDatasetKind } from "../../src/controller/IInsightFacade";
-import { getContentFromArchives } from "../TestUtil";
 import * as fs from "fs-extra";
-import { buffer } from "stream/consumers";
+import Server from "../../src/rest/Server";
 
 async function getContent(name: string): Promise<Buffer> {
 	const buffer = await fs.readFile("test/resources/archives/" + name);
 	return buffer;
 }
 
+class App {
+	private server: Server | undefined;
+
+	public async stopServer(): Promise<void> {
+		await this.server?.stop();
+	}
+
+	public async initServer(port: number): Promise<void> {
+		Log.info(`App::initServer( ${port} ) - start`);
+
+		this.server = new Server(port);
+		return this.server
+			.start()
+			.then(() => {
+				Log.info("App::initServer() - started");
+			})
+			.catch((err: Error) => {
+				Log.error(`App::initServer() - ERROR: ${err.message}`);
+			});
+	}
+}
+
+const app: App = new App();
+
 describe("Facade C3", function () {
 	before(function () {
 		// TODO: start server here once and handle errors properly
-		//startApp();
+		Log.info("App - starting");
+		const port = 4321;
+		(async (): Promise<void> => {
+			await app.initServer(port);
+		})();
 	});
 
-	after(function () {
+	after(async function () {
 		// TODO: stop server here once!
-		stopApp();
+		await app.stopServer();
 	});
 
 	beforeEach(function () {
@@ -63,70 +89,63 @@ describe("Facade C3", function () {
 		const QUERY_ENDPOINT_URL = `/query`;
 		const ZIP_FILE_DATA = await getContent("pair.zip");
 		const query = {
-			"WHERE": {
-				"AND": [
+			WHERE: {
+				AND: [
 					{
-						"IS": {
-							"sections_dept": "adhe"
-						}
+						IS: {
+							sections_dept: "adhe",
+						},
 					},
 					{
-						"IS": {
-							"sections_instructor": "*mary*"
-						}
-					}
-				]
-			},
-			"OPTIONS": {
-				"COLUMNS": [
-					"sections_dept",
-					"sections_instructor",
-					"sections_id",
-					"sections_pass"
-				]
-			}
-		}
-
-			await request(SERVER_URL)
-				.put(ADD_ENDPOINT_URL)
-				.send(ZIP_FILE_DATA)
-				.set("Content-Type", "application/x-zip-compressed")
-				.then(function (res: Response) {
-					// some logging here please!
-					expect(res.status).to.be.equal(StatusCodes.OK);
-				}).catch(
-					(err) => {
-						Log.error("addDataset error:", err);
-						expect.fail();
-					}
-				);;
-			const insightResults = await request(SERVER_URL)
-				.post(QUERY_ENDPOINT_URL)
-				.send(query)
-				.set("Content-Type", "application/json")
-				.then(function (res: Response) {
-					// some logging here please!
-					expect(res.status).to.be.equal(StatusCodes.OK);
-					expect(res.body.result).to.deep.equal([
-						{
-							"sections_dept": "adhe",
-							"sections_instructor": "wilson, mary",
-							"sections_id": "329",
-							"sections_pass": 18
+						IS: {
+							sections_instructor: "*mary*",
 						},
-						{
-							"sections_dept": "adhe",
-							"sections_instructor": "wilson, mary",
-							"sections_id": "329",
-							"sections_pass": 21
-						}
-					]);
-				}).catch(
-					(err) => {
-						Log.error("query error:", err);
-						expect.fail();
-					}
-				);
+					},
+				],
+			},
+			OPTIONS: {
+				COLUMNS: ["sections_dept", "sections_instructor", "sections_id", "sections_pass"],
+			},
+		};
+
+		await request(SERVER_URL)
+			.put(ADD_ENDPOINT_URL)
+			.send(ZIP_FILE_DATA)
+			.set("Content-Type", "application/x-zip-compressed")
+			.then(function (res: Response) {
+				// some logging here please!
+				expect(res.status).to.be.equal(StatusCodes.OK);
+			})
+			.catch((err) => {
+				Log.error("addDataset error:", err);
+				expect.fail();
+			});
+		await request(SERVER_URL)
+			.post(QUERY_ENDPOINT_URL)
+			.send(query)
+			.set("Content-Type", "application/json")
+			.then(function (res: Response) {
+				// some logging here please!
+				expect(res.status).to.be.equal(StatusCodes.OK);
+				expect(res.body.result).to.deep.equal([
+					{
+						sections_dept: "adhe",
+						sections_instructor: "wilson, mary",
+						sections_id: "329",
+						sections_pass: 18,
+					},
+					{
+						sections_dept: "adhe",
+						sections_instructor: "wilson, mary",
+						sections_id: "329",
+						sections_pass: 21,
+					},
+				]);
+			})
+			.catch((err) => {
+				Log.error("query error:", err);
+				expect.fail();
+			});
 	});
 	it("DELETE test for delete sections dataset", async function () {
 		const SERVER_URL = "http://localhost:4321";
@@ -142,50 +161,50 @@ describe("Facade C3", function () {
 					expect(res.status).to.be.equal(StatusCodes.OK);
 					expect(res.body.result).to.be.equal(id);
 				});
-			} catch (err) {
-				Log.error(err);
-				expect.fail();
-				// and some more logging here!
-			}
-		});
-		it("DELETE test for delete sections dataset again (not found)", async function () {
-			const SERVER_URL = "http://localhost:4321";
-			const id = "valid123";
-			const ENDPOINT_URL = `/dataset/${id}`;
-	
-			try {
-				return await request(SERVER_URL)
-					.delete(ENDPOINT_URL)
-					.set("Content-Type", "application/x-zip-compressed")
-					.then(function (res: Response) {
-						// some logging here please!
-						expect(res.status).to.be.equal(StatusCodes.NOT_FOUND);
-					});
-				} catch (err) {
-					Log.error(err);
-					expect.fail();
-					// and some more logging here!
-				}
-			});
-			it("DELETE invalid id", async function () {
-				const SERVER_URL = "http://localhost:4321";
-				const id = "vali___d123";
-				const ENDPOINT_URL = `/dataset/${id}`;
-		
-				try {
-					return await request(SERVER_URL)
-						.delete(ENDPOINT_URL)
-						.set("Content-Type", "application/x-zip-compressed")
-						.then(function (res: Response) {
-							// some logging here please!
-							expect(res.status).to.be.equal(StatusCodes.BAD_REQUEST);
-						});
-					} catch (err) {
-						Log.error(err);
-						expect.fail();
-						// and some more logging here!
-					}
+		} catch (err) {
+			Log.error(err);
+			expect.fail();
+			// and some more logging here!
+		}
+	});
+	it("DELETE test for delete sections dataset again (not found)", async function () {
+		const SERVER_URL = "http://localhost:4321";
+		const id = "valid123";
+		const ENDPOINT_URL = `/dataset/${id}`;
+
+		try {
+			return await request(SERVER_URL)
+				.delete(ENDPOINT_URL)
+				.set("Content-Type", "application/x-zip-compressed")
+				.then(function (res: Response) {
+					// some logging here please!
+					expect(res.status).to.be.equal(StatusCodes.NOT_FOUND);
 				});
+		} catch (err) {
+			Log.error(err);
+			expect.fail();
+			// and some more logging here!
+		}
+	});
+	it("DELETE invalid id", async function () {
+		const SERVER_URL = "http://localhost:4321";
+		const id = "vali___d123";
+		const ENDPOINT_URL = `/dataset/${id}`;
+
+		try {
+			return await request(SERVER_URL)
+				.delete(ENDPOINT_URL)
+				.set("Content-Type", "application/x-zip-compressed")
+				.then(function (res: Response) {
+					// some logging here please!
+					expect(res.status).to.be.equal(StatusCodes.BAD_REQUEST);
+				});
+		} catch (err) {
+			Log.error(err);
+			expect.fail();
+			// and some more logging here!
+		}
+	});
 	it("PUT test for adding invalid sections dataset", async function () {
 		const SERVER_URL = "http://localhost:4321";
 		const id = "valid123";
